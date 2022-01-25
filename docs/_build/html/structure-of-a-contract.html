@@ -1,0 +1,472 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Structure of a Contract &mdash; Solidity 0.8.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/a4_railroad_diagram.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Types" href="types.html" />
+    <link rel="prev" title="Layout of a Solidity Source File" href="layout-of-source-files.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #65afff" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.10
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction-to-smart-contracts.html">Introduction to Smart Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing-solidity.html">Installing the Solidity Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solidity-by-example.html">Solidity by Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Language Description</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Structure of a Contract</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#state-variables">State Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-modifiers">Function Modifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#errors">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#struct-types">Struct Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#enum-types">Enum Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control-structures.html">Expressions and Control Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assembly.html">Inline Assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Language Grammar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-the-compiler.html">Using the Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysing-compilation-output.html">Analysing the Compiler Output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Internals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_storage.html">Layout of State Variables in Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_memory.html">Layout in Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_calldata.html">Layout of Call Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/variable_cleanup.html">Cleaning Up Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/source_mappings.html">Source Mappings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/optimizer.html">The Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Contract Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abi-spec.html">Contract ABI Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Additional Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="050-breaking-changes.html">Solidity v0.5.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="060-breaking-changes.html">Solidity v0.6.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="070-breaking-changes.html">Solidity v0.7.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="080-breaking-changes.html">Solidity v0.8.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="natspec-format.html">NatSpec Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security-considerations.html">Security Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smtchecker.html">SMTChecker and Formal Verification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path-resolution.html">Import Path Resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yul.html">Yul</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guide.html">Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common-patterns.html">Common Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">List of Known Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brand-guide.html">Solidity Brand Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="language-influences.html">Language Influences</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Keyword Index</a>
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Solidity</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Structure of a Contract</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/structure-of-a-contract.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="structure-of-a-contract">
+<span id="contract-structure"></span><span id="index-0"></span><h1>Structure of a Contract<a class="headerlink" href="#structure-of-a-contract" title="Permalink to this headline">¶</a></h1>
+<p>Contracts in Solidity are similar to classes in object-oriented languages.
+Each contract can contain declarations of <a class="reference internal" href="#structure-state-variables"><span class="std std-ref">State Variables</span></a>, <a class="reference internal" href="#structure-functions"><span class="std std-ref">Functions</span></a>,
+<a class="reference internal" href="#structure-function-modifiers"><span class="std std-ref">Function Modifiers</span></a>, <a class="reference internal" href="#structure-events"><span class="std std-ref">Events</span></a>, <a class="reference internal" href="#structure-errors"><span class="std std-ref">Errors</span></a>, <a class="reference internal" href="#structure-struct-types"><span class="std std-ref">Struct Types</span></a> and <a class="reference internal" href="#structure-enum-types"><span class="std std-ref">Enum Types</span></a>.
+Furthermore, contracts can inherit from other contracts.</p>
+<p>There are also special kinds of contracts called <a class="reference internal" href="contracts.html#libraries"><span class="std std-ref">libraries</span></a> and <a class="reference internal" href="contracts.html#interfaces"><span class="std std-ref">interfaces</span></a>.</p>
+<p>The section about <a class="reference internal" href="contracts.html#contracts"><span class="std std-ref">contracts</span></a> contains more details than this section,
+which serves to provide a quick overview.</p>
+<div class="section" id="state-variables">
+<span id="structure-state-variables"></span><h2>State Variables<a class="headerlink" href="#state-variables" title="Permalink to this headline">¶</a></h2>
+<p>State variables are variables whose values are permanently stored in contract
+storage.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">SimpleStorage</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">storedData</span><span class="p">;</span><span class=" -WhiteSpace"> </span><span class="c1">// State variable</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// ...</span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>See the <a class="reference internal" href="types.html#types"><span class="std std-ref">Types</span></a> section for valid state variable types and
+<a class="reference internal" href="contracts.html#visibility-and-getters"><span class="std std-ref">Visibility and Getters</span></a> for possible choices for
+visibility.</p>
+</div>
+<div class="section" id="functions">
+<span id="structure-functions"></span><h2>Functions<a class="headerlink" href="#functions" title="Permalink to this headline">¶</a></h2>
+<p>Functions are the executable units of code. Functions are usually
+defined inside a contract, but they can also be defined outside of
+contracts.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.7.1</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">SimpleAuction</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">bid</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="c1">// Function</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// ...</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="c1">// Helper function defined outside of a contract</span>
+<span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">helper</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">x</span><span class="p">)</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>x<span class=" -WhiteSpace"> </span><span class="o">*</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p><a class="reference internal" href="control-structures.html#function-calls"><span class="std std-ref">Function Calls</span></a> can happen internally or externally
+and have different levels of <a class="reference internal" href="contracts.html#visibility-and-getters"><span class="std std-ref">visibility</span></a>
+towards other contracts. <a class="reference internal" href="contracts.html#functions"><span class="std std-ref">Functions</span></a> accept <a class="reference internal" href="contracts.html#function-parameters-return-variables"><span class="std std-ref">parameters and return variables</span></a> to pass parameters
+and values between them.</p>
+</div>
+<div class="section" id="function-modifiers">
+<span id="structure-function-modifiers"></span><h2>Function Modifiers<a class="headerlink" href="#function-modifiers" title="Permalink to this headline">¶</a></h2>
+<p>Function modifiers can be used to amend the semantics of functions in a declarative way
+(see <a class="reference internal" href="contracts.html#modifiers"><span class="std std-ref">Function Modifiers</span></a> in the contracts section).</p>
+<p>Overloading, that is, having the same modifier name with different parameters,
+is not possible.</p>
+<p>Like functions, modifiers can be <a class="reference internal" href="contracts.html#modifier-overriding"><span class="std std-ref">overridden</span></a>.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.22</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Purchase</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">seller</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>onlySeller<span class="p">()</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="c1">// Modifier</span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>seller<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="s2">&quot;Only seller can call this.&quot;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">abort</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>view<span class=" -WhiteSpace"> </span>onlySeller<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="c1">// Modifier usage</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// ...</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="events">
+<span id="structure-events"></span><h2>Events<a class="headerlink" href="#events" title="Permalink to this headline">¶</a></h2>
+<p>Events are convenience interfaces with the EVM logging facilities.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.21</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">SimpleAuction</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">HighestBidIncreased</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">bidder</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">);</span><span class=" -WhiteSpace"> </span><span class="c1">// Event</span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">bid</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// ...</span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>HighestBidIncreased<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class="p">);</span><span class=" -WhiteSpace"> </span><span class="c1">// Triggering event</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="contracts.html#events"><span class="std std-ref">Events</span></a> in contracts section for information on how events are declared
+and can be used from within a dapp.</p>
+</div>
+<div class="section" id="errors">
+<span id="structure-errors"></span><h2>Errors<a class="headerlink" href="#errors" title="Permalink to this headline">¶</a></h2>
+<p>Errors allow you to define descriptive names and data for failure situations.
+Errors can be used in <a class="reference internal" href="control-structures.html#revert-statement"><span class="std std-ref">revert statements</span></a>.
+In comparison to string descriptions, errors are much cheaper and allow you
+to encode additional data. You can use NatSpec to describe the error to
+the user.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">^</span><span class="k">0.8.4</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="c1">/// Not enough funds for transfer. Requested `requested`,</span>
+<span class="c1">/// but only `available` available.</span>
+error<span class=" -WhiteSpace"> </span>NotEnoughFunds<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">requested</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">available</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Token</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span>balances<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">transfer</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">to</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">balance</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>balances<span class="p">[</span><span class="k">msg.sender</span><span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>balance<span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class=" -WhiteSpace"> </span>amount<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>NotEnoughFunds<span class="p">(</span>amount<span class="p">,</span><span class=" -WhiteSpace"> </span>balance<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>balances<span class="p">[</span><span class="k">msg.sender</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">-=</span><span class=" -WhiteSpace"> </span>amount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>balances<span class="p">[</span>to<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>amount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// ...</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>See <a class="reference internal" href="contracts.html#errors"><span class="std std-ref">Errors and the Revert Statement</span></a> in the contracts section for more information.</p>
+</div>
+<div class="section" id="struct-types">
+<span id="structure-struct-types"></span><h2>Struct Types<a class="headerlink" href="#struct-types" title="Permalink to this headline">¶</a></h2>
+<p>Structs are custom defined types that can group several variables (see
+<a class="reference internal" href="types.html#structs"><span class="std std-ref">Structs</span></a> in types section).</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Ballot</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">struct</span><span class=" -WhiteSpace"> </span><span class="nv">Voter</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="c1">// Struct</span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">weight</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">voted</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">delegate</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">vote</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="enum-types">
+<span id="structure-enum-types"></span><h2>Enum Types<a class="headerlink" href="#enum-types" title="Permalink to this headline">¶</a></h2>
+<p>Enums can be used to create custom types with a finite set of ‘constant values’ (see
+<a class="reference internal" href="types.html#enums"><span class="std std-ref">Enums</span></a> in types section).</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Purchase</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">enum</span><span class=" -WhiteSpace"> </span><span class="nv">State</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span>Created<span class="p">,</span><span class=" -WhiteSpace"> </span>Locked<span class="p">,</span><span class=" -WhiteSpace"> </span>Inactive<span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"> </span><span class="c1">// Enum</span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="types.html" class="btn btn-neutral float-right" title="Types" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="layout-of-source-files.html" class="btn btn-neutral float-left" title="Layout of a Solidity Source File" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Ethereum
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book fa-element"> RTD </span>
+
+    <span class="fa fa-element">
+    <input class="container_toggle" type="checkbox" id="switch" name="mode">
+    <label for="switch"></label>
+    </span>
+
+    <span class="fa fa-v fa-element"> v:  <span class="fa fa-caret-down"></span></span>
+
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Versions</dt> 
+        </dl>
+        <dl>
+            <dt>Downloads</dt> 
+        </dl>
+        <dl>
+            
+            <dt>On Read the Docs</dt>
+            <dd>
+                <a href="///projects//?fromdocs=">Project Home</a>
+            </dd>
+            <dd>
+                <a href="///builds//?fromdocs=">Builds</a>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

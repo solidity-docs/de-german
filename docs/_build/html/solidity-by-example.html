@@ -1,0 +1,1527 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Solidity by Example &mdash; Solidity 0.8.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/a4_railroad_diagram.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Layout of a Solidity Source File" href="layout-of-source-files.html" />
+    <link rel="prev" title="Installing the Solidity Compiler" href="installing-solidity.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #65afff" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.10
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction-to-smart-contracts.html">Introduction to Smart Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing-solidity.html">Installing the Solidity Compiler</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Solidity by Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#voting">Voting</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#possible-improvements">Possible Improvements</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#blind-auction">Blind Auction</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#simple-open-auction">Simple Open Auction</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">Blind Auction</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#safe-remote-purchase">Safe Remote Purchase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#micropayment-channel">Micropayment Channel</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#creating-and-verifying-signatures">Creating and verifying signatures</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#creating-the-signature">Creating the signature</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#what-to-sign">What to Sign</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#packing-arguments">Packing arguments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#recovering-the-message-signer-in-solidity">Recovering the Message Signer in Solidity</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#extracting-the-signature-parameters">Extracting the Signature Parameters</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#computing-the-message-hash">Computing the Message Hash</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#the-full-contract">The full contract</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#writing-a-simple-payment-channel">Writing a Simple Payment Channel</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#what-is-a-payment-channel">What is a Payment Channel?</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#opening-the-payment-channel">Opening the Payment Channel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#making-payments">Making Payments</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#closing-the-payment-channel">Closing the Payment Channel</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#channel-expiration">Channel Expiration</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#id3">The full contract</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#verifying-payments">Verifying Payments</a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#modular-contracts">Modular Contracts</a></li>
+</ul>
+</li>
+</ul>
+<p class="caption"><span class="caption-text">Language Description</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure-of-a-contract.html">Structure of a Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control-structures.html">Expressions and Control Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assembly.html">Inline Assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Language Grammar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-the-compiler.html">Using the Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysing-compilation-output.html">Analysing the Compiler Output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Internals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_storage.html">Layout of State Variables in Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_memory.html">Layout in Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_calldata.html">Layout of Call Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/variable_cleanup.html">Cleaning Up Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/source_mappings.html">Source Mappings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/optimizer.html">The Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Contract Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abi-spec.html">Contract ABI Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Additional Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="050-breaking-changes.html">Solidity v0.5.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="060-breaking-changes.html">Solidity v0.6.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="070-breaking-changes.html">Solidity v0.7.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="080-breaking-changes.html">Solidity v0.8.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="natspec-format.html">NatSpec Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security-considerations.html">Security Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smtchecker.html">SMTChecker and Formal Verification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path-resolution.html">Import Path Resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yul.html">Yul</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guide.html">Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common-patterns.html">Common Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">List of Known Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brand-guide.html">Solidity Brand Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="language-influences.html">Language Influences</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Keyword Index</a>
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Solidity</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Solidity by Example</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/solidity-by-example.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="solidity-by-example">
+<h1>Solidity by Example<a class="headerlink" href="#solidity-by-example" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="voting">
+<span id="index-0"></span><span id="id1"></span><h2>Voting<a class="headerlink" href="#voting" title="Permalink to this headline">¶</a></h2>
+<p>The following contract is quite complex, but showcases
+a lot of Solidity’s features. It implements a voting
+contract. Of course, the main problems of electronic
+voting is how to assign voting rights to the correct
+persons and how to prevent manipulation. We will not
+solve all problems here, but at least we will show
+how delegated voting can be done so that vote counting
+is <strong>automatic and completely transparent</strong> at the
+same time.</p>
+<p>The idea is to create one contract per ballot,
+providing a short name for each option.
+Then the creator of the contract who serves as
+chairperson will give the right to vote to each
+address individually.</p>
+<p>The persons behind the addresses can then choose
+to either vote themselves or to delegate their
+vote to a person they trust.</p>
+<p>At the end of the voting time, <code class="docutils literal notranslate"><span class="pre">winningProposal()</span></code>
+will return the proposal with the largest number
+of votes.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.7.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="c1">/// @title Voting with delegation.</span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Ballot</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">// This declares a new complex type which will</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// be used for variables later.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// It will represent a single voter.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">struct</span><span class=" -WhiteSpace"> </span><span class="nv">Voter</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">weight</span><span class="p">;</span><span class=" -WhiteSpace"> </span><span class="c1">// weight is accumulated by delegation</span>
+<span class=" -WhiteSpace">        </span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">voted</span><span class="p">;</span><span class=" -WhiteSpace">  </span><span class="c1">// if true, that person already voted</span>
+<span class=" -WhiteSpace">        </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">delegate</span><span class="p">;</span><span class=" -WhiteSpace"> </span><span class="c1">// person delegated to</span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">vote</span><span class="p">;</span><span class=" -WhiteSpace">   </span><span class="c1">// index of the voted proposal</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// This is a type for a single proposal.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">struct</span><span class=" -WhiteSpace"> </span><span class="nv">Proposal</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">name</span><span class="p">;</span><span class=" -WhiteSpace">   </span><span class="c1">// short name (up to 32 bytes)</span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">voteCount</span><span class="p">;</span><span class=" -WhiteSpace"> </span><span class="c1">// number of accumulated votes</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">chairperson</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// This declares a state variable that</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// stores a `Voter` struct for each possible address.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span>Voter<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>voters<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// A dynamically-sized array of `Proposal` structs.</span>
+<span class=" -WhiteSpace">    </span>Proposal<span class="p">[]</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>proposals<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Create a new ballot to choose one of `proposalNames`.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">(</span><span class="kt">bytes32</span><span class="p">[]</span><span class=" -WhiteSpace"> </span><span class="kt">memory</span><span class=" -WhiteSpace"> </span>proposalNames<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>chairperson<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">msg.sender</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>voters<span class="p">[</span>chairperson<span class="p">].</span>weight<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">1</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// For each of the provided proposal names,</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// create a new proposal object and add it</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// to the end of the array.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">for</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">i</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">;</span><span class=" -WhiteSpace"> </span>i<span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class=" -WhiteSpace"> </span>proposalNames<span class="p">.</span>length<span class="p">;</span><span class=" -WhiteSpace"> </span>i<span class="o">++</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// `Proposal({...})` creates a temporary</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// Proposal object and `proposals.push(...)`</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// appends it to the end of `proposals`.</span>
+<span class=" -WhiteSpace">            </span>proposals<span class="p">.</span>push<span class="p">(</span>Proposal<span class="p">({</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span>name<span class="p">:</span><span class=" -WhiteSpace"> </span>proposalNames<span class="p">[</span>i<span class="p">],</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span>voteCount<span class="p">:</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">}));</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Give `voter` the right to vote on this ballot.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// May only be called by `chairperson`.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">giveRightToVote</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">voter</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// If the first argument of `require` evaluates</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// to `false`, execution terminates and all</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// changes to the state and to Ether balances</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// are reverted.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// This used to consume all gas in old EVM versions, but</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// not anymore.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// It is often a good idea to use `require` to check if</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// functions are called correctly.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// As a second argument, you can also provide an</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// explanation about what went wrong.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>chairperson<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="s2">&quot;Only chairperson can give right to vote.&quot;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="o">!</span>voters<span class="p">[</span>voter<span class="p">].</span>voted<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="s2">&quot;The voter already voted.&quot;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>voters<span class="p">[</span>voter<span class="p">].</span>weight<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>voters<span class="p">[</span>voter<span class="p">].</span>weight<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">1</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Delegate your vote to the voter `to`.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">delegate</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">to</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// assigns reference</span>
+<span class=" -WhiteSpace">        </span>Voter<span class=" -WhiteSpace"> </span>storage<span class=" -WhiteSpace"> </span>sender<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>voters<span class="p">[</span><span class="k">msg.sender</span><span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="o">!</span>sender<span class="p">.</span>voted<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;You already voted.&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>to<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;Self-delegation is disallowed.&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// Forward the delegation as long as</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// `to` also delegated.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// In general, such loops are very dangerous,</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// because if they run too long, they might</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// need more gas than is available in a block.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// In this case, the delegation will not be executed,</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// but in other situations, such loops might</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// cause a contract to get &quot;stuck&quot; completely.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">while</span><span class=" -WhiteSpace"> </span><span class="p">(</span>voters<span class="p">[</span>to<span class="p">].</span>delegate<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class="p">(</span><span class="m m-Decimal">0</span><span class="p">))</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>to<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>voters<span class="p">[</span>to<span class="p">].</span>delegate<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">            </span><span class="c1">// We found a loop in the delegation, not allowed.</span>
+<span class=" -WhiteSpace">            </span><span class="kt">require</span><span class="p">(</span>to<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;Found loop in delegation.&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// Since `sender` is a reference, this</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// modifies `voters[msg.sender].voted`</span>
+<span class=" -WhiteSpace">        </span>sender<span class="p">.</span>voted<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>sender<span class="p">.</span>delegate<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>to<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>Voter<span class=" -WhiteSpace"> </span>storage<span class=" -WhiteSpace"> </span>delegate_<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>voters<span class="p">[</span>to<span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>delegate_<span class="p">.</span>voted<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// If the delegate already voted,</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// directly add to the number of votes</span>
+<span class=" -WhiteSpace">            </span>proposals<span class="p">[</span>delegate_<span class="p">.</span>vote<span class="p">].</span>voteCount<span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>sender<span class="p">.</span>weight<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"> </span><span class="kt">else</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// If the delegate did not vote yet,</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// add to her weight.</span>
+<span class=" -WhiteSpace">            </span>delegate_<span class="p">.</span>weight<span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>sender<span class="p">.</span>weight<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Give your vote (including votes delegated to you)</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// to proposal `proposals[proposal].name`.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">vote</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">proposal</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>Voter<span class=" -WhiteSpace"> </span>storage<span class=" -WhiteSpace"> </span>sender<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>voters<span class="p">[</span><span class="k">msg.sender</span><span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>sender<span class="p">.</span>weight<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;Has no right to vote&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="o">!</span>sender<span class="p">.</span>voted<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;Already voted.&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>sender<span class="p">.</span>voted<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>sender<span class="p">.</span>vote<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>proposal<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// If `proposal` is out of the range of the array,</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// this will throw automatically and revert all</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// changes.</span>
+<span class=" -WhiteSpace">        </span>proposals<span class="p">[</span>proposal<span class="p">].</span>voteCount<span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>sender<span class="p">.</span>weight<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// @dev Computes the winning proposal taking all</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// previous votes into account.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">winningProposal</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>view<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">winningProposal_</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">winningVoteCount</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">for</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">p</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">;</span><span class=" -WhiteSpace"> </span>p<span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class=" -WhiteSpace"> </span>proposals<span class="p">.</span>length<span class="p">;</span><span class=" -WhiteSpace"> </span>p<span class="o">++</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>proposals<span class="p">[</span>p<span class="p">].</span>voteCount<span class=" -WhiteSpace"> </span><span class="o">&gt;</span><span class=" -WhiteSpace"> </span>winningVoteCount<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span>winningVoteCount<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>proposals<span class="p">[</span>p<span class="p">].</span>voteCount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span>winningProposal_<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>p<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Calls winningProposal() function to get the index</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// of the winner contained in the proposals array and then</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// returns the name of the winner</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">winnerName</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span>view<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">winnerName_</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>winnerName_<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>proposals<span class="p">[</span>winningProposal<span class="p">()].</span>name<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<div class="section" id="possible-improvements">
+<h3>Possible Improvements<a class="headerlink" href="#possible-improvements" title="Permalink to this headline">¶</a></h3>
+<p>Currently, many transactions are needed to assign the rights
+to vote to all participants. Can you think of a better way?</p>
+</div>
+</div>
+<div class="section" id="blind-auction">
+<span id="index-1"></span><h2>Blind Auction<a class="headerlink" href="#blind-auction" title="Permalink to this headline">¶</a></h2>
+<p>In this section, we will show how easy it is to create a completely blind
+auction contract on Ethereum.  We will start with an open auction where
+everyone can see the bids that are made and then extend this contract into a
+blind auction where it is not possible to see the actual bid until the bidding
+period ends.</p>
+<div class="section" id="simple-open-auction">
+<span id="simple-auction"></span><h3>Simple Open Auction<a class="headerlink" href="#simple-open-auction" title="Permalink to this headline">¶</a></h3>
+<p>The general idea of the following simple auction contract is that everyone can
+send their bids during a bidding period. The bids already include sending money
+/ Ether in order to bind the bidders to their bid. If the highest bid is
+raised, the previous highest bidder gets their money back.  After the end of
+the bidding period, the contract has to be called manually for the beneficiary
+to receive their money - contracts cannot activate themselves.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">^</span><span class="k">0.8.4</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">SimpleAuction</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">// Parameters of the auction. Times are either</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// absolute unix timestamps (seconds since 1970-01-01)</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// or time periods in seconds.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>beneficiary<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">auctionEndTime</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Current state of the auction.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">highestBidder</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">highestBid</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Allowed withdrawals of previous bids</span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span>pendingReturns<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Set to true at the end, disallows any change.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// By default initialized to `false`.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">ended</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Events that will be emitted on changes.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">HighestBidIncreased</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">bidder</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">AuctionEnded</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">winner</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Errors that describe failures.</span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// The triple-slash comments are so-called natspec</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// comments. They will be shown when the user</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// is asked to confirm a transaction or</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// when an error is displayed.</span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// The auction has already ended.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>AuctionAlreadyEnded<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// There is already a higher or equal bid.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>BidNotHighEnough<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">highestBid</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The auction has not ended yet.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>AuctionNotYetEnded<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The function auctionEnd has already been called.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>AuctionEndAlreadyCalled<span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Create a simple auction with `biddingTime`</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// seconds bidding time on behalf of the</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// beneficiary address `beneficiaryAddress`.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">biddingTime</span><span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span>beneficiaryAddress<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>beneficiary<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>beneficiaryAddress<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>auctionEndTime<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>biddingTime<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Bid on the auction with the value sent</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// together with this transaction.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The value will only be refunded if the</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// auction is not won.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">bid</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// No arguments are necessary, all</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// information is already part of</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// the transaction. The keyword payable</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// is required for the function to</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// be able to receive Ether.</span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// Revert the call if the bidding</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// period is over.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">&gt;</span><span class=" -WhiteSpace"> </span>auctionEndTime<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>AuctionAlreadyEnded<span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// If the bid is not higher, send the</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// money back (the revert statement</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// will revert all changes in this</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// function execution including</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// it having received the money).</span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">&lt;=</span><span class=" -WhiteSpace"> </span>highestBid<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>BidNotHighEnough<span class="p">(</span>highestBid<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>highestBid<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// Sending back the money by simply using</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// highestBidder.send(highestBid) is a security risk</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// because it could execute an untrusted contract.</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// It is always safer to let the recipients</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// withdraw their money themselves.</span>
+<span class=" -WhiteSpace">            </span>pendingReturns<span class="p">[</span>highestBidder<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>highestBid<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>highestBidder<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">msg.sender</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>highestBid<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>HighestBidIncreased<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Withdraw a bid that was overbid.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">withdraw</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bool</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>pendingReturns<span class="p">[</span><span class="k">msg.sender</span><span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>amount<span class=" -WhiteSpace"> </span><span class="o">&gt;</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// It is important to set this to zero because the recipient</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// can call this function again as part of the receiving call</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// before `send` returns.</span>
+<span class=" -WhiteSpace">            </span>pendingReturns<span class="p">[</span><span class="k">msg.sender</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">            </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="o">!</span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">).</span>send<span class="p">(</span>amount<span class="p">))</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span><span class="c1">// No need to call throw here, just reset the amount owing</span>
+<span class=" -WhiteSpace">                </span>pendingReturns<span class="p">[</span><span class="k">msg.sender</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>amount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">false</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// End the auction and send the highest bid</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// to the beneficiary.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">auctionEnd</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// It is a good guideline to structure functions that interact</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// with other contracts (i.e. they call functions or send Ether)</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// into three phases:</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// 1. checking conditions</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// 2. performing actions (potentially changing conditions)</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// 3. interacting with other contracts</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// If these phases are mixed up, the other contract could call</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// back into the current contract and modify the state or cause</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// effects (ether payout) to be performed multiple times.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// If functions called internally include interaction with external</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// contracts, they also have to be considered interaction with</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// external contracts.</span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// 1. Conditions</span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class=" -WhiteSpace"> </span>auctionEndTime<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>AuctionNotYetEnded<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>ended<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>AuctionEndAlreadyCalled<span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// 2. Effects</span>
+<span class=" -WhiteSpace">        </span>ended<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>AuctionEnded<span class="p">(</span>highestBidder<span class="p">,</span><span class=" -WhiteSpace"> </span>highestBid<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// 3. Interaction</span>
+<span class=" -WhiteSpace">        </span>beneficiary<span class="p">.</span>transfer<span class="p">(</span>highestBid<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="id2">
+<h3>Blind Auction<a class="headerlink" href="#id2" title="Permalink to this headline">¶</a></h3>
+<p>The previous open auction is extended to a blind auction in the following. The
+advantage of a blind auction is that there is no time pressure towards the end
+of the bidding period. Creating a blind auction on a transparent computing
+platform might sound like a contradiction, but cryptography comes to the
+rescue.</p>
+<p>During the <strong>bidding period</strong>, a bidder does not actually send their bid, but
+only a hashed version of it.  Since it is currently considered practically
+impossible to find two (sufficiently long) values whose hash values are equal,
+the bidder commits to the bid by that.  After the end of the bidding period,
+the bidders have to reveal their bids: They send their values unencrypted and
+the contract checks that the hash value is the same as the one provided during
+the bidding period.</p>
+<p>Another challenge is how to make the auction <strong>binding and blind</strong> at the same
+time: The only way to prevent the bidder from just not sending the money after
+they won the auction is to make them send it together with the bid. Since value
+transfers cannot be blinded in Ethereum, anyone can see the value.</p>
+<p>The following contract solves this problem by accepting any value that is
+larger than the highest bid. Since this can of course only be checked during
+the reveal phase, some bids might be <strong>invalid</strong>, and this is on purpose (it
+even provides an explicit flag to place invalid bids with high value
+transfers): Bidders can confuse competition by placing several high or low
+invalid bids.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">^</span><span class="k">0.8.4</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">BlindAuction</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">struct</span><span class=" -WhiteSpace"> </span><span class="nv">Bid</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">blindedBid</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">deposit</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>beneficiary<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">biddingEnd</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">revealEnd</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">ended</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span>Bid<span class="p">[])</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>bids<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">highestBidder</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">highestBid</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Allowed withdrawals of previous bids</span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span>pendingReturns<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">AuctionEnded</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">winner</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">highestBid</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Errors that describe failures.</span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// The function has been called too early.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// Try again at `time`.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>TooEarly<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">time</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The function has been called too late.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// It cannot be called after `time`.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>TooLate<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">time</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The function auctionEnd has already been called.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>AuctionEndAlreadyCalled<span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Modifiers are a convenient way to validate inputs to</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// functions. `onlyBefore` is applied to `bid` below:</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// The new function body is the modifier&#39;s body where</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// `_` is replaced by the old function body.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>onlyBefore<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">time</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class=" -WhiteSpace"> </span>time<span class="p">)</span><span class=" -WhiteSpace"> </span>revert<span class=" -WhiteSpace"> </span>TooLate<span class="p">(</span>time<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>onlyAfter<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">time</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">&lt;=</span><span class=" -WhiteSpace"> </span>time<span class="p">)</span><span class=" -WhiteSpace"> </span>revert<span class=" -WhiteSpace"> </span>TooEarly<span class="p">(</span>time<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">biddingTime</span><span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">revealTime</span><span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span>beneficiaryAddress<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>beneficiary<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>beneficiaryAddress<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>biddingEnd<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>biddingTime<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>revealEnd<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>biddingEnd<span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>revealTime<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Place a blinded bid with `blindedBid` =</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// keccak256(abi.encodePacked(value, fake, secret)).</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The sent ether is only refunded if the bid is correctly</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// revealed in the revealing phase. The bid is valid if the</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// ether sent together with the bid is at least &quot;value&quot; and</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// &quot;fake&quot; is not true. Setting &quot;fake&quot; to true and sending</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// not the exact amount are ways to hide the real bid but</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// still make the required deposit. The same address can</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// place multiple bids.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">bid</span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">blindedBid</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">payable</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlyBefore<span class="p">(</span>biddingEnd<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>bids<span class="p">[</span><span class="k">msg.sender</span><span class="p">].</span>push<span class="p">(</span>Bid<span class="p">({</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>blindedBid<span class="p">:</span><span class=" -WhiteSpace"> </span>blindedBid<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>deposit<span class="p">:</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}));</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Reveal your blinded bids. You will get a refund for all</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// correctly blinded invalid bids and for all bids except for</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// the totally highest.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">reveal</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class="p">[]</span><span class=" -WhiteSpace"> </span>calldata<span class=" -WhiteSpace"> </span>values<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">bool</span><span class="p">[]</span><span class=" -WhiteSpace"> </span>calldata<span class=" -WhiteSpace"> </span>fakes<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">bytes32</span><span class="p">[]</span><span class=" -WhiteSpace"> </span>calldata<span class=" -WhiteSpace"> </span>secrets<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlyAfter<span class="p">(</span>biddingEnd<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlyBefore<span class="p">(</span>revealEnd<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">length</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>bids<span class="p">[</span><span class="k">msg.sender</span><span class="p">].</span>length<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>values<span class="p">.</span>length<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>length<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>fakes<span class="p">.</span>length<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>length<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>secrets<span class="p">.</span>length<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>length<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">refund</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">for</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">i</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">;</span><span class=" -WhiteSpace"> </span>i<span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class=" -WhiteSpace"> </span>length<span class="p">;</span><span class=" -WhiteSpace"> </span>i<span class="o">++</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>Bid<span class=" -WhiteSpace"> </span>storage<span class=" -WhiteSpace"> </span>bidToCheck<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>bids<span class="p">[</span><span class="k">msg.sender</span><span class="p">][</span>i<span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">value</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">fake</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">secret</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                    </span><span class="p">(</span>values<span class="p">[</span>i<span class="p">],</span><span class=" -WhiteSpace"> </span>fakes<span class="p">[</span>i<span class="p">],</span><span class=" -WhiteSpace"> </span>secrets<span class="p">[</span>i<span class="p">]);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>bidToCheck<span class="p">.</span>blindedBid<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span>value<span class="p">,</span><span class=" -WhiteSpace"> </span>fake<span class="p">,</span><span class=" -WhiteSpace"> </span>secret<span class="p">)))</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span><span class="c1">// Bid was not actually revealed.</span>
+<span class=" -WhiteSpace">                </span><span class="c1">// Do not refund deposit.</span>
+<span class=" -WhiteSpace">                </span><span class="kt">continue</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>refund<span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>bidToCheck<span class="p">.</span>deposit<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="o">!</span>fake<span class=" -WhiteSpace"> </span><span class="err">&amp;&amp;</span><span class=" -WhiteSpace"> </span>bidToCheck<span class="p">.</span>deposit<span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class=" -WhiteSpace"> </span>value<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>placeBid<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span>value<span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                    </span>refund<span class=" -WhiteSpace"> </span><span class="o">-=</span><span class=" -WhiteSpace"> </span>value<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// Make it impossible for the sender to re-claim</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// the same deposit.</span>
+<span class=" -WhiteSpace">            </span>bidToCheck<span class="p">.</span>blindedBid<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class="p">(</span><span class="m m-Decimal">0</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">).</span>transfer<span class="p">(</span>refund<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Withdraw a bid that was overbid.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">withdraw</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>pendingReturns<span class="p">[</span><span class="k">msg.sender</span><span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>amount<span class=" -WhiteSpace"> </span><span class="o">&gt;</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// It is important to set this to zero because the recipient</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// can call this function again as part of the receiving call</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// before `transfer` returns (see the remark above about</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// conditions -&gt; effects -&gt; interaction).</span>
+<span class=" -WhiteSpace">            </span>pendingReturns<span class="p">[</span><span class="k">msg.sender</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">            </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">).</span>transfer<span class="p">(</span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// End the auction and send the highest bid</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// to the beneficiary.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">auctionEnd</span><span class="p">()</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlyAfter<span class="p">(</span>revealEnd<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>ended<span class="p">)</span><span class=" -WhiteSpace"> </span>revert<span class=" -WhiteSpace"> </span>AuctionEndAlreadyCalled<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>AuctionEnded<span class="p">(</span>highestBidder<span class="p">,</span><span class=" -WhiteSpace"> </span>highestBid<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>ended<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>beneficiary<span class="p">.</span>transfer<span class="p">(</span>highestBid<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// This is an &quot;internal&quot; function which means that it</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// can only be called from the contract itself (or from</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// derived contracts).</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">placeBid</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">bidder</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">value</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">success</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>value<span class=" -WhiteSpace"> </span><span class="o">&lt;=</span><span class=" -WhiteSpace"> </span>highestBid<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">false</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>highestBidder<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class="p">(</span><span class="m m-Decimal">0</span><span class="p">))</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// Refund the previously highest bidder.</span>
+<span class=" -WhiteSpace">            </span>pendingReturns<span class="p">[</span>highestBidder<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>highestBid<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>highestBid<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>value<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>highestBidder<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>bidder<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="safe-remote-purchase">
+<span id="index-2"></span><h2>Safe Remote Purchase<a class="headerlink" href="#safe-remote-purchase" title="Permalink to this headline">¶</a></h2>
+<p>Purchasing goods remotely currently requires multiple parties that need to trust each other.
+The simplest configuration involves a seller and a buyer. The buyer would like to receive
+an item from the seller and the seller would like to get money (or an equivalent)
+in return. The problematic part is the shipment here: There is no way to determine for
+sure that the item arrived at the buyer.</p>
+<p>There are multiple ways to solve this problem, but all fall short in one or the other way.
+In the following example, both parties have to put twice the value of the item into the
+contract as escrow. As soon as this happened, the money will stay locked inside
+the contract until the buyer confirms that they received the item. After that,
+the buyer is returned the value (half of their deposit) and the seller gets three
+times the value (their deposit plus the value). The idea behind
+this is that both parties have an incentive to resolve the situation or otherwise
+their money is locked forever.</p>
+<p>This contract of course does not solve the problem, but gives an overview of how
+you can use state machine-like constructs inside a contract.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">^</span><span class="k">0.8.4</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Purchase</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">value</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>seller<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>buyer<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">enum</span><span class=" -WhiteSpace"> </span><span class="nv">State</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span>Created<span class="p">,</span><span class=" -WhiteSpace"> </span>Locked<span class="p">,</span><span class=" -WhiteSpace"> </span>Release<span class="p">,</span><span class=" -WhiteSpace"> </span>Inactive<span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">// The state variable has a default value of the first member, `State.created`</span>
+<span class=" -WhiteSpace">    </span>State<span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>state<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>condition<span class="p">(</span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">condition_</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>condition_<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Only the buyer can call this function.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>OnlyBuyer<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// Only the seller can call this function.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>OnlySeller<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The function cannot be called at the current state.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>InvalidState<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The provided value has to be even.</span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>ValueNotEven<span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>onlyBuyer<span class="p">()</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span>buyer<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>OnlyBuyer<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>onlySeller<span class="p">()</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span>seller<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>OnlySeller<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">modifier</span><span class=" -WhiteSpace"> </span>inState<span class="p">(</span>State<span class=" -WhiteSpace"> </span>state_<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>state<span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span>state_<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>InvalidState<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>_<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">Aborted</span><span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">PurchaseConfirmed</span><span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">ItemReceived</span><span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">SellerRefunded</span><span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">// Ensure that `msg.value` is an even number.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// Division will truncate if it is an odd number.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">// Check via multiplication that it wasn&#39;t an odd number.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>seller<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>value<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">/</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">((</span><span class="m m-Decimal">2</span><span class=" -WhiteSpace"> </span><span class="o">*</span><span class=" -WhiteSpace"> </span>value<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>ValueNotEven<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Abort the purchase and reclaim the ether.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// Can only be called by the seller before</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// the contract is locked.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">abort</span><span class="p">()</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlySeller<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>inState<span class="p">(</span>State<span class="p">.</span>Created<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>Aborted<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>state<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>State<span class="p">.</span>Inactive<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// We use transfer here directly. It is</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// reentrancy-safe, because it is the</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// last call in this function and we</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// already changed the state.</span>
+<span class=" -WhiteSpace">        </span>seller<span class="p">.</span>transfer<span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="kt">this</span><span class="p">).</span>balance<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Confirm the purchase as buyer.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// Transaction has to include `2 * value` ether.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// The ether will be locked until confirmReceived</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// is called.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">confirmPurchase</span><span class="p">()</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>inState<span class="p">(</span>State<span class="p">.</span>Created<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>condition<span class="p">(</span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="m m-Decimal">2</span><span class=" -WhiteSpace"> </span><span class="o">*</span><span class=" -WhiteSpace"> </span>value<span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">payable</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>PurchaseConfirmed<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>buyer<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>state<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>State<span class="p">.</span>Locked<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// Confirm that you (the buyer) received the item.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// This will release the locked ether.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">confirmReceived</span><span class="p">()</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlyBuyer<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>inState<span class="p">(</span>State<span class="p">.</span>Locked<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>ItemReceived<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// It is important to change the state first because</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// otherwise, the contracts called using `send` below</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// can call in again here.</span>
+<span class=" -WhiteSpace">        </span>state<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>State<span class="p">.</span>Release<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>buyer<span class="p">.</span>transfer<span class="p">(</span>value<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// This function refunds the seller, i.e.</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// pays back the locked funds of the seller.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">refundSeller</span><span class="p">()</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">external</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>onlySeller<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>inState<span class="p">(</span>State<span class="p">.</span>Release<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>SellerRefunded<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// It is important to change the state first because</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// otherwise, the contracts called using `send` below</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// can call in again here.</span>
+<span class=" -WhiteSpace">        </span>state<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>State<span class="p">.</span>Inactive<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>seller<span class="p">.</span>transfer<span class="p">(</span><span class="m m-Decimal">3</span><span class=" -WhiteSpace"> </span><span class="o">*</span><span class=" -WhiteSpace"> </span>value<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="micropayment-channel">
+<h2>Micropayment Channel<a class="headerlink" href="#micropayment-channel" title="Permalink to this headline">¶</a></h2>
+<p>In this section we will learn how to build an example implementation
+of a payment channel. It uses cryptographic signatures to make
+repeated transfers of Ether between the same parties secure, instantaneous, and
+without transaction fees. For the example, we need to understand how to
+sign and verify signatures, and setup the payment channel.</p>
+<div class="section" id="creating-and-verifying-signatures">
+<h3>Creating and verifying signatures<a class="headerlink" href="#creating-and-verifying-signatures" title="Permalink to this headline">¶</a></h3>
+<p>Imagine Alice wants to send a quantity of Ether to Bob, i.e.
+Alice is the sender and Bob is the recipient.</p>
+<p>Alice only needs to send cryptographically signed messages off-chain
+(e.g. via email) to Bob and it is similar to writing checks.</p>
+<p>Alice and Bob use signatures to authorise transactions, which is possible with smart contracts on Ethereum.
+Alice will build a simple smart contract that lets her transmit Ether, but instead of calling a function herself
+to initiate a payment, she will let Bob do that, and therefore pay the transaction fee.</p>
+<p>The contract will work as follows:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Alice deploys the <code class="docutils literal notranslate"><span class="pre">ReceiverPays</span></code> contract, attaching enough Ether to cover the payments that will be made.</p></li>
+<li><p>Alice authorises a payment by signing a message with her private key.</p></li>
+<li><p>Alice sends the cryptographically signed message to Bob. The message does not need to be kept secret
+(explained later), and the mechanism for sending it does not matter.</p></li>
+<li><p>Bob claims his payment by presenting the signed message to the smart contract, it verifies the
+authenticity of the message and then releases the funds.</p></li>
+</ol>
+</div></blockquote>
+<div class="section" id="creating-the-signature">
+<h4>Creating the signature<a class="headerlink" href="#creating-the-signature" title="Permalink to this headline">¶</a></h4>
+<p>Alice does not need to interact with the Ethereum network
+to sign the transaction, the process is completely offline.
+In this tutorial, we will sign messages in the browser
+using <a class="reference external" href="https://github.com/ethereum/web3.js">web3.js</a> and
+<a class="reference external" href="https://metamask.io">MetaMask</a>, using the method described in <a class="reference external" href="https://github.com/ethereum/EIPs/pull/712">EIP-762</a>,
+as it provides a number of other security benefits.</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">/// Hashing first makes things easier</span>
+<span class="kd">var</span> <span class="nx">hash</span> <span class="o">=</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">utils</span><span class="p">.</span><span class="nx">sha3</span><span class="p">(</span><span class="s2">&quot;message to sign&quot;</span><span class="p">);</span>
+<span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">personal</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="nx">hash</span><span class="p">,</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">defaultAccount</span><span class="p">,</span> <span class="kd">function</span> <span class="p">()</span> <span class="p">{</span> <span class="nx">console</span><span class="p">.</span><span class="nx">log</span><span class="p">(</span><span class="s2">&quot;Signed&quot;</span><span class="p">);</span> <span class="p">});</span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">web3.eth.personal.sign</span></code> prepends the length of the
+message to the signed data. Since we hash first, the message
+will always be exactly 32 bytes long, and thus this length
+prefix is always the same.</p>
+</div>
+</div>
+<div class="section" id="what-to-sign">
+<h4>What to Sign<a class="headerlink" href="#what-to-sign" title="Permalink to this headline">¶</a></h4>
+<p>For a contract that fulfils payments, the signed message must include:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>The recipient’s address.</p></li>
+<li><p>The amount to be transferred.</p></li>
+<li><p>Protection against replay attacks.</p></li>
+</ol>
+</div></blockquote>
+<p>A replay attack is when a signed message is reused to claim
+authorization for a second action. To avoid replay attacks
+we use the same technique as in Ethereum transactions themselves,
+a so-called nonce, which is the number of transactions sent by
+an account. The smart contract checks if a nonce is used multiple times.</p>
+<p>Another type of replay attack can occur when the owner
+deploys a <code class="docutils literal notranslate"><span class="pre">ReceiverPays</span></code> smart contract, makes some
+payments, and then destroys the contract. Later, they decide
+to deploy the <code class="docutils literal notranslate"><span class="pre">RecipientPays</span></code> smart contract again, but the
+new contract does not know the nonces used in the previous
+deployment, so the attacker can use the old messages again.</p>
+<p>Alice can protect against this attack by including the
+contract’s address in the message, and only messages containing
+the contract’s address itself will be accepted. You can find
+an example of this in the first two lines of the <code class="docutils literal notranslate"><span class="pre">claimPayment()</span></code>
+function of the full contract at the end of this section.</p>
+</div>
+<div class="section" id="packing-arguments">
+<h4>Packing arguments<a class="headerlink" href="#packing-arguments" title="Permalink to this headline">¶</a></h4>
+<p>Now that we have identified what information to include in the signed message,
+we are ready to put the message together, hash it, and sign it. For simplicity,
+we concatenate the data. The <a class="reference external" href="https://github.com/ethereumjs/ethereumjs-abi">ethereumjs-abi</a>
+library provides a function called <code class="docutils literal notranslate"><span class="pre">soliditySHA3</span></code> that mimics the behaviour of
+Solidity’s <code class="docutils literal notranslate"><span class="pre">keccak256</span></code> function applied to arguments encoded using <code class="docutils literal notranslate"><span class="pre">abi.encodePacked</span></code>.
+Here is a JavaScript function that creates the proper signature for the <code class="docutils literal notranslate"><span class="pre">ReceiverPays</span></code> example:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// recipient is the address that should be paid.</span>
+<span class="c1">// amount, in wei, specifies how much ether should be sent.</span>
+<span class="c1">// nonce can be any unique number to prevent replay attacks</span>
+<span class="c1">// contractAddress is used to prevent cross-contract replay attacks</span>
+<span class="kd">function</span> <span class="nx">signPayment</span><span class="p">(</span><span class="nx">recipient</span><span class="p">,</span> <span class="nx">amount</span><span class="p">,</span> <span class="nx">nonce</span><span class="p">,</span> <span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">hash</span> <span class="o">=</span> <span class="s2">&quot;0x&quot;</span> <span class="o">+</span> <span class="nx">abi</span><span class="p">.</span><span class="nx">soliditySHA3</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">,</span> <span class="s2">&quot;uint256&quot;</span><span class="p">,</span> <span class="s2">&quot;uint256&quot;</span><span class="p">,</span> <span class="s2">&quot;address&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="nx">recipient</span><span class="p">,</span> <span class="nx">amount</span><span class="p">,</span> <span class="nx">nonce</span><span class="p">,</span> <span class="nx">contractAddress</span><span class="p">]</span>
+    <span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="s2">&quot;hex&quot;</span><span class="p">);</span>
+
+    <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">personal</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span><span class="nx">hash</span><span class="p">,</span> <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">defaultAccount</span><span class="p">,</span> <span class="nx">callback</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="recovering-the-message-signer-in-solidity">
+<h4>Recovering the Message Signer in Solidity<a class="headerlink" href="#recovering-the-message-signer-in-solidity" title="Permalink to this headline">¶</a></h4>
+<p>In general, ECDSA signatures consist of two parameters,
+<code class="docutils literal notranslate"><span class="pre">r</span></code> and <code class="docutils literal notranslate"><span class="pre">s</span></code>. Signatures in Ethereum include a third
+parameter called <code class="docutils literal notranslate"><span class="pre">v</span></code>, that you can use to verify which
+account’s private key was used to sign the message, and
+the transaction’s sender. Solidity provides a built-in
+function <a class="reference internal" href="units-and-global-variables.html#mathematical-and-cryptographic-functions"><span class="std std-ref">ecrecover</span></a> that
+accepts a message along with the <code class="docutils literal notranslate"><span class="pre">r</span></code>, <code class="docutils literal notranslate"><span class="pre">s</span></code> and <code class="docutils literal notranslate"><span class="pre">v</span></code> parameters
+and returns the address that was used to sign the message.</p>
+</div>
+<div class="section" id="extracting-the-signature-parameters">
+<h4>Extracting the Signature Parameters<a class="headerlink" href="#extracting-the-signature-parameters" title="Permalink to this headline">¶</a></h4>
+<p>Signatures produced by web3.js are the concatenation of <code class="docutils literal notranslate"><span class="pre">r</span></code>,
+<code class="docutils literal notranslate"><span class="pre">s</span></code> and <code class="docutils literal notranslate"><span class="pre">v</span></code>, so the first step is to split these parameters
+apart. You can do this on the client-side, but doing it inside
+the smart contract means you only need to send one signature
+parameter rather than three. Splitting apart a byte array into
+its constituent parts is a mess, so we use
+<a class="reference internal" href="assembly.html"><span class="doc">inline assembly</span></a> to do the job in the <code class="docutils literal notranslate"><span class="pre">splitSignature</span></code>
+function (the third function in the full contract at the end of this section).</p>
+</div>
+<div class="section" id="computing-the-message-hash">
+<h4>Computing the Message Hash<a class="headerlink" href="#computing-the-message-hash" title="Permalink to this headline">¶</a></h4>
+<p>The smart contract needs to know exactly what parameters were signed, and so it
+must recreate the message from the parameters and use that for signature verification.
+The functions <code class="docutils literal notranslate"><span class="pre">prefixed</span></code> and <code class="docutils literal notranslate"><span class="pre">recoverSigner</span></code> do this in the <code class="docutils literal notranslate"><span class="pre">claimPayment</span></code> function.</p>
+</div>
+<div class="section" id="the-full-contract">
+<h4>The full contract<a class="headerlink" href="#the-full-contract" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.7.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">ReceiverPays</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">owner</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">msg.sender</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">bool</span><span class="p">)</span><span class=" -WhiteSpace"> </span>usedNonces<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">claimPayment</span><span class="p">(</span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="nv">nonce</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>signature<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="o">!</span>usedNonces<span class="p">[</span>nonce<span class="p">]);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>usedNonces<span class="p">[</span>nonce<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// this recreates the message that was signed on the client</span>
+<span class=" -WhiteSpace">        </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">message</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>prefixed<span class="p">(</span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span>amount<span class="p">,</span><span class=" -WhiteSpace"> </span>nonce<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">this</span><span class="p">)));</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>recoverSigner<span class="p">(</span>message<span class="p">,</span><span class=" -WhiteSpace"> </span>signature<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>owner<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">).</span>transfer<span class="p">(</span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// destroy the contract and reclaim the leftover funds.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">shutdown</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>owner<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>selfdestruct<span class="p">(</span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">));</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// signature methods.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">splitSignature</span><span class="p">(</span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>sig<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">internal</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>pure<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint8</span><span class=" -WhiteSpace"> </span><span class="nv">v</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">r</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">s</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>sig<span class="p">.</span>length<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">65</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>assembly<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// first 32 bytes, after the length prefix.</span>
+<span class=" -WhiteSpace">            </span>r<span class=" -WhiteSpace"> </span><span class="p">:</span><span class="o">=</span><span class=" -WhiteSpace"> </span>mload<span class="p">(</span>add<span class="p">(</span>sig<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">32</span><span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// second 32 bytes.</span>
+<span class=" -WhiteSpace">            </span>s<span class=" -WhiteSpace"> </span><span class="p">:</span><span class="o">=</span><span class=" -WhiteSpace"> </span>mload<span class="p">(</span>add<span class="p">(</span>sig<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">64</span><span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// final byte (first byte of the next 32 bytes).</span>
+<span class=" -WhiteSpace">            </span>v<span class=" -WhiteSpace"> </span><span class="p">:</span><span class="o">=</span><span class=" -WhiteSpace"> </span>byte<span class="p">(</span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span>mload<span class="p">(</span>add<span class="p">(</span>sig<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">96</span><span class="p">)))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span>v<span class="p">,</span><span class=" -WhiteSpace"> </span>r<span class="p">,</span><span class=" -WhiteSpace"> </span>s<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">recoverSigner</span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">message</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>sig<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">internal</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>pure<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">address</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">(</span><span class="kt">uint8</span><span class=" -WhiteSpace"> </span><span class="nv">v</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">r</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">s</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>splitSignature<span class="p">(</span>sig<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>ecrecover<span class="p">(</span>message<span class="p">,</span><span class=" -WhiteSpace"> </span>v<span class="p">,</span><span class=" -WhiteSpace"> </span>r<span class="p">,</span><span class=" -WhiteSpace"> </span>s<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// builds a prefixed hash to mimic the behavior of eth_sign.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">prefixed</span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">hash</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bytes32</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span><span class="s2">&quot;\x19Ethereum Signed Message:\n32&quot;</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">hash</span><span class="p">));</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="writing-a-simple-payment-channel">
+<h3>Writing a Simple Payment Channel<a class="headerlink" href="#writing-a-simple-payment-channel" title="Permalink to this headline">¶</a></h3>
+<p>Alice now builds a simple but complete implementation of a payment
+channel. Payment channels use cryptographic signatures to make
+repeated transfers of Ether securely, instantaneously, and without transaction fees.</p>
+<div class="section" id="what-is-a-payment-channel">
+<h4>What is a Payment Channel?<a class="headerlink" href="#what-is-a-payment-channel" title="Permalink to this headline">¶</a></h4>
+<p>Payment channels allow participants to make repeated transfers of Ether
+without using transactions. This means that you can avoid the delays and
+fees associated with transactions. We are going to explore a simple
+unidirectional payment channel between two parties (Alice and Bob). It involves three steps:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Alice funds a smart contract with Ether. This “opens” the payment channel.</p></li>
+<li><p>Alice signs messages that specify how much of that Ether is owed to the recipient. This step is repeated for each payment.</p></li>
+<li><p>Bob “closes” the payment channel, withdrawing his portion of the Ether and sending the remainder back to the sender.</p></li>
+</ol>
+</div></blockquote>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Only steps 1 and 3 require Ethereum transactions, step 2 means that the sender
+transmits a cryptographically signed message to the recipient via off chain
+methods (e.g. email). This means only two transactions are required to support
+any number of transfers.</p>
+</div>
+<p>Bob is guaranteed to receive his funds because the smart contract escrows the
+Ether and honours a valid signed message. The smart contract also enforces a
+timeout, so Alice is guaranteed to eventually recover her funds even if the
+recipient refuses to close the channel. It is up to the participants in a payment
+channel to decide how long to keep it open. For a short-lived transaction,
+such as paying an internet café for each minute of network access, the payment
+channel may be kept open for a limited duration. On the other hand, for a
+recurring payment, such as paying an employee an hourly wage, the payment channel
+may be kept open for several months or years.</p>
+</div>
+<div class="section" id="opening-the-payment-channel">
+<h4>Opening the Payment Channel<a class="headerlink" href="#opening-the-payment-channel" title="Permalink to this headline">¶</a></h4>
+<p>To open the payment channel, Alice deploys the smart contract, attaching
+the Ether to be escrowed and specifying the intended recipient and a
+maximum duration for the channel to exist. This is the function
+<code class="docutils literal notranslate"><span class="pre">SimplePaymentChannel</span></code> in the contract, at the end of this section.</p>
+</div>
+<div class="section" id="making-payments">
+<h4>Making Payments<a class="headerlink" href="#making-payments" title="Permalink to this headline">¶</a></h4>
+<p>Alice makes payments by sending signed messages to Bob.
+This step is performed entirely outside of the Ethereum network.
+Messages are cryptographically signed by the sender and then transmitted directly to the recipient.</p>
+<p>Each message includes the following information:</p>
+<blockquote>
+<div><ul class="simple">
+<li><p>The smart contract’s address, used to prevent cross-contract replay attacks.</p></li>
+<li><p>The total amount of Ether that is owed the recipient so far.</p></li>
+</ul>
+</div></blockquote>
+<p>A payment channel is closed just once, at the end of a series of transfers.
+Because of this, only one of the messages sent is redeemed. This is why
+each message specifies a cumulative total amount of Ether owed, rather than the
+amount of the individual micropayment. The recipient will naturally choose to
+redeem the most recent message because that is the one with the highest total.
+The nonce per-message is not needed anymore, because the smart contract only
+honours a single message. The address of the smart contract is still used
+to prevent a message intended for one payment channel from being used for a different channel.</p>
+<p>Here is the modified JavaScript code to cryptographically sign a message from the previous section:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="kd">function</span> <span class="nx">constructPaymentMessage</span><span class="p">(</span><span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">amount</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">abi</span><span class="p">.</span><span class="nx">soliditySHA3</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;address&quot;</span><span class="p">,</span> <span class="s2">&quot;uint256&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">amount</span><span class="p">]</span>
+    <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">signMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">personal</span><span class="p">.</span><span class="nx">sign</span><span class="p">(</span>
+        <span class="s2">&quot;0x&quot;</span> <span class="o">+</span> <span class="nx">message</span><span class="p">.</span><span class="nx">toString</span><span class="p">(</span><span class="s2">&quot;hex&quot;</span><span class="p">),</span>
+        <span class="nx">web3</span><span class="p">.</span><span class="nx">eth</span><span class="p">.</span><span class="nx">defaultAccount</span><span class="p">,</span>
+        <span class="nx">callback</span>
+    <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="c1">// contractAddress is used to prevent cross-contract replay attacks.</span>
+<span class="c1">// amount, in wei, specifies how much Ether should be sent.</span>
+
+<span class="kd">function</span> <span class="nx">signPayment</span><span class="p">(</span><span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">amount</span><span class="p">,</span> <span class="nx">callback</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">constructPaymentMessage</span><span class="p">(</span><span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">amount</span><span class="p">);</span>
+    <span class="nx">signMessage</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">callback</span><span class="p">);</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="closing-the-payment-channel">
+<h4>Closing the Payment Channel<a class="headerlink" href="#closing-the-payment-channel" title="Permalink to this headline">¶</a></h4>
+<p>When Bob is ready to receive his funds, it is time to
+close the payment channel by calling a <code class="docutils literal notranslate"><span class="pre">close</span></code> function on the smart contract.
+Closing the channel pays the recipient the Ether they are owed and
+destroys the contract, sending any remaining Ether back to Alice. To
+close the channel, Bob needs to provide a message signed by Alice.</p>
+<p>The smart contract must verify that the message contains a valid signature from the sender.
+The process for doing this verification is the same as the process the recipient uses.
+The Solidity functions <code class="docutils literal notranslate"><span class="pre">isValidSignature</span></code> and <code class="docutils literal notranslate"><span class="pre">recoverSigner</span></code> work just like their
+JavaScript counterparts in the previous section, with the latter function borrowed from the <code class="docutils literal notranslate"><span class="pre">ReceiverPays</span></code> contract.</p>
+<p>Only the payment channel recipient can call the <code class="docutils literal notranslate"><span class="pre">close</span></code> function,
+who naturally passes the most recent payment message because that message
+carries the highest total owed. If the sender were allowed to call this function,
+they could provide a message with a lower amount and cheat the recipient out of what they are owed.</p>
+<p>The function verifies the signed message matches the given parameters.
+If everything checks out, the recipient is sent their portion of the Ether,
+and the sender is sent the rest via a <code class="docutils literal notranslate"><span class="pre">selfdestruct</span></code>.
+You can see the <code class="docutils literal notranslate"><span class="pre">close</span></code> function in the full contract.</p>
+</div>
+<div class="section" id="channel-expiration">
+<h4>Channel Expiration<a class="headerlink" href="#channel-expiration" title="Permalink to this headline">¶</a></h4>
+<p>Bob can close the payment channel at any time, but if they fail to do so,
+Alice needs a way to recover her escrowed funds. An <em>expiration</em> time was set
+at the time of contract deployment. Once that time is reached, Alice can call
+<code class="docutils literal notranslate"><span class="pre">claimTimeout</span></code> to recover her funds. You can see the <code class="docutils literal notranslate"><span class="pre">claimTimeout</span></code> function in the full contract.</p>
+<p>After this function is called, Bob can no longer receive any Ether,
+so it is important that Bob closes the channel before the expiration is reached.</p>
+</div>
+<div class="section" id="id3">
+<h4>The full contract<a class="headerlink" href="#id3" title="Permalink to this headline">¶</a></h4>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.7.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">SimplePaymentChannel</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>sender<span class="p">;</span><span class=" -WhiteSpace">      </span><span class="c1">// The account sending payments.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>recipient<span class="p">;</span><span class=" -WhiteSpace">   </span><span class="c1">// The account receiving the payments.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">expiration</span><span class="p">;</span><span class=" -WhiteSpace">  </span><span class="c1">// Timeout in case the recipient never closes.</span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span>recipientAddress<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="nv">duration</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">payable</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>sender<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>recipient<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>recipientAddress<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>expiration<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>duration<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// the recipient can close the channel at any time by presenting a</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// signed amount from the sender. the recipient will be sent that amount,</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// and the remainder will go back to the sender</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">close</span><span class="p">(</span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>signature<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>recipient<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>isValidSignature<span class="p">(</span>amount<span class="p">,</span><span class=" -WhiteSpace"> </span>signature<span class="p">));</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>recipient<span class="p">.</span>transfer<span class="p">(</span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>selfdestruct<span class="p">(</span>sender<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// the sender can extend the expiration at any time</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">extend</span><span class="p">(</span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="nv">newExpiration</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>sender<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>newExpiration<span class=" -WhiteSpace"> </span><span class="o">&gt;</span><span class=" -WhiteSpace"> </span>expiration<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>expiration<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>newExpiration<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// if the timeout is reached without the recipient closing the channel,</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// then the Ether is released back to the sender.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">claimTimeout</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="k">block.timestamp</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class=" -WhiteSpace"> </span>expiration<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>selfdestruct<span class="p">(</span>sender<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">isValidSignature</span><span class="p">(</span><span class="kt">uint256</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>signature<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">internal</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>view<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bool</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">message</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>prefixed<span class="p">(</span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span><span class="kt">this</span><span class="p">,</span><span class=" -WhiteSpace"> </span>amount<span class="p">)));</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="c1">// check that the signature is from the payment sender</span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>recoverSigner<span class="p">(</span>message<span class="p">,</span><span class=" -WhiteSpace"> </span>signature<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>sender<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// All functions below this are just taken from the chapter</span>
+<span class=" -WhiteSpace">    </span><span class="c1">/// &#39;creating and verifying signatures&#39; chapter.</span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">splitSignature</span><span class="p">(</span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>sig<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">internal</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>pure<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint8</span><span class=" -WhiteSpace"> </span><span class="nv">v</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">r</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">s</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>sig<span class="p">.</span>length<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">65</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>assembly<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// first 32 bytes, after the length prefix</span>
+<span class=" -WhiteSpace">            </span>r<span class=" -WhiteSpace"> </span><span class="p">:</span><span class="o">=</span><span class=" -WhiteSpace"> </span>mload<span class="p">(</span>add<span class="p">(</span>sig<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">32</span><span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// second 32 bytes</span>
+<span class=" -WhiteSpace">            </span>s<span class=" -WhiteSpace"> </span><span class="p">:</span><span class="o">=</span><span class=" -WhiteSpace"> </span>mload<span class="p">(</span>add<span class="p">(</span>sig<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">64</span><span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// final byte (first byte of the next 32 bytes)</span>
+<span class=" -WhiteSpace">            </span>v<span class=" -WhiteSpace"> </span><span class="p">:</span><span class="o">=</span><span class=" -WhiteSpace"> </span>byte<span class="p">(</span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span>mload<span class="p">(</span>add<span class="p">(</span>sig<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">96</span><span class="p">)))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span>v<span class="p">,</span><span class=" -WhiteSpace"> </span>r<span class="p">,</span><span class=" -WhiteSpace"> </span>s<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">recoverSigner</span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">message</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span>sig<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">internal</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>pure<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">address</span><span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">(</span><span class="kt">uint8</span><span class=" -WhiteSpace"> </span><span class="nv">v</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">r</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">s</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>splitSignature<span class="p">(</span>sig<span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>ecrecover<span class="p">(</span>message<span class="p">,</span><span class=" -WhiteSpace"> </span>v<span class="p">,</span><span class=" -WhiteSpace"> </span>r<span class="p">,</span><span class=" -WhiteSpace"> </span>s<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="c1">/// builds a prefixed hash to mimic the behavior of eth_sign.</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">prefixed</span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">hash</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bytes32</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span><span class="s2">&quot;\x19Ethereum Signed Message:\n32&quot;</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">hash</span><span class="p">));</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The function <code class="docutils literal notranslate"><span class="pre">splitSignature</span></code> does not use all security
+checks. A real implementation should use a more rigorously tested library,
+such as openzepplin’s <a class="reference external" href="https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/utils/cryptography/ECDSA.sol">version</a> of this code.</p>
+</div>
+</div>
+<div class="section" id="verifying-payments">
+<h4>Verifying Payments<a class="headerlink" href="#verifying-payments" title="Permalink to this headline">¶</a></h4>
+<p>Unlike in the previous section, messages in a payment channel aren’t
+redeemed right away. The recipient keeps track of the latest message and
+redeems it when it’s time to close the payment channel. This means it’s
+critical that the recipient perform their own verification of each message.
+Otherwise there is no guarantee that the recipient will be able to get paid
+in the end.</p>
+<p>The recipient should verify each message using the following process:</p>
+<blockquote>
+<div><ol class="arabic simple">
+<li><p>Verify that the contract address in the message matches the payment channel.</p></li>
+<li><p>Verify that the new total is the expected amount.</p></li>
+<li><p>Verify that the new total does not exceed the amount of Ether escrowed.</p></li>
+<li><p>Verify that the signature is valid and comes from the payment channel sender.</p></li>
+</ol>
+</div></blockquote>
+<p>We’ll use the <a class="reference external" href="https://github.com/ethereumjs/ethereumjs-util">ethereumjs-util</a>
+library to write this verification. The final step can be done a number of ways,
+and we use JavaScript. The following code borrows the <code class="docutils literal notranslate"><span class="pre">constructPaymentMessage</span></code> function from the signing <strong>JavaScript code</strong> above:</p>
+<div class="highlight-javascript notranslate"><div class="highlight"><pre><span></span><span class="c1">// this mimics the prefixing behavior of the eth_sign JSON-RPC method.</span>
+<span class="kd">function</span> <span class="nx">prefixed</span><span class="p">(</span><span class="nx">hash</span><span class="p">)</span> <span class="p">{</span>
+    <span class="k">return</span> <span class="nx">ethereumjs</span><span class="p">.</span><span class="nx">ABI</span><span class="p">.</span><span class="nx">soliditySHA3</span><span class="p">(</span>
+        <span class="p">[</span><span class="s2">&quot;string&quot;</span><span class="p">,</span> <span class="s2">&quot;bytes32&quot;</span><span class="p">],</span>
+        <span class="p">[</span><span class="s2">&quot;\x19Ethereum Signed Message:\n32&quot;</span><span class="p">,</span> <span class="nx">hash</span><span class="p">]</span>
+    <span class="p">);</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">recoverSigner</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">signature</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">split</span> <span class="o">=</span> <span class="nx">ethereumjs</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">fromRpcSig</span><span class="p">(</span><span class="nx">signature</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">publicKey</span> <span class="o">=</span> <span class="nx">ethereumjs</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">ecrecover</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">split</span><span class="p">.</span><span class="nx">v</span><span class="p">,</span> <span class="nx">split</span><span class="p">.</span><span class="nx">r</span><span class="p">,</span> <span class="nx">split</span><span class="p">.</span><span class="nx">s</span><span class="p">);</span>
+    <span class="kd">var</span> <span class="nx">signer</span> <span class="o">=</span> <span class="nx">ethereumjs</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">pubToAddress</span><span class="p">(</span><span class="nx">publicKey</span><span class="p">).</span><span class="nx">toString</span><span class="p">(</span><span class="s2">&quot;hex&quot;</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">signer</span><span class="p">;</span>
+<span class="p">}</span>
+
+<span class="kd">function</span> <span class="nx">isValidSignature</span><span class="p">(</span><span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">amount</span><span class="p">,</span> <span class="nx">signature</span><span class="p">,</span> <span class="nx">expectedSigner</span><span class="p">)</span> <span class="p">{</span>
+    <span class="kd">var</span> <span class="nx">message</span> <span class="o">=</span> <span class="nx">prefixed</span><span class="p">(</span><span class="nx">constructPaymentMessage</span><span class="p">(</span><span class="nx">contractAddress</span><span class="p">,</span> <span class="nx">amount</span><span class="p">));</span>
+    <span class="kd">var</span> <span class="nx">signer</span> <span class="o">=</span> <span class="nx">recoverSigner</span><span class="p">(</span><span class="nx">message</span><span class="p">,</span> <span class="nx">signature</span><span class="p">);</span>
+    <span class="k">return</span> <span class="nx">signer</span><span class="p">.</span><span class="nx">toLowerCase</span><span class="p">()</span> <span class="o">==</span>
+        <span class="nx">ethereumjs</span><span class="p">.</span><span class="nx">Util</span><span class="p">.</span><span class="nx">stripHexPrefix</span><span class="p">(</span><span class="nx">expectedSigner</span><span class="p">).</span><span class="nx">toLowerCase</span><span class="p">();</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+</div>
+</div>
+</div>
+<div class="section" id="modular-contracts">
+<span id="index-3"></span><h2>Modular Contracts<a class="headerlink" href="#modular-contracts" title="Permalink to this headline">¶</a></h2>
+<p>A modular approach to building your contracts helps you reduce the complexity
+and improve the readability which will help to identify bugs and vulnerabilities
+during development and code review.
+If you specify and control the behaviour or each module in isolation, the
+interactions you have to consider are only those between the module specifications
+and not every other moving part of the contract.
+In the example below, the contract uses the <code class="docutils literal notranslate"><span class="pre">move</span></code> method
+of the <code class="docutils literal notranslate"><span class="pre">Balances</span></code> <a class="reference internal" href="contracts.html#libraries"><span class="std std-ref">library</span></a> to check that balances sent between
+addresses match what you expect. In this way, the <code class="docutils literal notranslate"><span class="pre">Balances</span></code> library
+provides an isolated component that properly tracks balances of accounts.
+It is easy to verify that the <code class="docutils literal notranslate"><span class="pre">Balances</span></code> library never produces negative balances or overflows
+and the sum of all balances is an invariant across the lifetime of the contract.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.5.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="kt">library</span><span class=" -WhiteSpace"> </span>Balances<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">move</span><span class="p">(</span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint256</span><span class="p">)</span><span class=" -WhiteSpace"> </span>storage<span class=" -WhiteSpace"> </span>balances<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">from</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">to</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>balances<span class="p">[</span>from<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class=" -WhiteSpace"> </span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>balances<span class="p">[</span>to<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>amount<span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class=" -WhiteSpace"> </span>balances<span class="p">[</span>to<span class="p">]);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>balances<span class="p">[</span>from<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">-=</span><span class=" -WhiteSpace"> </span>amount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>balances<span class="p">[</span>to<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">+=</span><span class=" -WhiteSpace"> </span>amount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Token</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint256</span><span class="p">)</span><span class=" -WhiteSpace"> </span>balances<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span>using<span class=" -WhiteSpace"> </span>Balances<span class=" -WhiteSpace"> </span><span class="kt">for</span><span class=" -WhiteSpace"> </span><span class="o">*</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">mapping</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint256</span><span class="p">))</span><span class=" -WhiteSpace"> </span>allowed<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">Transfer</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">from</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">to</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">event</span><span class=" -WhiteSpace"> </span><span class="nv">Approval</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">owner</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">spender</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">transfer</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">to</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">success</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>balances<span class="p">.</span>move<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span>to<span class="p">,</span><span class=" -WhiteSpace"> </span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>Transfer<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span>to<span class="p">,</span><span class=" -WhiteSpace"> </span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">transferFrom</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">from</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">to</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">success</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>allowed<span class="p">[</span>from<span class="p">][</span><span class="k">msg.sender</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class=" -WhiteSpace"> </span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>allowed<span class="p">[</span>from<span class="p">][</span><span class="k">msg.sender</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">-=</span><span class=" -WhiteSpace"> </span>amount<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>balances<span class="p">.</span>move<span class="p">(</span>from<span class="p">,</span><span class=" -WhiteSpace"> </span>to<span class="p">,</span><span class=" -WhiteSpace"> </span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>Transfer<span class="p">(</span>from<span class="p">,</span><span class=" -WhiteSpace"> </span>to<span class="p">,</span><span class=" -WhiteSpace"> </span>amount<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">approve</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">spender</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">tokens</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">success</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>allowed<span class="p">[</span><span class="k">msg.sender</span><span class="p">][</span>spender<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>allowed<span class="p">[</span><span class="k">msg.sender</span><span class="p">][</span>spender<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>tokens<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>emit<span class=" -WhiteSpace"> </span>Approval<span class="p">(</span><span class="k">msg.sender</span><span class="p">,</span><span class=" -WhiteSpace"> </span>spender<span class="p">,</span><span class=" -WhiteSpace"> </span>tokens<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">balanceOf</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">tokenOwner</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span>view<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">balance</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>balances<span class="p">[</span>tokenOwner<span class="p">];</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="layout-of-source-files.html" class="btn btn-neutral float-right" title="Layout of a Solidity Source File" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="installing-solidity.html" class="btn btn-neutral float-left" title="Installing the Solidity Compiler" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Ethereum
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book fa-element"> RTD </span>
+
+    <span class="fa fa-element">
+    <input class="container_toggle" type="checkbox" id="switch" name="mode">
+    <label for="switch"></label>
+    </span>
+
+    <span class="fa fa-v fa-element"> v:  <span class="fa fa-caret-down"></span></span>
+
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Versions</dt> 
+        </dl>
+        <dl>
+            <dt>Downloads</dt> 
+        </dl>
+        <dl>
+            
+            <dt>On Read the Docs</dt>
+            <dd>
+                <a href="///projects//?fromdocs=">Project Home</a>
+            </dd>
+            <dd>
+                <a href="///builds//?fromdocs=">Builds</a>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

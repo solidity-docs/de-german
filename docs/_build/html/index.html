@@ -1,0 +1,687 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Solidity &mdash; Solidity 0.8.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/a4_railroad_diagram.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Introduction to Smart Contracts" href="introduction-to-smart-contracts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #65afff" >
+          
+
+          
+            <a href="#">
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.10
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction-to-smart-contracts.html">Introduction to Smart Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing-solidity.html">Installing the Solidity Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solidity-by-example.html">Solidity by Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Language Description</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure-of-a-contract.html">Structure of a Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control-structures.html">Expressions and Control Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assembly.html">Inline Assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Language Grammar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-the-compiler.html">Using the Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysing-compilation-output.html">Analysing the Compiler Output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Internals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_storage.html">Layout of State Variables in Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_memory.html">Layout in Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_calldata.html">Layout of Call Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/variable_cleanup.html">Cleaning Up Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/source_mappings.html">Source Mappings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/optimizer.html">The Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Contract Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abi-spec.html">Contract ABI Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Additional Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="050-breaking-changes.html">Solidity v0.5.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="060-breaking-changes.html">Solidity v0.6.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="070-breaking-changes.html">Solidity v0.7.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="080-breaking-changes.html">Solidity v0.8.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="natspec-format.html">NatSpec Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security-considerations.html">Security Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smtchecker.html">SMTChecker and Formal Verification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path-resolution.html">Import Path Resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yul.html">Yul</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guide.html">Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common-patterns.html">Common Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">List of Known Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brand-guide.html">Solidity Brand Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="language-influences.html">Language Influences</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Keyword Index</a>
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="#">Solidity</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="#" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Solidity</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/index.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="solidity">
+<h1>Solidity<a class="headerlink" href="#solidity" title="Permalink to this headline">¶</a></h1>
+<p>Solidity is an object-oriented, high-level language for implementing smart
+contracts. Smart contracts are programs which govern the behaviour of accounts
+within the Ethereum state.</p>
+<p>Solidity is a <a class="reference external" href="https://en.wikipedia.org/wiki/List_of_programming_languages_by_type#Curly-bracket_languages">curly-bracket language</a>.
+It is influenced by C++, Python and JavaScript, and is designed to target the Ethereum Virtual Machine (EVM).
+You can find more details about which languages Solidity has been inspired by in
+the <a class="reference internal" href="language-influences.html"><span class="doc">language influences</span></a> section.</p>
+<p>Solidity is statically typed, supports inheritance, libraries and complex
+user-defined types among other features.</p>
+<p>With Solidity you can create contracts for uses such as voting, crowdfunding, blind auctions,
+and multi-signature wallets.</p>
+<p>When deploying contracts, you should use the latest released
+version of Solidity. This is because breaking changes as well as
+new features and bug fixes are introduced regularly. We currently use
+a 0.x version number <a class="reference external" href="https://semver.org/#spec-item-4">to indicate this fast pace of change</a>.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Solidity recently released the 0.8.x version that introduced a lot of breaking
+changes. Make sure you read <a class="reference internal" href="080-breaking-changes.html"><span class="doc">the full list</span></a>.</p>
+</div>
+<p>Ideas for improving Solidity or this documentation are always welcome,
+read our <a class="reference internal" href="contributing.html"><span class="doc">contributors guide</span></a> for more details.</p>
+<div class="section" id="getting-started">
+<h2>Getting Started<a class="headerlink" href="#getting-started" title="Permalink to this headline">¶</a></h2>
+<p><strong>1. Understand the Smart Contract Basics</strong></p>
+<p>If you are new to the concept of smart contracts we recommend you to get started by digging
+into the “Introduction to Smart Contracts” section, which covers:</p>
+<ul class="simple">
+<li><p><a class="reference internal" href="introduction-to-smart-contracts.html#simple-smart-contract"><span class="std std-ref">A simple example smart contract</span></a> written in Solidity.</p></li>
+<li><p><a class="reference internal" href="introduction-to-smart-contracts.html#blockchain-basics"><span class="std std-ref">Blockchain Basics</span></a>.</p></li>
+<li><p><a class="reference internal" href="introduction-to-smart-contracts.html#the-ethereum-virtual-machine"><span class="std std-ref">The Ethereum Virtual Machine</span></a>.</p></li>
+</ul>
+<p><strong>2. Get to Know Solidity</strong></p>
+<p>Once you are accustomed to the basics, we recommend you read the <a class="reference internal" href="solidity-by-example.html"><span class="doc">“Solidity by Example”</span></a>
+and “Language Description” sections to understand the core concepts of the language.</p>
+<p><strong>3. Install the Solidity Compiler</strong></p>
+<p>There are various ways to install the Solidity compiler,
+simply choose your preferred option and follow the steps outlined on the <a class="reference internal" href="installing-solidity.html#installing-solidity"><span class="std std-ref">installation page</span></a>.</p>
+<div class="admonition hint">
+<p class="admonition-title">Hint</p>
+<p>You can try out code examples directly in your browser with the
+<a class="reference external" href="https://remix.ethereum.org">Remix IDE</a>. Remix is a web browser based IDE
+that allows you to write, deploy and administer Solidity smart contracts, without
+the need to install Solidity locally.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>As humans write software, it can have bugs. You should follow established
+software development best-practices when writing your smart contracts. This
+includes code review, testing, audits, and correctness proofs. Smart contract
+users are sometimes more confident with code than their authors, and
+blockchains and smart contracts have their own unique issues to
+watch out for, so before working on production code, make sure you read the
+<a class="reference internal" href="security-considerations.html#security-considerations"><span class="std std-ref">Security Considerations</span></a> section.</p>
+</div>
+<p><strong>4. Learn More</strong></p>
+<p>If you want to learn more about building decentralized applications on Ethereum, the
+<a class="reference external" href="https://ethereum.org/en/developers/">Ethereum Developer Resources</a>
+can help you with further general documentation around Ethereum, and a wide selection of tutorials,
+tools and development frameworks.</p>
+<p>If you have any questions, you can try searching for answers or asking on the
+<a class="reference external" href="https://ethereum.stackexchange.com/">Ethereum StackExchange</a>, or
+our <a class="reference external" href="https://gitter.im/ethereum/solidity/">Gitter channel</a>.</p>
+</div>
+<div class="section" id="translations">
+<span id="id1"></span><h2>Translations<a class="headerlink" href="#translations" title="Permalink to this headline">¶</a></h2>
+<p>Community volunteers help translate this documentation into several languages.
+They have varying degrees of completeness and up-to-dateness. The English
+version stands as a reference.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>We recently set up a new GitHub organization and translation workflow to help streamline the
+community efforts. Please refer to the <a class="reference external" href="https://github.com/solidity-docs/translation-guide">translation guide</a>
+for information on how to contribute to the community translations moving forward.</p>
+</div>
+<ul class="simple">
+<li><p><a class="reference external" href="https://solidity-fr.readthedocs.io">French</a> (in progress)</p></li>
+<li><p><a class="reference external" href="https://github.com/damianoazzolini/solidity">Italian</a> (in progress)</p></li>
+<li><p><a class="reference external" href="https://solidity-jp.readthedocs.io">Japanese</a></p></li>
+<li><p><a class="reference external" href="https://solidity-kr.readthedocs.io">Korean</a> (in progress)</p></li>
+<li><p><a class="reference external" href="https://github.com/ethereum/wiki/wiki/%5BRussian%5D-%D0%A0%D1%83%D0%BA%D0%BE%D0%B2%D0%BE%D0%B4%D1%81%D1%82%D0%B2%D0%BE-%D0%BF%D0%BE-Solidity">Russian</a> (rather outdated)</p></li>
+<li><p><a class="reference external" href="https://learnblockchain.cn/docs/solidity/">Simplified Chinese</a> (in progress)</p></li>
+<li><p><a class="reference external" href="https://solidity-es.readthedocs.io">Spanish</a></p></li>
+<li><p><a class="reference external" href="https://github.com/denizozzgur/Solidity_TR/blob/master/README.md">Turkish</a> (partial)</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="contents">
+<h1>Contents<a class="headerlink" href="#contents" title="Permalink to this headline">¶</a></h1>
+<p><a class="reference internal" href="genindex.html"><span class="std std-ref">Keyword Index</span></a>, <a class="reference internal" href="search.html"><span class="std std-ref">Search Page</span></a></p>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction-to-smart-contracts.html">Introduction to Smart Contracts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="introduction-to-smart-contracts.html#a-simple-smart-contract">A Simple Smart Contract</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction-to-smart-contracts.html#blockchain-basics">Blockchain Basics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="introduction-to-smart-contracts.html#index-6">The Ethereum Virtual Machine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="installing-solidity.html">Installing the Solidity Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#versioning">Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#remix">Remix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#npm-node-js">npm / Node.js</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#linux-packages">Linux Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#macos-packages">macOS Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#static-binaries">Static Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#building-from-source">Building from Source</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#cmake-options">CMake Options</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#the-version-string-in-detail">The Version String in Detail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="installing-solidity.html#important-information-about-versioning">Important Information About Versioning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="solidity-by-example.html">Solidity by Example</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="solidity-by-example.html#voting">Voting</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solidity-by-example.html#blind-auction">Blind Auction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solidity-by-example.html#safe-remote-purchase">Safe Remote Purchase</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solidity-by-example.html#micropayment-channel">Micropayment Channel</a></li>
+<li class="toctree-l2"><a class="reference internal" href="solidity-by-example.html#modular-contracts">Modular Contracts</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Language Description</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="layout-of-source-files.html#spdx-license-identifier">SPDX License Identifier</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout-of-source-files.html#pragmas">Pragmas</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout-of-source-files.html#importing-other-source-files">Importing other Source Files</a></li>
+<li class="toctree-l2"><a class="reference internal" href="layout-of-source-files.html#comments">Comments</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="structure-of-a-contract.html">Structure of a Contract</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#state-variables">State Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#function-modifiers">Function Modifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#errors">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#struct-types">Struct Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="structure-of-a-contract.html#enum-types">Enum Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="types.html#value-types">Value Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#reference-types">Reference Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#mapping-types">Mapping Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#operators-involving-lvalues">Operators Involving LValues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#conversions-between-elementary-types">Conversions between Elementary Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="types.html#conversions-between-literals-and-elementary-types">Conversions between Literals and Elementary Types</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="units-and-global-variables.html#ether-units">Ether Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units-and-global-variables.html#time-units">Time Units</a></li>
+<li class="toctree-l2"><a class="reference internal" href="units-and-global-variables.html#special-variables-and-functions">Special Variables and Functions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="control-structures.html">Expressions and Control Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#control-structures">Control Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#function-calls">Function Calls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#creating-contracts-via-new">Creating Contracts via <code class="docutils literal notranslate"><span class="pre">new</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#order-of-evaluation-of-expressions">Order of Evaluation of Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#assignment">Assignment</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#scoping-and-declarations">Scoping and Declarations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#checked-or-unchecked-arithmetic">Checked or Unchecked Arithmetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="control-structures.html#error-handling-assert-require-revert-and-exceptions">Error handling: Assert, Require, Revert and Exceptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#creating-contracts">Creating Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#visibility-and-getters">Visibility and Getters</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#function-modifiers">Function Modifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#constant-and-immutable-state-variables">Constant and Immutable State Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#functions">Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#errors-and-the-revert-statement">Errors and the Revert Statement</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#inheritance">Inheritance</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#abstract-contracts">Abstract Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#interfaces">Interfaces</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#libraries">Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contracts.html#using-for">Using For</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="assembly.html">Inline Assembly</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="assembly.html#example">Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assembly.html#access-to-external-variables-functions-and-libraries">Access to External Variables, Functions and Libraries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assembly.html#things-to-avoid">Things to Avoid</a></li>
+<li class="toctree-l2"><a class="reference internal" href="assembly.html#conventions-in-solidity">Conventions in Solidity</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="cheatsheet.html#order-of-precedence-of-operators">Order of Precedence of Operators</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cheatsheet.html#global-variables">Global Variables</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cheatsheet.html#function-visibility-specifiers">Function Visibility Specifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cheatsheet.html#modifiers">Modifiers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="cheatsheet.html#reserved-keywords">Reserved Keywords</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Language Grammar</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-the-compiler.html">Using the Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="using-the-compiler.html#using-the-commandline-compiler">Using the Commandline Compiler</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using-the-compiler.html#setting-the-evm-version-to-target">Setting the EVM Version to Target</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using-the-compiler.html#compiler-input-and-output-json-description">Compiler Input and Output JSON Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="using-the-compiler.html#compiler-tools">Compiler Tools</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="analysing-compilation-output.html">Analysing the Compiler Output</a></li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Internals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_storage.html">Layout of State Variables in Storage</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="internals/layout_in_storage.html#mappings-and-dynamic-arrays">Mappings and Dynamic Arrays</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internals/layout_in_storage.html#json-output">JSON Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_memory.html">Layout in Memory</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="internals/layout_in_memory.html#differences-to-layout-in-storage">Differences to Layout in Storage</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_calldata.html">Layout of Call Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/variable_cleanup.html">Cleaning Up Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/source_mappings.html">Source Mappings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/optimizer.html">The Optimizer</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="internals/optimizer.html#benefits-of-optimizing-solidity-code">Benefits of Optimizing Solidity Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internals/optimizer.html#differences-between-optimized-and-non-optimized-code">Differences between Optimized and Non-Optimized Code</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internals/optimizer.html#optimizer-parameter-runs">Optimizer Parameter Runs</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internals/optimizer.html#opcode-based-optimizer-module">Opcode-Based Optimizer Module</a></li>
+<li class="toctree-l2"><a class="reference internal" href="internals/optimizer.html#yul-based-optimizer-module">Yul-Based Optimizer Module</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Contract Metadata</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="metadata.html#encoding-of-the-metadata-hash-in-the-bytecode">Encoding of the Metadata Hash in the Bytecode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata.html#usage-for-automatic-interface-generation-and-natspec">Usage for Automatic Interface Generation and NatSpec</a></li>
+<li class="toctree-l2"><a class="reference internal" href="metadata.html#usage-for-source-code-verification">Usage for Source Code Verification</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="abi-spec.html">Contract ABI Specification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#basic-design">Basic Design</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#function-selector">Function Selector</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#argument-encoding">Argument Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#types">Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#design-criteria-for-the-encoding">Design Criteria for the Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#formal-specification-of-the-encoding">Formal Specification of the Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#function-selector-and-argument-encoding">Function Selector and Argument Encoding</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#examples">Examples</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#use-of-dynamic-types">Use of Dynamic Types</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#events">Events</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#errors">Errors</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#json">JSON</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#strict-encoding-mode">Strict Encoding Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#non-standard-packed-mode">Non-standard Packed Mode</a></li>
+<li class="toctree-l2"><a class="reference internal" href="abi-spec.html#encoding-of-indexed-event-parameters">Encoding of Indexed Event Parameters</a></li>
+</ul>
+</li>
+</ul>
+</div>
+<div class="toctree-wrapper compound">
+<p class="caption"><span class="caption-text">Additional Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="050-breaking-changes.html">Solidity v0.5.0 Breaking Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="050-breaking-changes.html#semantic-only-changes">Semantic Only Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="050-breaking-changes.html#semantic-and-syntactic-changes">Semantic and Syntactic Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="050-breaking-changes.html#explicitness-requirements">Explicitness Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="050-breaking-changes.html#deprecated-elements">Deprecated Elements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="050-breaking-changes.html#interoperability-with-older-contracts">Interoperability With Older Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="050-breaking-changes.html#example">Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="060-breaking-changes.html">Solidity v0.6.0 Breaking Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="060-breaking-changes.html#changes-the-compiler-might-not-warn-about">Changes the Compiler Might not Warn About</a></li>
+<li class="toctree-l2"><a class="reference internal" href="060-breaking-changes.html#explicitness-requirements">Explicitness Requirements</a></li>
+<li class="toctree-l2"><a class="reference internal" href="060-breaking-changes.html#semantic-and-syntactic-changes">Semantic and Syntactic Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="060-breaking-changes.html#new-features">New Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="060-breaking-changes.html#interface-changes">Interface Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="060-breaking-changes.html#how-to-update-your-code">How to update your code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="070-breaking-changes.html">Solidity v0.7.0 Breaking Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="070-breaking-changes.html#silent-changes-of-the-semantics">Silent Changes of the Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="070-breaking-changes.html#changes-to-the-syntax">Changes to the Syntax</a></li>
+<li class="toctree-l2"><a class="reference internal" href="070-breaking-changes.html#removal-of-unused-or-unsafe-features">Removal of Unused or Unsafe Features</a></li>
+<li class="toctree-l2"><a class="reference internal" href="070-breaking-changes.html#interface-changes">Interface Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="070-breaking-changes.html#how-to-update-your-code">How to update your code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="080-breaking-changes.html">Solidity v0.8.0 Breaking Changes</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="080-breaking-changes.html#silent-changes-of-the-semantics">Silent Changes of the Semantics</a></li>
+<li class="toctree-l2"><a class="reference internal" href="080-breaking-changes.html#new-restrictions">New Restrictions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="080-breaking-changes.html#interface-changes">Interface Changes</a></li>
+<li class="toctree-l2"><a class="reference internal" href="080-breaking-changes.html#how-to-update-your-code">How to update your code</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="natspec-format.html">NatSpec Format</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="natspec-format.html#documentation-example">Documentation Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="natspec-format.html#tags">Tags</a></li>
+<li class="toctree-l2"><a class="reference internal" href="natspec-format.html#documentation-output">Documentation Output</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="security-considerations.html">Security Considerations</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="security-considerations.html#pitfalls">Pitfalls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="security-considerations.html#recommendations">Recommendations</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="smtchecker.html">SMTChecker and Formal Verification</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="smtchecker.html#tutorial">Tutorial</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smtchecker.html#smtchecker-options-and-tuning">SMTChecker Options and Tuning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smtchecker.html#abstraction-and-false-positives">Abstraction and False Positives</a></li>
+<li class="toctree-l2"><a class="reference internal" href="smtchecker.html#real-world-assumptions">Real World Assumptions</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="resources.html#general-resources">General Resources</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html#integrated-ethereum-development-environments">Integrated (Ethereum) Development Environments</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html#editor-integrations">Editor Integrations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html#solidity-tools">Solidity Tools</a></li>
+<li class="toctree-l2"><a class="reference internal" href="resources.html#third-party-solidity-parsers-and-grammars">Third-Party Solidity Parsers and Grammars</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="path-resolution.html">Import Path Resolution</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="path-resolution.html#virtual-filesystem">Virtual Filesystem</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path-resolution.html#imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path-resolution.html#base-path-and-include-paths">Base Path and Include Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path-resolution.html#allowed-paths">Allowed Paths</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path-resolution.html#import-remapping">Import Remapping</a></li>
+<li class="toctree-l2"><a class="reference internal" href="path-resolution.html#using-urls-in-imports">Using URLs in imports</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="yul.html">Yul</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#motivation-and-high-level-description">Motivation and High-level Description</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#simple-example">Simple Example</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#stand-alone-usage">Stand-Alone Usage</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#informal-description-of-yul">Informal Description of Yul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#specification-of-yul">Specification of Yul</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#specification-of-yul-object">Specification of Yul Object</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#yul-optimizer">Yul Optimizer</a></li>
+<li class="toctree-l2"><a class="reference internal" href="yul.html#complete-erc20-example">Complete ERC20 Example</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="style-guide.html">Style Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="style-guide.html#introduction">Introduction</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style-guide.html#code-layout">Code Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style-guide.html#order-of-layout">Order of Layout</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style-guide.html#naming-conventions">Naming Conventions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="style-guide.html#natspec">NatSpec</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="common-patterns.html">Common Patterns</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="common-patterns.html#withdrawal-from-contracts">Withdrawal from Contracts</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common-patterns.html#restricting-access">Restricting Access</a></li>
+<li class="toctree-l2"><a class="reference internal" href="common-patterns.html#state-machine">State Machine</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">List of Known Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#team-calls">Team Calls</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#how-to-report-issues">How to Report Issues</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#workflow-for-pull-requests">Workflow for Pull Requests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#running-the-compiler-tests">Running the Compiler Tests</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#running-the-fuzzer-via-afl">Running the Fuzzer via AFL</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#whiskers">Whiskers</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#documentation-style-guide">Documentation Style Guide</a></li>
+<li class="toctree-l2"><a class="reference internal" href="contributing.html#solidity-language-design">Solidity Language Design</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="brand-guide.html">Solidity Brand Guide</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="brand-guide.html#the-solidity-brand">The Solidity Brand</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brand-guide.html#solidity-brand-name">Solidity Brand Name</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brand-guide.html#solidity-logo-license">Solidity Logo License</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brand-guide.html#solidity-logo-guidelines">Solidity Logo Guidelines</a></li>
+<li class="toctree-l2"><a class="reference internal" href="brand-guide.html#credits">Credits</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="language-influences.html">Language Influences</a></li>
+</ul>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="introduction-to-smart-contracts.html" class="btn btn-neutral float-right" title="Introduction to Smart Contracts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Ethereum
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book fa-element"> RTD </span>
+
+    <span class="fa fa-element">
+    <input class="container_toggle" type="checkbox" id="switch" name="mode">
+    <label for="switch"></label>
+    </span>
+
+    <span class="fa fa-v fa-element"> v:  <span class="fa fa-caret-down"></span></span>
+
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Versions</dt> 
+        </dl>
+        <dl>
+            <dt>Downloads</dt> 
+        </dl>
+        <dl>
+            
+            <dt>On Read the Docs</dt>
+            <dd>
+                <a href="///projects//?fromdocs=">Project Home</a>
+            </dd>
+            <dd>
+                <a href="///builds//?fromdocs=">Builds</a>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

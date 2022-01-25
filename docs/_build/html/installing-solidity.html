@@ -1,0 +1,818 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Installing the Solidity Compiler &mdash; Solidity 0.8.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/a4_railroad_diagram.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Solidity by Example" href="solidity-by-example.html" />
+    <link rel="prev" title="Introduction to Smart Contracts" href="introduction-to-smart-contracts.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #65afff" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.10
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="introduction-to-smart-contracts.html">Introduction to Smart Contracts</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Installing the Solidity Compiler</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#versioning">Versioning</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#remix">Remix</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#npm-node-js">npm / Node.js</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#docker">Docker</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#linux-packages">Linux Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#macos-packages">macOS Packages</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#static-binaries">Static Binaries</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-from-source">Building from Source</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites-all-operating-systems">Prerequisites - All Operating Systems</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#minimum-compiler-versions">Minimum Compiler Versions</a></li>
+</ul>
+</li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites-macos">Prerequisites - macOS</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prerequisites-windows">Prerequisites - Windows</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#dependencies-helper-script">Dependencies Helper Script</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#clone-the-repository">Clone the Repository</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#command-line-build">Command-Line Build</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#cmake-options">CMake Options</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#smt-solvers">SMT Solvers</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-version-string-in-detail">The Version String in Detail</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#important-information-about-versioning">Important Information About Versioning</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="solidity-by-example.html">Solidity by Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Language Description</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure-of-a-contract.html">Structure of a Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control-structures.html">Expressions and Control Structures</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assembly.html">Inline Assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Language Grammar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-the-compiler.html">Using the Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysing-compilation-output.html">Analysing the Compiler Output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Internals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_storage.html">Layout of State Variables in Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_memory.html">Layout in Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_calldata.html">Layout of Call Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/variable_cleanup.html">Cleaning Up Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/source_mappings.html">Source Mappings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/optimizer.html">The Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Contract Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abi-spec.html">Contract ABI Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Additional Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="050-breaking-changes.html">Solidity v0.5.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="060-breaking-changes.html">Solidity v0.6.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="070-breaking-changes.html">Solidity v0.7.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="080-breaking-changes.html">Solidity v0.8.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="natspec-format.html">NatSpec Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security-considerations.html">Security Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smtchecker.html">SMTChecker and Formal Verification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path-resolution.html">Import Path Resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yul.html">Yul</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guide.html">Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common-patterns.html">Common Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">List of Known Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brand-guide.html">Solidity Brand Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="language-influences.html">Language Influences</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Keyword Index</a>
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Solidity</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Installing the Solidity Compiler</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/installing-solidity.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="installing-the-solidity-compiler">
+<span id="installing-solidity"></span><span id="index-0"></span><h1>Installing the Solidity Compiler<a class="headerlink" href="#installing-the-solidity-compiler" title="Permalink to this headline">¶</a></h1>
+<div class="section" id="versioning">
+<h2>Versioning<a class="headerlink" href="#versioning" title="Permalink to this headline">¶</a></h2>
+<p>Solidity versions follow <a class="reference external" href="https://semver.org">semantic versioning</a> and in addition to
+releases, <strong>nightly development builds</strong> are also made available.  The nightly builds
+are not guaranteed to be working and despite best efforts they might contain undocumented
+and/or broken changes. We recommend using the latest release. Package installers below
+will use the latest release.</p>
+</div>
+<div class="section" id="remix">
+<h2>Remix<a class="headerlink" href="#remix" title="Permalink to this headline">¶</a></h2>
+<p><em>We recommend Remix for small contracts and for quickly learning Solidity.</em></p>
+<p><a class="reference external" href="https://remix.ethereum.org/">Access Remix online</a>, you do not need to install anything.
+If you want to use it without connection to the Internet, go to
+<a class="reference external" href="https://github.com/ethereum/remix-live/tree/gh-pages">https://github.com/ethereum/remix-live/tree/gh-pages</a> and download the <code class="docutils literal notranslate"><span class="pre">.zip</span></code> file as
+explained on that page. Remix is also a convenient option for testing nightly builds
+without installing multiple Solidity versions.</p>
+<p>Further options on this page detail installing commandline Solidity compiler software
+on your computer. Choose a commandline compiler if you are working on a larger contract
+or if you require more compilation options.</p>
+</div>
+<div class="section" id="npm-node-js">
+<span id="solcjs"></span><h2>npm / Node.js<a class="headerlink" href="#npm-node-js" title="Permalink to this headline">¶</a></h2>
+<p>Use <code class="docutils literal notranslate"><span class="pre">npm</span></code> for a convenient and portable way to install <code class="docutils literal notranslate"><span class="pre">solcjs</span></code>, a Solidity compiler. The
+<cite>solcjs</cite> program has fewer features than the ways to access the compiler described
+further down this page. The
+<a class="reference internal" href="using-the-compiler.html#commandline-compiler"><span class="std std-ref">Using the Commandline Compiler</span></a> documentation assumes you are using
+the full-featured compiler, <code class="docutils literal notranslate"><span class="pre">solc</span></code>. The usage of <code class="docutils literal notranslate"><span class="pre">solcjs</span></code> is documented inside its own
+<a class="reference external" href="https://github.com/ethereum/solc-js">repository</a>.</p>
+<p>Note: The solc-js project is derived from the C++
+<cite>solc</cite> by using Emscripten which means that both use the same compiler source code.
+<cite>solc-js</cite> can be used in JavaScript projects directly (such as Remix).
+Please refer to the solc-js repository for instructions.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>npm install -g solc
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The commandline executable is named <code class="docutils literal notranslate"><span class="pre">solcjs</span></code>.</p>
+<p>The commandline options of <code class="docutils literal notranslate"><span class="pre">solcjs</span></code> are not compatible with <code class="docutils literal notranslate"><span class="pre">solc</span></code> and tools (such as <code class="docutils literal notranslate"><span class="pre">geth</span></code>)
+expecting the behaviour of <code class="docutils literal notranslate"><span class="pre">solc</span></code> will not work with <code class="docutils literal notranslate"><span class="pre">solcjs</span></code>.</p>
+</div>
+</div>
+<div class="section" id="docker">
+<h2>Docker<a class="headerlink" href="#docker" title="Permalink to this headline">¶</a></h2>
+<p>Docker images of Solidity builds are available using the <code class="docutils literal notranslate"><span class="pre">solc</span></code> image from the <code class="docutils literal notranslate"><span class="pre">ethereum</span></code> organisation.
+Use the <code class="docutils literal notranslate"><span class="pre">stable</span></code> tag for the latest released version, and <code class="docutils literal notranslate"><span class="pre">nightly</span></code> for potentially unstable changes in the develop branch.</p>
+<p>The Docker image runs the compiler executable, so you can pass all compiler arguments to it.
+For example, the command below pulls the stable version of the <code class="docutils literal notranslate"><span class="pre">solc</span></code> image (if you do not have it already),
+and runs it in a new container, passing the <code class="docutils literal notranslate"><span class="pre">--help</span></code> argument.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run ethereum/solc:stable --help
+</pre></div>
+</div>
+<p>You can also specify release build versions in the tag, for example, for the 0.5.4 release.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run ethereum/solc:0.5.4 --help
+</pre></div>
+</div>
+<p>To use the Docker image to compile Solidity files on the host machine mount a
+local folder for input and output, and specify the contract to compile. For example.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run -v /local/path:/sources ethereum/solc:stable -o /sources/output --abi --bin /sources/Contract.sol
+</pre></div>
+</div>
+<p>You can also use the standard JSON interface (which is recommended when using the compiler with tooling).
+When using this interface it is not necessary to mount any directories as long as the JSON input is
+self-contained (i.e. it does not refer to any external files that would have to be
+<a class="reference internal" href="path-resolution.html#initial-vfs-content-standard-json-with-import-callback"><span class="std std-ref">loaded by the import callback</span></a>).</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>docker run ethereum/solc:stable --standard-json &lt; input.json &gt; output.json
+</pre></div>
+</div>
+</div>
+<div class="section" id="linux-packages">
+<h2>Linux Packages<a class="headerlink" href="#linux-packages" title="Permalink to this headline">¶</a></h2>
+<p>Binary packages of Solidity are available at
+<a class="reference external" href="https://github.com/ethereum/solidity/releases">solidity/releases</a>.</p>
+<p>We also have PPAs for Ubuntu, you can get the latest stable
+version using the following commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo add-apt-repository ppa:ethereum/ethereum
+sudo apt-get update
+sudo apt-get install solc
+</pre></div>
+</div>
+<p>The nightly version can be installed using these commands:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo add-apt-repository ppa:ethereum/ethereum
+sudo add-apt-repository ppa:ethereum/ethereum-dev
+sudo apt-get update
+sudo apt-get install solc
+</pre></div>
+</div>
+<p>We are also releasing a <a class="reference external" href="https://snapcraft.io/">snap package</a>, which is
+installable in all the <a class="reference external" href="https://snapcraft.io/docs/core/install">supported Linux distros</a>. To
+install the latest stable version of solc:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo snap install solc
+</pre></div>
+</div>
+<p>If you want to help testing the latest development version of Solidity
+with the most recent changes, please use the following:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo snap install solc --edge
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">solc</span></code> snap uses strict confinement. This is the most secure mode for snap packages
+but it comes with limitations, like accessing only the files in your <code class="docutils literal notranslate"><span class="pre">/home</span></code> and <code class="docutils literal notranslate"><span class="pre">/media</span></code> directories.
+For more information, go to <a class="reference external" href="https://snapcraft.io/blog/demystifying-snap-confinement">Demystifying Snap Confinement</a>.</p>
+</div>
+<p>Arch Linux also has packages, albeit limited to the latest development version:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>pacman -S solidity
+</pre></div>
+</div>
+<p>Gentoo Linux has an <a class="reference external" href="https://overlays.gentoo.org/#ethereum">Ethereum overlay</a> that contains a Solidity package.
+After the overlay is setup, <code class="docutils literal notranslate"><span class="pre">solc</span></code> can be installed in x86_64 architectures by:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>emerge dev-lang/solidity
+</pre></div>
+</div>
+</div>
+<div class="section" id="macos-packages">
+<h2>macOS Packages<a class="headerlink" href="#macos-packages" title="Permalink to this headline">¶</a></h2>
+<p>We distribute the Solidity compiler through Homebrew
+as a build-from-source version. Pre-built bottles are
+currently not supported.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew update
+brew upgrade
+brew tap ethereum/ethereum
+brew install solidity
+</pre></div>
+</div>
+<p>To install the most recent 0.4.x / 0.5.x version of Solidity you can also use <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">solidity&#64;4</span></code>
+and <code class="docutils literal notranslate"><span class="pre">brew</span> <span class="pre">install</span> <span class="pre">solidity&#64;5</span></code>, respectively.</p>
+<p>If you need a specific version of Solidity you can install a
+Homebrew formula directly from Github.</p>
+<p>View
+<a class="reference external" href="https://github.com/ethereum/homebrew-ethereum/commits/master/solidity.rb">solidity.rb commits on Github</a>.</p>
+<p>Copy the commit hash of the version you want and check it out on your machine.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/ethereum/homebrew-ethereum.git
+<span class="nb">cd</span> homebrew-ethereum
+git checkout &lt;your-hash-goes-here&gt;
+</pre></div>
+</div>
+<p>Install it using <code class="docutils literal notranslate"><span class="pre">brew</span></code>:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>brew unlink solidity
+<span class="c1"># eg. Install 0.4.8</span>
+brew install solidity.rb
+</pre></div>
+</div>
+</div>
+<div class="section" id="static-binaries">
+<h2>Static Binaries<a class="headerlink" href="#static-binaries" title="Permalink to this headline">¶</a></h2>
+<p>We maintain a repository containing static builds of past and current compiler versions for all
+supported platforms at <a class="reference external" href="https://github.com/ethereum/solc-bin/">solc-bin</a>. This is also the location where you can find the nightly builds.</p>
+<p>The repository is not only a quick and easy way for end users to get binaries ready to be used
+out-of-the-box but it is also meant to be friendly to third-party tools:</p>
+<ul class="simple">
+<li><p>The content is mirrored to <a class="reference external" href="https://binaries.soliditylang.org">https://binaries.soliditylang.org</a> where it can be easily downloaded over
+HTTPS without any authentication, rate limiting or the need to use git.</p></li>
+<li><p>Content is served with correct <cite>Content-Type</cite> headers and lenient CORS configuration so that it
+can be directly loaded by tools running in the browser.</p></li>
+<li><p>Binaries do not require installation or unpacking (with the exception of older Windows builds
+bundled with necessary DLLs).</p></li>
+<li><p>We strive for a high level of backwards-compatibility. Files, once added, are not removed or moved
+without providing a symlink/redirect at the old location. They are also never modified
+in place and should always match the original checksum. The only exception would be broken or
+unusable files with a potential to cause more harm than good if left as is.</p></li>
+<li><p>Files are served over both HTTP and HTTPS. As long as you obtain the file list in a secure way
+(via git, HTTPS, IPFS or just have it cached locally) and verify hashes of the binaries
+after downloading them, you do not have to use HTTPS for the binaries themselves.</p></li>
+</ul>
+<p>The same binaries are in most cases available on the <a class="reference external" href="https://github.com/ethereum/solidity/releases">Solidity release page on Github</a>. The
+difference is that we do not generally update old releases on the Github release page. This means
+that we do not rename them if the naming convention changes and we do not add builds for platforms
+that were not supported at the time of release. This only happens in <code class="docutils literal notranslate"><span class="pre">solc-bin</span></code>.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">solc-bin</span></code> repository contains several top-level directories, each representing a single platform.
+Each one contains a <code class="docutils literal notranslate"><span class="pre">list.json</span></code> file listing the available binaries. For example in
+<code class="docutils literal notranslate"><span class="pre">emscripten-wasm32/list.json</span></code> you will find the following information about version 0.7.4:</p>
+<div class="highlight-json notranslate"><div class="highlight"><pre><span></span><span class="p">{</span>
+  <span class="nt">&quot;path&quot;</span><span class="p">:</span> <span class="s2">&quot;solc-emscripten-wasm32-v0.7.4+commit.3f05b770.js&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;version&quot;</span><span class="p">:</span> <span class="s2">&quot;0.7.4&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;build&quot;</span><span class="p">:</span> <span class="s2">&quot;commit.3f05b770&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;longVersion&quot;</span><span class="p">:</span> <span class="s2">&quot;0.7.4+commit.3f05b770&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;keccak256&quot;</span><span class="p">:</span> <span class="s2">&quot;0x300330ecd127756b824aa13e843cb1f43c473cb22eaf3750d5fb9c99279af8c3&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;sha256&quot;</span><span class="p">:</span> <span class="s2">&quot;0x2b55ed5fec4d9625b6c7b3ab1abd2b7fb7dd2a9c68543bf0323db2c7e2d55af2&quot;</span><span class="p">,</span>
+  <span class="nt">&quot;urls&quot;</span><span class="p">:</span> <span class="p">[</span>
+    <span class="s2">&quot;bzzr://16c5f09109c793db99fe35f037c6092b061bd39260ee7a677c8a97f18c955ab1&quot;</span><span class="p">,</span>
+    <span class="s2">&quot;dweb:/ipfs/QmTLs5MuLEWXQkths41HiACoXDiH8zxyqBHGFDRSzVE5CS&quot;</span>
+  <span class="p">]</span>
+<span class="p">}</span>
+</pre></div>
+</div>
+<p>This means that:</p>
+<ul class="simple">
+<li><p>You can find the binary in the same directory under the name
+<a class="reference external" href="https://github.com/ethereum/solc-bin/blob/gh-pages/emscripten-wasm32/solc-emscripten-wasm32-v0.7.4+commit.3f05b770.js">solc-emscripten-wasm32-v0.7.4+commit.3f05b770.js</a>.
+Note that the file might be a symlink, and you will need to resolve it yourself if you are not using
+git to download it or your file system does not support symlinks.</p></li>
+<li><p>The binary is also mirrored at <a class="reference external" href="https://binaries.soliditylang.org/emscripten-wasm32/solc-emscripten-wasm32-v0.7.4+commit.3f05b770.js">https://binaries.soliditylang.org/emscripten-wasm32/solc-emscripten-wasm32-v0.7.4+commit.3f05b770.js</a>.
+In this case git is not necessary and symlinks are resolved transparently, either by serving a copy
+of the file or returning a HTTP redirect.</p></li>
+<li><p>The file is also available on IPFS at <a class="reference external" href="https://gateway.ipfs.io/ipfs/QmTLs5MuLEWXQkths41HiACoXDiH8zxyqBHGFDRSzVE5CS">QmTLs5MuLEWXQkths41HiACoXDiH8zxyqBHGFDRSzVE5CS</a>.</p></li>
+<li><p>The file might in future be available on Swarm at <a class="reference external" href="https://swarm-gateways.net/bzz:/16c5f09109c793db99fe35f037c6092b061bd39260ee7a677c8a97f18c955ab1/">16c5f09109c793db99fe35f037c6092b061bd39260ee7a677c8a97f18c955ab1</a>.</p></li>
+<li><p>You can verify the integrity of the binary by comparing its keccak256 hash to
+<code class="docutils literal notranslate"><span class="pre">0x300330ecd127756b824aa13e843cb1f43c473cb22eaf3750d5fb9c99279af8c3</span></code>.  The hash can be computed
+on the command line using <code class="docutils literal notranslate"><span class="pre">keccak256sum</span></code> utility provided by <a class="reference external" href="https://github.com/maandree/sha3sum">sha3sum</a> or <a class="reference external" href="https://github.com/ethereumjs/ethereumjs-util/blob/master/docs/modules/_hash_.md#const-keccak256">keccak256() function
+from ethereumjs-util</a> in JavaScript.</p></li>
+<li><p>You can also verify the integrity of the binary by comparing its sha256 hash to
+<code class="docutils literal notranslate"><span class="pre">0x2b55ed5fec4d9625b6c7b3ab1abd2b7fb7dd2a9c68543bf0323db2c7e2d55af2</span></code>.</p></li>
+</ul>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Due to the strong backwards compatibility requirement the repository contains some legacy elements
+but you should avoid using them when writing new tools:</p>
+<ul class="simple">
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">emscripten-wasm32/</span></code> (with a fallback to <code class="docutils literal notranslate"><span class="pre">emscripten-asmjs/</span></code>) instead of <code class="docutils literal notranslate"><span class="pre">bin/</span></code> if
+you want the best performance. Until version 0.6.1 we only provided asm.js binaries.
+Starting with 0.6.2 we switched to <a class="reference external" href="https://emscripten.org/docs/compiling/WebAssembly.html">WebAssembly builds</a> with much better performance. We have
+rebuilt the older versions for wasm but the original asm.js files remain in <code class="docutils literal notranslate"><span class="pre">bin/</span></code>.
+The new ones had to be placed in a separate directory to avoid name clashes.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">emscripten-asmjs/</span></code> and <code class="docutils literal notranslate"><span class="pre">emscripten-wasm32/</span></code> instead of <code class="docutils literal notranslate"><span class="pre">bin/</span></code> and <code class="docutils literal notranslate"><span class="pre">wasm/</span></code> directories
+if you want to be sure whether you are downloading a wasm or an asm.js binary.</p></li>
+<li><p>Use <code class="docutils literal notranslate"><span class="pre">list.json</span></code> instead of <code class="docutils literal notranslate"><span class="pre">list.js</span></code> and <code class="docutils literal notranslate"><span class="pre">list.txt</span></code>. The JSON list format contains all
+the information from the old ones and more.</p></li>
+<li><p>Use <a class="reference external" href="https://binaries.soliditylang.org">https://binaries.soliditylang.org</a> instead of <a class="reference external" href="https://solc-bin.ethereum.org">https://solc-bin.ethereum.org</a>. To keep things
+simple we moved almost everything related to the compiler under the new <code class="docutils literal notranslate"><span class="pre">soliditylang.org</span></code>
+domain and this applies to <code class="docutils literal notranslate"><span class="pre">solc-bin</span></code> too. While the new domain is recommended, the old one
+is still fully supported and guaranteed to point at the same location.</p></li>
+</ul>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The binaries are also available at <a class="reference external" href="https://ethereum.github.io/solc-bin/">https://ethereum.github.io/solc-bin/</a> but this page
+stopped being updated just after the release of version 0.7.2, will not receive any new releases
+or nightly builds for any platform and does not serve the new directory structure, including
+non-emscripten builds.</p>
+<p>If you are using it, please switch to <a class="reference external" href="https://binaries.soliditylang.org">https://binaries.soliditylang.org</a>, which is a drop-in
+replacement. This allows us to make changes to the underlying hosting in a transparent way and
+minimize disruption. Unlike the <code class="docutils literal notranslate"><span class="pre">ethereum.github.io</span></code> domain, which we do not have any control
+over, <code class="docutils literal notranslate"><span class="pre">binaries.soliditylang.org</span></code> is guaranteed to work and maintain the same URL structure
+in the long-term.</p>
+</div>
+</div>
+<div class="section" id="building-from-source">
+<span id="id1"></span><h2>Building from Source<a class="headerlink" href="#building-from-source" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="prerequisites-all-operating-systems">
+<h3>Prerequisites - All Operating Systems<a class="headerlink" href="#prerequisites-all-operating-systems" title="Permalink to this headline">¶</a></h3>
+<p>The following are dependencies for all builds of Solidity:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://cmake.org/download/">CMake</a> (version 3.13+)</p></td>
+<td><p>Cross-platform build file generator.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.boost.org">Boost</a> (version 1.77+ on
+Windows, 1.65+ otherwise)</p></td>
+<td><p>C++ libraries.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://git-scm.com/download">Git</a></p></td>
+<td><p>Command-line tool for retrieving source code.</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://github.com/Z3Prover/z3">z3</a> (version 4.8+, Optional)</p></td>
+<td><p>For use with SMT checker.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://cvc4.cs.stanford.edu/web/">cvc4</a> (Optional)</p></td>
+<td><p>For use with SMT checker.</p></td>
+</tr>
+</tbody>
+</table>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Solidity versions prior to 0.5.10 can fail to correctly link against Boost versions 1.70+.
+A possible workaround is to temporarily rename <code class="docutils literal notranslate"><span class="pre">&lt;Boost</span> <span class="pre">install</span> <span class="pre">path&gt;/lib/cmake/Boost-1.70.0</span></code>
+prior to running the cmake command to configure solidity.</p>
+<p>Starting from 0.5.10 linking against Boost 1.70+ should work without manual intervention.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The default build configuration requires a specific Z3 version (the latest one at the time the
+code was last updated). Changes introduced between Z3 releases often result in slightly different
+(but still valid) results being returned. Our SMT tests do not account for these differences and
+will likely fail with a different version than the one they were written for. This does not mean
+that a build using a different version is faulty. If you pass <code class="docutils literal notranslate"><span class="pre">-DSTRICT_Z3_VERSION=OFF</span></code> option
+to CMake, you can build with any version that satisfies the requirement given in the table above.
+If you do this, however, please remember to pass the <code class="docutils literal notranslate"><span class="pre">--no-smt</span></code> option to <code class="docutils literal notranslate"><span class="pre">scripts/tests.sh</span></code>
+to skip the SMT tests.</p>
+</div>
+<div class="section" id="minimum-compiler-versions">
+<h4>Minimum Compiler Versions<a class="headerlink" href="#minimum-compiler-versions" title="Permalink to this headline">¶</a></h4>
+<p>The following C++ compilers and their minimum versions can build the Solidity codebase:</p>
+<ul class="simple">
+<li><p><a class="reference external" href="https://gcc.gnu.org">GCC</a>, version 8+</p></li>
+<li><p><a class="reference external" href="https://clang.llvm.org/">Clang</a>, version 7+</p></li>
+<li><p><a class="reference external" href="https://visualstudio.microsoft.com/vs/">MSVC</a>, version 2019+</p></li>
+</ul>
+</div>
+</div>
+<div class="section" id="prerequisites-macos">
+<h3>Prerequisites - macOS<a class="headerlink" href="#prerequisites-macos" title="Permalink to this headline">¶</a></h3>
+<p>For macOS builds, ensure that you have the latest version of
+<a class="reference external" href="https://developer.apple.com/xcode/download/">Xcode installed</a>.
+This contains the <a class="reference external" href="https://en.wikipedia.org/wiki/Clang">Clang C++ compiler</a>, the
+<a class="reference external" href="https://en.wikipedia.org/wiki/Xcode">Xcode IDE</a> and other Apple development
+tools that are required for building C++ applications on OS X.
+If you are installing Xcode for the first time, or have just installed a new
+version then you will need to agree to the license before you can do
+command-line builds:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>sudo xcodebuild -license accept
+</pre></div>
+</div>
+<p>Our OS X build script uses <a class="reference external" href="https://brew.sh">the Homebrew</a>
+package manager for installing external dependencies.
+Here’s how to <a class="reference external" href="https://docs.brew.sh/FAQ#how-do-i-uninstall-homebrew">uninstall Homebrew</a>,
+if you ever want to start again from scratch.</p>
+</div>
+<div class="section" id="prerequisites-windows">
+<h3>Prerequisites - Windows<a class="headerlink" href="#prerequisites-windows" title="Permalink to this headline">¶</a></h3>
+<p>You need to install the following dependencies for Windows builds of Solidity:</p>
+<table class="docutils align-default">
+<colgroup>
+<col style="width: 39%" />
+<col style="width: 61%" />
+</colgroup>
+<thead>
+<tr class="row-odd"><th class="head"><p>Software</p></th>
+<th class="head"><p>Notes</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019">Visual Studio 2019 Build Tools</a></p></td>
+<td><p>C++ compiler</p></td>
+</tr>
+<tr class="row-odd"><td><p><a class="reference external" href="https://www.visualstudio.com/vs/">Visual Studio 2019</a>  (Optional)</p></td>
+<td><p>C++ compiler and dev environment.</p></td>
+</tr>
+<tr class="row-even"><td><p><a class="reference external" href="https://www.boost.org">Boost</a> (version 1.77+)</p></td>
+<td><p>C++ libraries.</p></td>
+</tr>
+</tbody>
+</table>
+<p>If you already have one IDE and only need the compiler and libraries,
+you could install Visual Studio 2019 Build Tools.</p>
+<p>Visual Studio 2019 provides both IDE and necessary compiler and libraries.
+So if you have not got an IDE and prefer to develop Solidity, Visual Studio 2019
+may be a choice for you to get everything setup easily.</p>
+<p>Here is the list of components that should be installed
+in Visual Studio 2019 Build Tools or Visual Studio 2019:</p>
+<ul class="simple">
+<li><p>Visual Studio C++ core features</p></li>
+<li><p>VC++ 2019 v141 toolset (x86,x64)</p></li>
+<li><p>Windows Universal CRT SDK</p></li>
+<li><p>Windows 8.1 SDK</p></li>
+<li><p>C++/CLI support</p></li>
+</ul>
+</div>
+<div class="section" id="dependencies-helper-script">
+<h3>Dependencies Helper Script<a class="headerlink" href="#dependencies-helper-script" title="Permalink to this headline">¶</a></h3>
+<p>We have a helper script which you can use to install all required external dependencies
+on macOS, Windows and on numerous Linux distros.</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>./scripts/install_deps.sh
+</pre></div>
+</div>
+<p>Or, on Windows:</p>
+<div class="highlight-bat notranslate"><div class="highlight"><pre><span></span>scripts\install_deps.ps1
+</pre></div>
+</div>
+<p>Note that the latter command will install <code class="docutils literal notranslate"><span class="pre">boost</span></code> and <code class="docutils literal notranslate"><span class="pre">cmake</span></code> to the <code class="docutils literal notranslate"><span class="pre">deps</span></code> subdirectory, while the former command
+will attempt to install the dependencies globally.</p>
+</div>
+<div class="section" id="clone-the-repository">
+<h3>Clone the Repository<a class="headerlink" href="#clone-the-repository" title="Permalink to this headline">¶</a></h3>
+<p>To clone the source code, execute the following command:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone --recursive https://github.com/ethereum/solidity.git
+<span class="nb">cd</span> solidity
+</pre></div>
+</div>
+<p>If you want to help developing Solidity,
+you should fork Solidity and add your personal fork as a second remote:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git remote add personal git@github.com:<span class="o">[</span>username<span class="o">]</span>/solidity.git
+</pre></div>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>This method will result in a prerelease build leading to e.g. a flag
+being set in each bytecode produced by such a compiler.
+If you want to re-build a released Solidity compiler, then
+please use the source tarball on the github release page:</p>
+<p><a class="reference external" href="https://github.com/ethereum/solidity/releases/download/v0.X.Y/solidity_0.X.Y.tar.gz">https://github.com/ethereum/solidity/releases/download/v0.X.Y/solidity_0.X.Y.tar.gz</a></p>
+<p>(not the “Source code” provided by github).</p>
+</div>
+</div>
+<div class="section" id="command-line-build">
+<h3>Command-Line Build<a class="headerlink" href="#command-line-build" title="Permalink to this headline">¶</a></h3>
+<p><strong>Be sure to install External Dependencies (see above) before build.</strong></p>
+<p>Solidity project uses CMake to configure the build.
+You might want to install <a class="reference external" href="https://ccache.dev/">ccache</a> to speed up repeated builds.
+CMake will pick it up automatically.
+Building Solidity is quite similar on Linux, macOS and other Unices:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake .. <span class="o">&amp;&amp;</span> make
+</pre></div>
+</div>
+<p>or even easier on Linux and macOS, you can run:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1">#note: this will install binaries solc and soltest at usr/local/bin</span>
+./scripts/build.sh
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>BSD builds should work, but are untested by the Solidity team.</p>
+</div>
+<p>And for Windows:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>mkdir build
+<span class="nb">cd</span> build
+cmake -G <span class="s2">&quot;Visual Studio 16 2019&quot;</span> ..
+</pre></div>
+</div>
+<p>In case you want to use the version of boost installed by <code class="docutils literal notranslate"><span class="pre">scripts\install_deps.ps1</span></code>, you will
+additionally need to pass <code class="docutils literal notranslate"><span class="pre">-DBoost_DIR=&quot;deps\boost\lib\cmake\Boost-*&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">-DCMAKE_MSVC_RUNTIME_LIBRARY=MultiThreaded</span></code>
+as arguments to the call to <code class="docutils literal notranslate"><span class="pre">cmake</span></code>.</p>
+<p>This should result in the creation of <strong>solidity.sln</strong> in that build directory.
+Double-clicking on that file should result in Visual Studio firing up.  We suggest building
+<strong>Release</strong> configuration, but all others work.</p>
+<p>Alternatively, you can build for Windows on the command-line, like so:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>cmake --build . --config Release
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="cmake-options">
+<h2>CMake Options<a class="headerlink" href="#cmake-options" title="Permalink to this headline">¶</a></h2>
+<p>If you are interested what CMake options are available run <code class="docutils literal notranslate"><span class="pre">cmake</span> <span class="pre">..</span> <span class="pre">-LH</span></code>.</p>
+<div class="section" id="smt-solvers">
+<span id="smt-solvers-build"></span><h3>SMT Solvers<a class="headerlink" href="#smt-solvers" title="Permalink to this headline">¶</a></h3>
+<p>Solidity can be built against SMT solvers and will do so by default if
+they are found in the system. Each solver can be disabled by a <cite>cmake</cite> option.</p>
+<p><em>Note: In some cases, this can also be a potential workaround for build failures.</em></p>
+<p>Inside the build folder you can disable them, since they are enabled by default:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span><span class="c1"># disables only Z3 SMT Solver.</span>
+cmake .. -DUSE_Z3<span class="o">=</span>OFF
+
+<span class="c1"># disables only CVC4 SMT Solver.</span>
+cmake .. -DUSE_CVC4<span class="o">=</span>OFF
+
+<span class="c1"># disables both Z3 and CVC4</span>
+cmake .. -DUSE_CVC4<span class="o">=</span>OFF -DUSE_Z3<span class="o">=</span>OFF
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="the-version-string-in-detail">
+<h2>The Version String in Detail<a class="headerlink" href="#the-version-string-in-detail" title="Permalink to this headline">¶</a></h2>
+<p>The Solidity version string contains four parts:</p>
+<ul class="simple">
+<li><p>the version number</p></li>
+<li><p>pre-release tag, usually set to <code class="docutils literal notranslate"><span class="pre">develop.YYYY.MM.DD</span></code> or <code class="docutils literal notranslate"><span class="pre">nightly.YYYY.MM.DD</span></code></p></li>
+<li><p>commit in the format of <code class="docutils literal notranslate"><span class="pre">commit.GITHASH</span></code></p></li>
+<li><p>platform, which has an arbitrary number of items, containing details about the platform and compiler</p></li>
+</ul>
+<p>If there are local modifications, the commit will be postfixed with <code class="docutils literal notranslate"><span class="pre">.mod</span></code>.</p>
+<p>These parts are combined as required by Semver, where the Solidity pre-release tag equals to the Semver pre-release
+and the Solidity commit and platform combined make up the Semver build metadata.</p>
+<p>A release example: <code class="docutils literal notranslate"><span class="pre">0.4.8+commit.60cc1668.Emscripten.clang</span></code>.</p>
+<p>A pre-release example: <code class="docutils literal notranslate"><span class="pre">0.4.9-nightly.2017.1.17+commit.6ecb4aa3.Emscripten.clang</span></code></p>
+</div>
+<div class="section" id="important-information-about-versioning">
+<h2>Important Information About Versioning<a class="headerlink" href="#important-information-about-versioning" title="Permalink to this headline">¶</a></h2>
+<p>After a release is made, the patch version level is bumped, because we assume that only
+patch level changes follow. When changes are merged, the version should be bumped according
+to semver and the severity of the change. Finally, a release is always made with the version
+of the current nightly build, but without the <code class="docutils literal notranslate"><span class="pre">prerelease</span></code> specifier.</p>
+<p>Example:</p>
+<ol class="arabic simple" start="0">
+<li><p>The 0.4.0 release is made.</p></li>
+<li><p>The nightly build has a version of 0.4.1 from now on.</p></li>
+<li><p>Non-breaking changes are introduced –&gt; no change in version.</p></li>
+<li><p>A breaking change is introduced –&gt; version is bumped to 0.5.0.</p></li>
+<li><p>The 0.5.0 release is made.</p></li>
+</ol>
+<p>This behaviour works well with the  <a class="reference internal" href="layout-of-source-files.html#version-pragma"><span class="std std-ref">version pragma</span></a>.</p>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="solidity-by-example.html" class="btn btn-neutral float-right" title="Solidity by Example" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="introduction-to-smart-contracts.html" class="btn btn-neutral float-left" title="Introduction to Smart Contracts" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Ethereum
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book fa-element"> RTD </span>
+
+    <span class="fa fa-element">
+    <input class="container_toggle" type="checkbox" id="switch" name="mode">
+    <label for="switch"></label>
+    </span>
+
+    <span class="fa fa-v fa-element"> v:  <span class="fa fa-caret-down"></span></span>
+
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Versions</dt> 
+        </dl>
+        <dl>
+            <dt>Downloads</dt> 
+        </dl>
+        <dl>
+            
+            <dt>On Read the Docs</dt>
+            <dd>
+                <a href="///projects//?fromdocs=">Project Home</a>
+            </dd>
+            <dd>
+                <a href="///builds//?fromdocs=">Builds</a>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>

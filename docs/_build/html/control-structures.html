@@ -1,0 +1,1109 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" >
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Expressions and Control Structures &mdash; Solidity 0.8.10 documentation</title>
+  
+
+  
+  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+  <link rel="stylesheet" href="_static/a4_railroad_diagram.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/custom.css" type="text/css" />
+  <link rel="stylesheet" href="_static/css/toggle.css" type="text/css" />
+
+  
+  
+  
+  
+
+  
+  <!--[if lt IE 9]>
+    <script src="_static/js/html5shiv.min.js"></script>
+  <![endif]-->
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/doctools.js"></script>
+        <script src="_static/language_data.js"></script>
+        <script src="_static/js/toggle.js"></script>
+    
+    <script type="text/javascript" src="_static/js/theme.js"></script>
+
+    
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Contracts" href="contracts.html" />
+    <link rel="prev" title="Units and Globally Available Variables" href="units-and-global-variables.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search"  style="background: #65afff" >
+          
+
+          
+            <a href="index.html">
+          
+
+          
+            
+            <img src="_static/logo.svg" class="logo" alt="Logo"/>
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                0.8.10
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+    
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Basics</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="introduction-to-smart-contracts.html">Introduction to Smart Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="installing-solidity.html">Installing the Solidity Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="solidity-by-example.html">Solidity by Example</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Language Description</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="layout-of-source-files.html">Layout of a Solidity Source File</a></li>
+<li class="toctree-l1"><a class="reference internal" href="structure-of-a-contract.html">Structure of a Contract</a></li>
+<li class="toctree-l1"><a class="reference internal" href="types.html">Types</a></li>
+<li class="toctree-l1"><a class="reference internal" href="units-and-global-variables.html">Units and Globally Available Variables</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Expressions and Control Structures</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#control-structures">Control Structures</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#function-calls">Function Calls</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#internal-function-calls">Internal Function Calls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#external-function-calls">External Function Calls</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#named-calls-and-anonymous-function-parameters">Named Calls and Anonymous Function Parameters</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#omitted-function-parameter-names">Omitted Function Parameter Names</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#creating-contracts-via-new">Creating Contracts via <code class="docutils literal notranslate"><span class="pre">new</span></code></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#salted-contract-creations-create2">Salted contract creations / create2</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#order-of-evaluation-of-expressions">Order of Evaluation of Expressions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#assignment">Assignment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#destructuring-assignments-and-returning-multiple-values">Destructuring Assignments and Returning Multiple Values</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#complications-for-arrays-and-structs">Complications for Arrays and Structs</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#scoping-and-declarations">Scoping and Declarations</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#checked-or-unchecked-arithmetic">Checked or Unchecked Arithmetic</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#error-handling-assert-require-revert-and-exceptions">Error handling: Assert, Require, Revert and Exceptions</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#panic-via-assert-and-error-via-require">Panic via <code class="docutils literal notranslate"><span class="pre">assert</span></code> and Error via <code class="docutils literal notranslate"><span class="pre">require</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#revert"><code class="docutils literal notranslate"><span class="pre">revert</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#try-catch"><code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">catch</span></code></a></li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="contracts.html">Contracts</a></li>
+<li class="toctree-l1"><a class="reference internal" href="assembly.html">Inline Assembly</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cheatsheet.html">Cheatsheet</a></li>
+<li class="toctree-l1"><a class="reference internal" href="grammar.html">Language Grammar</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Compiler</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="using-the-compiler.html">Using the Compiler</a></li>
+<li class="toctree-l1"><a class="reference internal" href="analysing-compilation-output.html">Analysing the Compiler Output</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Internals</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_storage.html">Layout of State Variables in Storage</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_memory.html">Layout in Memory</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/layout_in_calldata.html">Layout of Call Data</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/variable_cleanup.html">Cleaning Up Variables</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/source_mappings.html">Source Mappings</a></li>
+<li class="toctree-l1"><a class="reference internal" href="internals/optimizer.html">The Optimizer</a></li>
+<li class="toctree-l1"><a class="reference internal" href="metadata.html">Contract Metadata</a></li>
+<li class="toctree-l1"><a class="reference internal" href="abi-spec.html">Contract ABI Specification</a></li>
+</ul>
+<p class="caption"><span class="caption-text">Additional Material</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="050-breaking-changes.html">Solidity v0.5.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="060-breaking-changes.html">Solidity v0.6.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="070-breaking-changes.html">Solidity v0.7.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="080-breaking-changes.html">Solidity v0.8.0 Breaking Changes</a></li>
+<li class="toctree-l1"><a class="reference internal" href="natspec-format.html">NatSpec Format</a></li>
+<li class="toctree-l1"><a class="reference internal" href="security-considerations.html">Security Considerations</a></li>
+<li class="toctree-l1"><a class="reference internal" href="smtchecker.html">SMTChecker and Formal Verification</a></li>
+<li class="toctree-l1"><a class="reference internal" href="resources.html">Resources</a></li>
+<li class="toctree-l1"><a class="reference internal" href="path-resolution.html">Import Path Resolution</a></li>
+<li class="toctree-l1"><a class="reference internal" href="yul.html">Yul</a></li>
+<li class="toctree-l1"><a class="reference internal" href="style-guide.html">Style Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="common-patterns.html">Common Patterns</a></li>
+<li class="toctree-l1"><a class="reference internal" href="bugs.html">List of Known Bugs</a></li>
+<li class="toctree-l1"><a class="reference internal" href="contributing.html">Contributing</a></li>
+<li class="toctree-l1"><a class="reference internal" href="brand-guide.html">Solidity Brand Guide</a></li>
+<li class="toctree-l1"><a class="reference internal" href="language-influences.html">Language Influences</a></li>
+</ul>
+
+            
+          
+    <a href="genindex.html">Keyword Index</a>
+
+        </div>
+        
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">Solidity</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
+        
+      <li>Expressions and Control Structures</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="_sources/control-structures.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="expressions-and-control-structures">
+<h1>Expressions and Control Structures<a class="headerlink" href="#expressions-and-control-structures" title="Permalink to this headline">¶</a></h1>
+<span class="target" id="index-0"></span><div class="section" id="control-structures">
+<span id="index-1"></span><h2>Control Structures<a class="headerlink" href="#control-structures" title="Permalink to this headline">¶</a></h2>
+<p>Most of the control structures known from curly-braces languages are available in Solidity:</p>
+<p>There is: <code class="docutils literal notranslate"><span class="pre">if</span></code>, <code class="docutils literal notranslate"><span class="pre">else</span></code>, <code class="docutils literal notranslate"><span class="pre">while</span></code>, <code class="docutils literal notranslate"><span class="pre">do</span></code>, <code class="docutils literal notranslate"><span class="pre">for</span></code>, <code class="docutils literal notranslate"><span class="pre">break</span></code>, <code class="docutils literal notranslate"><span class="pre">continue</span></code>, <code class="docutils literal notranslate"><span class="pre">return</span></code>, with
+the usual semantics known from C or JavaScript.</p>
+<p>Solidity also supports exception handling in the form of <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">catch</span></code>-statements,
+but only for <a class="reference internal" href="#external-function-calls"><span class="std std-ref">external function calls</span></a> and
+contract creation calls. Errors can be created using the <a class="reference internal" href="#revert-statement"><span class="std std-ref">revert statement</span></a>.</p>
+<p>Parentheses can <em>not</em> be omitted for conditionals, but curly braces can be omitted
+around single-statement bodies.</p>
+<p>Note that there is no type conversion from non-boolean to boolean types as
+there is in C and JavaScript, so <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">(1)</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code> is <em>not</em> valid
+Solidity.</p>
+</div>
+<div class="section" id="function-calls">
+<span id="index-2"></span><span id="id1"></span><h2>Function Calls<a class="headerlink" href="#function-calls" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="internal-function-calls">
+<span id="id2"></span><h3>Internal Function Calls<a class="headerlink" href="#internal-function-calls" title="Permalink to this headline">¶</a></h3>
+<p>Functions of the current contract can be called directly (“internally”), also recursively, as seen in
+this nonsensical example:</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.22</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="c1">// This will report a warning</span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">g</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">a</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">ret</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>a<span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>f<span class="p">();</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">ret</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>g<span class="p">(</span><span class="m m-Decimal">7</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">+</span><span class=" -WhiteSpace"> </span>f<span class="p">();</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>These function calls are translated into simple jumps inside the EVM. This has
+the effect that the current memory is not cleared, i.e. passing memory references
+to internally-called functions is very efficient. Only functions of the same
+contract instance can be called internally.</p>
+<p>You should still avoid excessive recursion, as every internal function call
+uses up at least one stack slot and there are only 1024 slots available.</p>
+</div>
+<div class="section" id="external-function-calls">
+<span id="id3"></span><h3>External Function Calls<a class="headerlink" href="#external-function-calls" title="Permalink to this headline">¶</a></h3>
+<p>Functions can also be called using the <code class="docutils literal notranslate"><span class="pre">this.g(8);</span></code> and <code class="docutils literal notranslate"><span class="pre">c.g(2);</span></code> notation, where
+<code class="docutils literal notranslate"><span class="pre">c</span></code> is a contract instance and <code class="docutils literal notranslate"><span class="pre">g</span></code> is a function belonging to <code class="docutils literal notranslate"><span class="pre">c</span></code>.
+Calling the function <code class="docutils literal notranslate"><span class="pre">g</span></code> via either way results in it being called “externally”, using a
+message call and not directly via jumps.
+Please note that function calls on <code class="docutils literal notranslate"><span class="pre">this</span></code> cannot be used in the constructor,
+as the actual contract has not been created yet.</p>
+<p>Functions of other contracts have to be called externally. For an external call,
+all function arguments have to be copied to memory.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>A function call from one contract to another does not create its own transaction,
+it is a message call as part of the overall transaction.</p>
+</div>
+<p>When calling functions of other contracts, you can specify the amount of Wei or
+gas sent with the call with the special options <code class="docutils literal notranslate"><span class="pre">{value:</span> <span class="pre">10,</span> <span class="pre">gas:</span> <span class="pre">10000}</span></code>.
+Note that it is discouraged to specify gas values explicitly, since the gas costs
+of opcodes can change in the future. Any Wei you send to the contract is added
+to the total balance of that contract:</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.6.2</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">InfoFeed</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">info</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">ret</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">42</span><span class="p">;</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Consumer</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span>InfoFeed<span class=" -WhiteSpace"> </span>feed<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">setFeed</span><span class="p">(</span>InfoFeed<span class=" -WhiteSpace"> </span>addr<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span>feed<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>addr<span class="p">;</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">callFeed</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span>feed<span class="p">.</span>info<span class="p">{</span>value<span class="p">:</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">10</span><span class="p">,</span><span class=" -WhiteSpace"> </span>gas<span class="p">:</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">800</span><span class="p">}();</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>You need to use the modifier <code class="docutils literal notranslate"><span class="pre">payable</span></code> with the <code class="docutils literal notranslate"><span class="pre">info</span></code> function because
+otherwise, the <code class="docutils literal notranslate"><span class="pre">value</span></code> option would not be available.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful that <code class="docutils literal notranslate"><span class="pre">feed.info{value:</span> <span class="pre">10,</span> <span class="pre">gas:</span> <span class="pre">800}</span></code> only locally sets the
+<code class="docutils literal notranslate"><span class="pre">value</span></code> and amount of <code class="docutils literal notranslate"><span class="pre">gas</span></code> sent with the function call, and the
+parentheses at the end perform the actual call. So
+<code class="docutils literal notranslate"><span class="pre">feed.info{value:</span> <span class="pre">10,</span> <span class="pre">gas:</span> <span class="pre">800}</span></code> does not call the function and
+the <code class="docutils literal notranslate"><span class="pre">value</span></code> and <code class="docutils literal notranslate"><span class="pre">gas</span></code> settings are lost, only
+<code class="docutils literal notranslate"><span class="pre">feed.info{value:</span> <span class="pre">10,</span> <span class="pre">gas:</span> <span class="pre">800}()</span></code> performs the function call.</p>
+</div>
+<p>Due to the fact that the EVM considers a call to a non-existing contract to
+always succeed, Solidity uses the <code class="docutils literal notranslate"><span class="pre">extcodesize</span></code> opcode to check that
+the contract that is about to be called actually exists (it contains code)
+and causes an exception if it does not.
+Note that this check is not performed in case of <a class="reference internal" href="units-and-global-variables.html#address-related"><span class="std std-ref">low-level calls</span></a> which
+operate on addresses rather than contract instances.</p>
+<p>Function calls also cause exceptions if the called contract itself
+throws an exception or goes out of gas.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Any interaction with another contract imposes a potential danger, especially
+if the source code of the contract is not known in advance. The
+current contract hands over control to the called contract and that may potentially
+do just about anything. Even if the called contract inherits from a known parent contract,
+the inheriting contract is only required to have a correct interface. The
+implementation of the contract, however, can be completely arbitrary and thus,
+pose a danger. In addition, be prepared in case it calls into other contracts of
+your system or even back into the calling contract before the first
+call returns. This means
+that the called contract can change state variables of the calling contract
+via its functions. Write your functions in a way that, for example, calls to
+external functions happen after any changes to state variables in your contract
+so your contract is not vulnerable to a reentrancy exploit.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Before Solidity 0.6.2, the recommended way to specify the value and gas was to
+use <code class="docutils literal notranslate"><span class="pre">f.value(x).gas(g)()</span></code>. This was deprecated in Solidity 0.6.2 and is no
+longer possible since Solidity 0.7.0.</p>
+</div>
+</div>
+<div class="section" id="named-calls-and-anonymous-function-parameters">
+<h3>Named Calls and Anonymous Function Parameters<a class="headerlink" href="#named-calls-and-anonymous-function-parameters" title="Permalink to this headline">¶</a></h3>
+<p>Function call arguments can be given by name, in any order,
+if they are enclosed in <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">}</span></code> as can be seen in the following
+example. The argument list has to coincide by name with the list of
+parameters from the function declaration, but can be in arbitrary order.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">mapping</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="o">=&gt;</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span>data<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>set<span class="p">({</span>value<span class="p">:</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">,</span><span class=" -WhiteSpace"> </span>key<span class="p">:</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">3</span><span class="p">});</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">set</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">key</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">value</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>data<span class="p">[</span>key<span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>value<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="omitted-function-parameter-names">
+<h3>Omitted Function Parameter Names<a class="headerlink" href="#omitted-function-parameter-names" title="Permalink to this headline">¶</a></h3>
+<p>The names of unused parameters (especially return parameters) can be omitted.
+Those parameters will still be present on the stack, but they are inaccessible.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.22</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="c1">// omitted name for parameter</span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">func</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">k</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>k<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="creating-contracts-via-new">
+<span id="creating-contracts"></span><span id="index-3"></span><h2>Creating Contracts via <code class="docutils literal notranslate"><span class="pre">new</span></code><a class="headerlink" href="#creating-contracts-via-new" title="Permalink to this headline">¶</a></h2>
+<p>A contract can create other contracts using the <code class="docutils literal notranslate"><span class="pre">new</span></code> keyword. The full
+code of the contract being created has to be known when the creating contract
+is compiled so recursive creation-dependencies are not possible.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.7.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">D</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">x</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">a</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>x<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>a<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span>D<span class=" -WhiteSpace"> </span>d<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">new</span><span class=" -WhiteSpace"> </span>D<span class="p">(</span><span class="m m-Decimal">4</span><span class="p">);</span><span class=" -WhiteSpace"> </span><span class="c1">// will be executed as part of C&#39;s constructor</span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">createD</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">arg</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>D<span class=" -WhiteSpace"> </span>newD<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">new</span><span class=" -WhiteSpace"> </span>D<span class="p">(</span>arg<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>newD<span class="p">.</span>x<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">createAndEndowD</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">arg</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Send ether along with the creation</span>
+<span class=" -WhiteSpace">        </span>D<span class=" -WhiteSpace"> </span>newD<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">new</span><span class=" -WhiteSpace"> </span>D<span class="p">{</span>value<span class="p">:</span><span class=" -WhiteSpace"> </span>amount<span class="p">}(</span>arg<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>newD<span class="p">.</span>x<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>As seen in the example, it is possible to send Ether while creating
+an instance of <code class="docutils literal notranslate"><span class="pre">D</span></code> using the <code class="docutils literal notranslate"><span class="pre">value</span></code> option, but it is not possible
+to limit the amount of gas.
+If the creation fails (due to out-of-stack, not enough balance or other problems),
+an exception is thrown.</p>
+<div class="section" id="salted-contract-creations-create2">
+<h3>Salted contract creations / create2<a class="headerlink" href="#salted-contract-creations-create2" title="Permalink to this headline">¶</a></h3>
+<p>When creating a contract, the address of the contract is computed from
+the address of the creating contract and a counter that is increased with
+each contract creation.</p>
+<p>If you specify the option <code class="docutils literal notranslate"><span class="pre">salt</span></code> (a bytes32 value), then contract creation will
+use a different mechanism to come up with the address of the new contract:</p>
+<p>It will compute the address from the address of the creating contract,
+the given salt value, the (creation) bytecode of the created contract and the constructor
+arguments.</p>
+<p>In particular, the counter (“nonce”) is not used. This allows for more flexibility
+in creating contracts: You are able to derive the address of the
+new contract before it is created. Furthermore, you can rely on this address
+also in case the creating
+contracts creates other contracts in the meantime.</p>
+<p>The main use-case here is contracts that act as judges for off-chain interactions,
+which only need to be created if there is a dispute.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.7.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">D</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="k">public </span><span class="nv">x</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">constructor</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">a</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>x<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>a<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">createDSalted</span><span class="p">(</span><span class="kt">bytes32</span><span class=" -WhiteSpace"> </span><span class="nv">salt</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">arg</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// This complicated expression just tells you how the address</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// can be pre-computed. It is just there for illustration.</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// You actually only need ``new D{salt: salt}(arg)``.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">predictedAddress</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class="p">(</span><span class="kt">uint160</span><span class="p">(</span><span class="kt">uint</span><span class="p">(</span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>bytes1<span class="p">(</span><span class="mh">0xff</span><span class="p">),</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">address</span><span class="p">(</span><span class="kt">this</span><span class="p">),</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>salt<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="nb">keccak256</span><span class="p">(</span>abi<span class="p">.</span>encodePacked<span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span>type<span class="p">(</span>D<span class="p">).</span>creationCode<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">                </span>arg<span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="p">))</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">)))));</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span>D<span class=" -WhiteSpace"> </span>d<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">new</span><span class=" -WhiteSpace"> </span>D<span class="p">{</span>salt<span class="p">:</span><span class=" -WhiteSpace"> </span>salt<span class="p">}(</span>arg<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="kt">address</span><span class="p">(</span>d<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>predictedAddress<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>There are some peculiarities in relation to salted creation. A contract can be
+re-created at the same address after having been destroyed. Yet, it is possible
+for that newly created contract to have a different deployed bytecode even
+though the creation bytecode has been the same (which is a requirement because
+otherwise the address would change). This is due to the fact that the compiler
+can query external state that might have changed between the two creations
+and incorporate that into the deployed bytecode before it is stored.</p>
+</div>
+</div>
+</div>
+<div class="section" id="order-of-evaluation-of-expressions">
+<h2>Order of Evaluation of Expressions<a class="headerlink" href="#order-of-evaluation-of-expressions" title="Permalink to this headline">¶</a></h2>
+<p>The evaluation order of expressions is not specified (more formally, the order
+in which the children of one node in the expression tree are evaluated is not
+specified, but they are of course evaluated before the node itself). It is only
+guaranteed that statements are executed in order and short-circuiting for
+boolean expressions is done.</p>
+</div>
+<div class="section" id="assignment">
+<span id="index-4"></span><h2>Assignment<a class="headerlink" href="#assignment" title="Permalink to this headline">¶</a></h2>
+<div class="section" id="destructuring-assignments-and-returning-multiple-values">
+<span id="index-5"></span><h3>Destructuring Assignments and Returning Multiple Values<a class="headerlink" href="#destructuring-assignments-and-returning-multiple-values" title="Permalink to this headline">¶</a></h3>
+<p>Solidity internally allows tuple types, i.e. a list of objects
+of potentially different types whose number is a constant at
+compile-time. Those tuples can be used to return multiple values at the same time.
+These can then either be assigned to newly declared variables
+or to pre-existing variables (or LValues in general).</p>
+<p>Tuples are not proper types in Solidity, they can only be used to form syntactic
+groupings of expressions.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.5.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">index</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bool</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="m m-Decimal">7</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">g</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Variables declared with type and assigned from the returned tuple,</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// not all elements have to be specified (but the number must match).</span>
+<span class=" -WhiteSpace">        </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">x</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">y</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>f<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Common trick to swap values -- does not work for non-value storage types.</span>
+<span class=" -WhiteSpace">        </span><span class="p">(</span>x<span class="p">,</span><span class=" -WhiteSpace"> </span>y<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="p">(</span>y<span class="p">,</span><span class=" -WhiteSpace"> </span>x<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Components can be left out (also for variable declarations).</span>
+<span class=" -WhiteSpace">        </span><span class="p">(</span>index<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span>f<span class="p">();</span><span class=" -WhiteSpace"> </span><span class="c1">// Sets the index to 7</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>It is not possible to mix variable declarations and non-declaration assignments,
+i.e. the following is not valid: <code class="docutils literal notranslate"><span class="pre">(x,</span> <span class="pre">uint</span> <span class="pre">y)</span> <span class="pre">=</span> <span class="pre">(1,</span> <span class="pre">2);</span></code></p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Prior to version 0.5.0 it was possible to assign to tuples of smaller size, either
+filling up on the left or on the right side (which ever was empty). This is
+now disallowed, so both sides have to have the same number of components.</p>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Be careful when assigning to multiple variables at the same time when
+reference types are involved, because it could lead to unexpected
+copying behaviour.</p>
+</div>
+</div>
+<div class="section" id="complications-for-arrays-and-structs">
+<h3>Complications for Arrays and Structs<a class="headerlink" href="#complications-for-arrays-and-structs" title="Permalink to this headline">¶</a></h3>
+<p>The semantics of assignments are more complicated for non-value types like arrays and structs,
+including <code class="docutils literal notranslate"><span class="pre">bytes</span></code> and <code class="docutils literal notranslate"><span class="pre">string</span></code>, see <a class="reference internal" href="types.html#data-location-assignment"><span class="std std-ref">Data location and assignment behaviour</span></a> for details.</p>
+<p>In the example below the call to <code class="docutils literal notranslate"><span class="pre">g(x)</span></code> has no effect on <code class="docutils literal notranslate"><span class="pre">x</span></code> because it creates
+an independent copy of the storage value in memory. However, <code class="docutils literal notranslate"><span class="pre">h(x)</span></code> successfully modifies <code class="docutils literal notranslate"><span class="pre">x</span></code>
+because only a reference and not a copy is passed.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.4.22</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class="p">[</span><span class="m m-Decimal">20</span><span class="p">]</span><span class=" -WhiteSpace"> </span>x<span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>g<span class="p">(</span>x<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>h<span class="p">(</span>x<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">g</span><span class="p">(</span><span class="kt">uint</span><span class="p">[</span><span class="m m-Decimal">20</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="kt">memory</span><span class=" -WhiteSpace"> </span>y<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>y<span class="p">[</span><span class="m m-Decimal">2</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">3</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">h</span><span class="p">(</span><span class="kt">uint</span><span class="p">[</span><span class="m m-Decimal">20</span><span class="p">]</span><span class=" -WhiteSpace"> </span>storage<span class=" -WhiteSpace"> </span>y<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">internal</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>y<span class="p">[</span><span class="m m-Decimal">3</span><span class="p">]</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">4</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="section" id="scoping-and-declarations">
+<span id="default-value"></span><span id="index-6"></span><h2>Scoping and Declarations<a class="headerlink" href="#scoping-and-declarations" title="Permalink to this headline">¶</a></h2>
+<p>A variable which is declared will have an initial default
+value whose byte-representation is all zeros.
+The “default values” of variables are the typical “zero-state”
+of whatever the type is. For example, the default value for a <code class="docutils literal notranslate"><span class="pre">bool</span></code>
+is <code class="docutils literal notranslate"><span class="pre">false</span></code>. The default value for the <code class="docutils literal notranslate"><span class="pre">uint</span></code> or <code class="docutils literal notranslate"><span class="pre">int</span></code>
+types is <code class="docutils literal notranslate"><span class="pre">0</span></code>. For statically-sized arrays and <code class="docutils literal notranslate"><span class="pre">bytes1</span></code> to
+<code class="docutils literal notranslate"><span class="pre">bytes32</span></code>, each individual
+element will be initialized to the default value corresponding
+to its type. For dynamically-sized arrays, <code class="docutils literal notranslate"><span class="pre">bytes</span></code>
+and <code class="docutils literal notranslate"><span class="pre">string</span></code>, the default value is an empty array or string.
+For the <code class="docutils literal notranslate"><span class="pre">enum</span></code> type, the default value is its first member.</p>
+<p>Scoping in Solidity follows the widespread scoping rules of C99
+(and many other languages): Variables are visible from the point right after their declaration
+until the end of the smallest <code class="docutils literal notranslate"><span class="pre">{</span> <span class="pre">}</span></code>-block that contains the declaration.
+As an exception to this rule, variables declared in the
+initialization part of a for-loop are only visible until the end of the for-loop.</p>
+<p>Variables that are parameter-like (function parameters, modifier parameters,
+catch parameters, …) are visible inside the code block that follows -
+the body of the function/modifier for a function and modifier parameter and the catch block
+for a catch parameter.</p>
+<p>Variables and other items declared outside of a code block, for example functions, contracts,
+user-defined types, etc., are visible even before they were declared. This means you can
+use state variables before they are declared and call functions recursively.</p>
+<p>As a consequence, the following examples will compile without warnings, since
+the two variables have the same name but disjoint scopes.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.5.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">minimalScoping</span><span class="p">()</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">same</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>same<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">1</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">same</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>same<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">3</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>As a special example of the C99 scoping rules, note that in the following,
+the first assignment to <code class="docutils literal notranslate"><span class="pre">x</span></code> will actually assign the outer and not the inner variable.
+In any case, you will get a warning about the outer variable being shadowed.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.5.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="c1">// This will report a warning</span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">()</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">x</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">1</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>x<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">;</span><span class=" -WhiteSpace"> </span><span class="c1">// this will assign to the outer variable</span>
+<span class=" -WhiteSpace">            </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">x</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>x<span class="p">;</span><span class=" -WhiteSpace"> </span><span class="c1">// x has value 2</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>Before version 0.5.0 Solidity followed the same scoping rules as
+JavaScript, that is, a variable declared anywhere within a function would be in scope
+for the entire function, regardless where it was declared. The following example shows a code snippet that used
+to compile but leads to an error starting from version 0.5.0.</p>
+</div>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.5.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="c1">// This will not compile</span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">()</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>x<span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">x</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>x<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+</div>
+<div class="section" id="checked-or-unchecked-arithmetic">
+<span id="unchecked"></span><span id="index-7"></span><h2>Checked or Unchecked Arithmetic<a class="headerlink" href="#checked-or-unchecked-arithmetic" title="Permalink to this headline">¶</a></h2>
+<p>An overflow or underflow is the situation where the resulting value of an arithmetic operation,
+when executed on an unrestricted integer, falls outside the range of the result type.</p>
+<p>Prior to Solidity 0.8.0, arithmetic operations would always wrap in case of
+under- or overflow leading to widespread use of libraries that introduce
+additional checks.</p>
+<p>Since Solidity 0.8.0, all arithmetic operations revert on over- and underflow by default,
+thus making the use of these libraries unnecessary.</p>
+<p>To obtain the previous behaviour, an <code class="docutils literal notranslate"><span class="pre">unchecked</span></code> block can be used:</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">^</span><span class="k">0.8.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">C</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">f</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">a</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">b</span><span class="p">)</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// This subtraction will wrap on underflow.</span>
+<span class=" -WhiteSpace">        </span>unchecked<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>a<span class=" -WhiteSpace"> </span><span class="o">-</span><span class=" -WhiteSpace"> </span>b<span class="p">;</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">g</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">a</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">b</span><span class="p">)</span><span class=" -WhiteSpace"> </span>pure<span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// This subtraction will revert on underflow.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span>a<span class=" -WhiteSpace"> </span><span class="o">-</span><span class=" -WhiteSpace"> </span>b<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>The call to <code class="docutils literal notranslate"><span class="pre">f(2,</span> <span class="pre">3)</span></code> will return <code class="docutils literal notranslate"><span class="pre">2**256-1</span></code>, while <code class="docutils literal notranslate"><span class="pre">g(2,</span> <span class="pre">3)</span></code> will cause
+a failing assertion.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">unchecked</span></code> block can be used everywhere inside a block, but not as a replacement
+for a block. It also cannot be nested.</p>
+<p>The setting only affects the statements that are syntactically inside the block.
+Functions called from within an <code class="docutils literal notranslate"><span class="pre">unchecked</span></code> block do not inherit the property.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>To avoid ambiguity, you cannot use <code class="docutils literal notranslate"><span class="pre">_;</span></code> inside an <code class="docutils literal notranslate"><span class="pre">unchecked</span></code> block.</p>
+</div>
+<p>The following operators will cause a failing assertion on overflow or underflow
+and will wrap without an error if used inside an unchecked block:</p>
+<p><code class="docutils literal notranslate"><span class="pre">++</span></code>, <code class="docutils literal notranslate"><span class="pre">--</span></code>, <code class="docutils literal notranslate"><span class="pre">+</span></code>, binary <code class="docutils literal notranslate"><span class="pre">-</span></code>, unary <code class="docutils literal notranslate"><span class="pre">-</span></code>, <code class="docutils literal notranslate"><span class="pre">*</span></code>, <code class="docutils literal notranslate"><span class="pre">/</span></code>, <code class="docutils literal notranslate"><span class="pre">%</span></code>, <code class="docutils literal notranslate"><span class="pre">**</span></code></p>
+<p><code class="docutils literal notranslate"><span class="pre">+=</span></code>, <code class="docutils literal notranslate"><span class="pre">-=</span></code>, <code class="docutils literal notranslate"><span class="pre">*=</span></code>, <code class="docutils literal notranslate"><span class="pre">/=</span></code>, <code class="docutils literal notranslate"><span class="pre">%=</span></code></p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>It is not possible to disable the check for division by zero
+or modulo by zero using the <code class="docutils literal notranslate"><span class="pre">unchecked</span></code> block.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Bitwise operators do not perform overflow or underflow checks.
+This is particularly visible when using bitwise shifts (<code class="docutils literal notranslate"><span class="pre">&lt;&lt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;&gt;</span></code>, <code class="docutils literal notranslate"><span class="pre">&lt;&lt;=</span></code>, <code class="docutils literal notranslate"><span class="pre">&gt;&gt;=</span></code>) in
+place of integer division and multiplication by a power of 2.
+For example <code class="docutils literal notranslate"><span class="pre">type(uint256).max</span> <span class="pre">&lt;&lt;</span> <span class="pre">3</span></code> does not revert even though <code class="docutils literal notranslate"><span class="pre">type(uint256).max</span> <span class="pre">*</span> <span class="pre">8</span></code> would.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The second statement in <code class="docutils literal notranslate"><span class="pre">int</span> <span class="pre">x</span> <span class="pre">=</span> <span class="pre">type(int).min;</span> <span class="pre">-x;</span></code> will result in an overflow
+because the negative range can hold one more value than the positive range.</p>
+</div>
+<p>Explicit type conversions will always truncate and never cause a failing assertion
+with the exception of a conversion from an integer to an enum type.</p>
+</div>
+<div class="section" id="error-handling-assert-require-revert-and-exceptions">
+<span id="assert-and-require"></span><span id="index-8"></span><h2>Error handling: Assert, Require, Revert and Exceptions<a class="headerlink" href="#error-handling-assert-require-revert-and-exceptions" title="Permalink to this headline">¶</a></h2>
+<p>Solidity uses state-reverting exceptions to handle errors.
+Such an exception undoes all changes made to the
+state in the current call (and all its sub-calls) and
+flags an error to the caller.</p>
+<p>When exceptions happen in a sub-call, they “bubble up” (i.e.,
+exceptions are rethrown) automatically unless they are caught in
+a <code class="docutils literal notranslate"><span class="pre">try/catch</span></code> statement. Exceptions to this rule are <code class="docutils literal notranslate"><span class="pre">send</span></code>
+and the low-level functions <code class="docutils literal notranslate"><span class="pre">call</span></code>, <code class="docutils literal notranslate"><span class="pre">delegatecall</span></code> and
+<code class="docutils literal notranslate"><span class="pre">staticcall</span></code>: they return <code class="docutils literal notranslate"><span class="pre">false</span></code> as their first return value in case
+of an exception instead of “bubbling up”.</p>
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>The low-level functions <code class="docutils literal notranslate"><span class="pre">call</span></code>, <code class="docutils literal notranslate"><span class="pre">delegatecall</span></code> and
+<code class="docutils literal notranslate"><span class="pre">staticcall</span></code> return <code class="docutils literal notranslate"><span class="pre">true</span></code> as their first return value
+if the account called is non-existent, as part of the design
+of the EVM. Account existence must be checked prior to calling if needed.</p>
+</div>
+<p>Exceptions can contain error data that is passed back to the caller
+in the form of <a class="reference internal" href="contracts.html#errors"><span class="std std-ref">error instances</span></a>.
+The built-in errors <code class="docutils literal notranslate"><span class="pre">Error(string)</span></code> and <code class="docutils literal notranslate"><span class="pre">Panic(uint256)</span></code> are
+used by special functions, as explained below. <code class="docutils literal notranslate"><span class="pre">Error</span></code> is used for “regular” error conditions
+while <code class="docutils literal notranslate"><span class="pre">Panic</span></code> is used for errors that should not be present in bug-free code.</p>
+<div class="section" id="panic-via-assert-and-error-via-require">
+<h3>Panic via <code class="docutils literal notranslate"><span class="pre">assert</span></code> and Error via <code class="docutils literal notranslate"><span class="pre">require</span></code><a class="headerlink" href="#panic-via-assert-and-error-via-require" title="Permalink to this headline">¶</a></h3>
+<p>The convenience functions <code class="docutils literal notranslate"><span class="pre">assert</span></code> and <code class="docutils literal notranslate"><span class="pre">require</span></code> can be used to check for conditions and throw an exception
+if the condition is not met.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">assert</span></code> function creates an error of type <code class="docutils literal notranslate"><span class="pre">Panic(uint256)</span></code>.
+The same error is created by the compiler in certain situations as listed below.</p>
+<p>Assert should only be used to test for internal
+errors, and to check invariants. Properly functioning code should
+never create a Panic, not even on invalid external input.
+If this happens, then there
+is a bug in your contract which you should fix. Language analysis
+tools can evaluate your contract to identify the conditions and
+function calls which will cause a Panic.</p>
+<p>A Panic exception is generated in the following situations.
+The error code supplied with the error data indicates the kind of panic.</p>
+<ol class="arabic simple">
+<li><p>0x00: Used for generic compiler inserted panics.</p></li>
+<li><p>0x01: If you call <code class="docutils literal notranslate"><span class="pre">assert</span></code> with an argument that evaluates to false.</p></li>
+<li><p>0x11: If an arithmetic operation results in underflow or overflow outside of an <code class="docutils literal notranslate"><span class="pre">unchecked</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code> block.</p></li>
+<li><p>0x12; If you divide or modulo by zero (e.g. <code class="docutils literal notranslate"><span class="pre">5</span> <span class="pre">/</span> <span class="pre">0</span></code> or <code class="docutils literal notranslate"><span class="pre">23</span> <span class="pre">%</span> <span class="pre">0</span></code>).</p></li>
+<li><p>0x21: If you convert a value that is too big or negative into an enum type.</p></li>
+<li><p>0x22: If you access a storage byte array that is incorrectly encoded.</p></li>
+<li><p>0x31: If you call <code class="docutils literal notranslate"><span class="pre">.pop()</span></code> on an empty array.</p></li>
+<li><p>0x32: If you access an array, <code class="docutils literal notranslate"><span class="pre">bytesN</span></code> or an array slice at an out-of-bounds or negative index (i.e. <code class="docutils literal notranslate"><span class="pre">x[i]</span></code> where <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&gt;=</span> <span class="pre">x.length</span></code> or <code class="docutils literal notranslate"><span class="pre">i</span> <span class="pre">&lt;</span> <span class="pre">0</span></code>).</p></li>
+<li><p>0x41: If you allocate too much memory or create an array that is too large.</p></li>
+<li><p>0x51: If you call a zero-initialized variable of internal function type.</p></li>
+</ol>
+<p>The <code class="docutils literal notranslate"><span class="pre">require</span></code> function either creates an error without any data or
+an error of type <code class="docutils literal notranslate"><span class="pre">Error(string)</span></code>. It
+should be used to ensure valid conditions
+that cannot be detected until execution time.
+This includes conditions on inputs
+or return values from calls to external contracts.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>It is currently not possible to use custom errors in combination
+with <code class="docutils literal notranslate"><span class="pre">require</span></code>. Please use <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">(!condition)</span> <span class="pre">revert</span> <span class="pre">CustomError();</span></code> instead.</p>
+</div>
+<p>An <code class="docutils literal notranslate"><span class="pre">Error(string)</span></code> exception (or an exception without data) is generated
+by the compiler
+in the following situations:</p>
+<ol class="arabic simple">
+<li><p>Calling <code class="docutils literal notranslate"><span class="pre">require(x)</span></code> where <code class="docutils literal notranslate"><span class="pre">x</span></code> evaluates to <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></li>
+<li><p>If you use <code class="docutils literal notranslate"><span class="pre">revert()</span></code> or <code class="docutils literal notranslate"><span class="pre">revert(&quot;description&quot;)</span></code>.</p></li>
+<li><p>If you perform an external function call targeting a contract that contains no code.</p></li>
+<li><p>If your contract receives Ether via a public function without
+<code class="docutils literal notranslate"><span class="pre">payable</span></code> modifier (including the constructor and the fallback function).</p></li>
+<li><p>If your contract receives Ether via a public getter function.</p></li>
+</ol>
+<p>For the following cases, the error data from the external call
+(if provided) is forwarded. This mean that it can either cause
+an <cite>Error</cite> or a <cite>Panic</cite> (or whatever else was given):</p>
+<ol class="arabic simple">
+<li><p>If a <code class="docutils literal notranslate"><span class="pre">.transfer()</span></code> fails.</p></li>
+<li><p>If you call a function via a message call but it does not finish
+properly (i.e., it runs out of gas, has no matching function, or
+throws an exception itself), except when a low level operation
+<code class="docutils literal notranslate"><span class="pre">call</span></code>, <code class="docutils literal notranslate"><span class="pre">send</span></code>, <code class="docutils literal notranslate"><span class="pre">delegatecall</span></code>, <code class="docutils literal notranslate"><span class="pre">callcode</span></code> or <code class="docutils literal notranslate"><span class="pre">staticcall</span></code>
+is used. The low level operations never throw exceptions but
+indicate failures by returning <code class="docutils literal notranslate"><span class="pre">false</span></code>.</p></li>
+<li><p>If you create a contract using the <code class="docutils literal notranslate"><span class="pre">new</span></code> keyword but the contract
+creation <a class="reference internal" href="#creating-contracts"><span class="std std-ref">does not finish properly</span></a>.</p></li>
+</ol>
+<p>You can optionally provide a message string for <code class="docutils literal notranslate"><span class="pre">require</span></code>, but not for <code class="docutils literal notranslate"><span class="pre">assert</span></code>.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If you do not provide a string argument to <code class="docutils literal notranslate"><span class="pre">require</span></code>, it will revert
+with empty error data, not even including the error selector.</p>
+</div>
+<p>The following example shows how you can use <code class="docutils literal notranslate"><span class="pre">require</span></code> to check conditions on inputs
+and <code class="docutils literal notranslate"><span class="pre">assert</span></code> for internal error checking.</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.5.0</span><span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class="k">0.9.0</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">Sharer</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">sendHalf</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">payable</span><span class=" -WhiteSpace"> </span>addr<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">balance</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="err">%</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="s2">&quot;Even value required.&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">balanceBeforeTransfer</span><span class=" -WhiteSpace"> </span><span class="o">=</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class="p">(</span><span class="kt">this</span><span class="p">).</span>balance<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>addr<span class="p">.</span>transfer<span class="p">(</span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">/</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Since transfer throws an exception on failure and</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// cannot call back here, there should be no way for us to</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// still have half of the money.</span>
+<span class=" -WhiteSpace">        </span>assert<span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="kt">this</span><span class="p">).</span>balance<span class=" -WhiteSpace"> </span><span class="o">==</span><span class=" -WhiteSpace"> </span>balanceBeforeTransfer<span class=" -WhiteSpace"> </span><span class="o">-</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">/</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="kt">address</span><span class="p">(</span><span class="kt">this</span><span class="p">).</span>balance<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>Internally, Solidity performs a revert operation (instruction
+<code class="docutils literal notranslate"><span class="pre">0xfd</span></code>). This causes
+the EVM to revert all changes made to the state. The reason for reverting
+is that there is no safe way to continue execution, because an expected effect
+did not occur. Because we want to keep the atomicity of transactions, the
+safest action is to revert all changes and make the whole transaction
+(or at least call) without effect.</p>
+<p>In both cases, the caller can react on such failures using <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">catch</span></code>, but
+the changes in the caller will always be reverted.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>Panic exceptions used to use the <code class="docutils literal notranslate"><span class="pre">invalid</span></code> opcode before Solidity 0.8.0,
+which consumed all gas available to the call.
+Exceptions that use <code class="docutils literal notranslate"><span class="pre">require</span></code> used to consume all gas until before the Metropolis release.</p>
+</div>
+</div>
+<div class="section" id="revert">
+<span id="revert-statement"></span><h3><code class="docutils literal notranslate"><span class="pre">revert</span></code><a class="headerlink" href="#revert" title="Permalink to this headline">¶</a></h3>
+<p>A direct revert can be triggered using the <code class="docutils literal notranslate"><span class="pre">revert</span></code> statement and the <code class="docutils literal notranslate"><span class="pre">revert</span></code> function.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">revert</span></code> statement takes a custom error as direct argument without parentheses:</p>
+<blockquote>
+<div><p>revert CustomError(arg1, arg2);</p>
+</div></blockquote>
+<p>For backards-compatibility reasons, there is also the <code class="docutils literal notranslate"><span class="pre">revert()</span></code> function, which uses parentheses
+and accepts a string:</p>
+<blockquote>
+<div><p>revert();
+revert(“description”);</p>
+</div></blockquote>
+<p>The error data will be passed back to the caller and can be caught there.
+Using <code class="docutils literal notranslate"><span class="pre">revert()</span></code> causes a revert without any error data while <code class="docutils literal notranslate"><span class="pre">revert(&quot;description&quot;)</span></code>
+will create an <code class="docutils literal notranslate"><span class="pre">Error(string)</span></code> error.</p>
+<p>Using a custom error instance will usually be much cheaper than a string description,
+because you can use the name of the error to describe it, which is encoded in only
+four bytes. A longer description can be supplied via NatSpec which does not incur
+any costs.</p>
+<p>The following example shows how to use an error string and a custom error instance
+together with <code class="docutils literal notranslate"><span class="pre">revert</span></code> and the equivalent <code class="docutils literal notranslate"><span class="pre">require</span></code>:</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">^</span><span class="k">0.8.4</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">VendingMachine</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">owner</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span>error<span class=" -WhiteSpace"> </span>Unauthorized<span class="p">();</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">buy</span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">amount</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">payable</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span>amount<span class=" -WhiteSpace"> </span><span class="o">&gt;</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">/</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class=" -WhiteSpace"> </span>ether<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class="p">(</span><span class="s2">&quot;Not enough Ether provided.&quot;</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Alternative way to do it:</span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>amount<span class=" -WhiteSpace"> </span><span class="o">&lt;=</span><span class=" -WhiteSpace"> </span><span class="k">msg.value</span><span class=" -WhiteSpace"> </span><span class="o">/</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">2</span><span class=" -WhiteSpace"> </span>ether<span class="p">,</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="s2">&quot;Not enough Ether provided.&quot;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Perform the purchase.</span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">withdraw</span><span class="p">()</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="kt">if</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="k">msg.sender</span><span class=" -WhiteSpace"> </span><span class="o">!=</span><span class=" -WhiteSpace"> </span>owner<span class="p">)</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span>revert<span class=" -WhiteSpace"> </span>Unauthorized<span class="p">();</span><span class=" -WhiteSpace"></span>
+
+<span class=" -WhiteSpace">        </span><span class="kt">payable</span><span class="p">(</span><span class="k">msg.sender</span><span class="p">).</span>transfer<span class="p">(</span><span class="kt">address</span><span class="p">(</span><span class="kt">this</span><span class="p">).</span>balance<span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>The two ways <code class="docutils literal notranslate"><span class="pre">if</span> <span class="pre">(!condition)</span> <span class="pre">revert(...);</span></code> and <code class="docutils literal notranslate"><span class="pre">require(condition,</span> <span class="pre">...);</span></code> are
+equivalent as long as the arguments to <code class="docutils literal notranslate"><span class="pre">revert</span></code> and <code class="docutils literal notranslate"><span class="pre">require</span></code> do not have side-effects,
+for example if they are just strings.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">require</span></code> function is evaluated just as any other function.
+This means that all arguments are evaluated before the function itself is executed.
+In particular, in <code class="docutils literal notranslate"><span class="pre">require(condition,</span> <span class="pre">f())</span></code> the function <code class="docutils literal notranslate"><span class="pre">f</span></code> is executed even if
+<code class="docutils literal notranslate"><span class="pre">condition</span></code> is true.</p>
+</div>
+<p>The provided string is <a class="reference internal" href="abi-spec.html#abi"><span class="std std-ref">abi-encoded</span></a> as if it were a call to a function <code class="docutils literal notranslate"><span class="pre">Error(string)</span></code>.
+In the above example, <code class="docutils literal notranslate"><span class="pre">revert(&quot;Not</span> <span class="pre">enough</span> <span class="pre">Ether</span> <span class="pre">provided.&quot;);</span></code> returns the following hexadecimal as error return data:</p>
+<div class="highlight-Solidity notranslate"><div class="highlight"><pre><span></span><span class="mh">0x08c379a0</span>                                                         <span class="c1">// Function selector for Error(string)</span>
+<span class="mh">0x0000000000000000000000000000000000000000000000000000000000000020</span> <span class="c1">// Data offset</span>
+<span class="mh">0x000000000000000000000000000000000000000000000000000000000000001a</span> <span class="c1">// String length</span>
+<span class="mh">0x4e6f7420656e6f7567682045746865722070726f76696465642e000000000000</span> <span class="c1">// String data</span>
+</pre></div>
+</div>
+<p>The provided message can be retrieved by the caller using <code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">catch</span></code> as shown below.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>There used to be a keyword called <code class="docutils literal notranslate"><span class="pre">throw</span></code> with the same semantics as <code class="docutils literal notranslate"><span class="pre">revert()</span></code> which
+was deprecated in version 0.4.13 and removed in version 0.5.0.</p>
+</div>
+</div>
+<div class="section" id="try-catch">
+<span id="id4"></span><h3><code class="docutils literal notranslate"><span class="pre">try</span></code>/<code class="docutils literal notranslate"><span class="pre">catch</span></code><a class="headerlink" href="#try-catch" title="Permalink to this headline">¶</a></h3>
+<p>A failure in an external call can be caught using a try/catch statement, as follows:</p>
+<div class="highlight-solidity notranslate"><div class="highlight"><pre><span></span><span class="c1">// SPDX-License-Identifier: GPL-3.0</span>
+<span class="k">pragma solidity</span><span class=" -WhiteSpace"> </span><span class="o">&gt;=</span><span class="k">0.8.1</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+
+interface<span class=" -WhiteSpace"> </span>DataFeed<span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"> </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">getData</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">token</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">external</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">value</span><span class="p">);</span><span class=" -WhiteSpace"> </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+
+<span class="k">contract</span><span class=" -WhiteSpace"> </span><span class="ni">FeedConsumer</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span>DataFeed<span class=" -WhiteSpace"> </span>feed<span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">errorCount</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="kt">function</span><span class=" -WhiteSpace"> </span><span class="nv">rate</span><span class="p">(</span><span class="kt">address</span><span class=" -WhiteSpace"> </span><span class="nv">token</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">public</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">value</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">bool</span><span class=" -WhiteSpace"> </span><span class="nv">success</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="c1">// Permanently disable the mechanism if there are</span>
+<span class=" -WhiteSpace">        </span><span class="c1">// more than 10 errors.</span>
+<span class=" -WhiteSpace">        </span><span class="kt">require</span><span class="p">(</span>errorCount<span class=" -WhiteSpace"> </span><span class="o">&lt;</span><span class=" -WhiteSpace"> </span><span class="m m-Decimal">10</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span>try<span class=" -WhiteSpace"> </span>feed<span class="p">.</span>getData<span class="p">(</span>token<span class="p">)</span><span class=" -WhiteSpace"> </span><span class="kt">returns</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="nv">v</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span>v<span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">true</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"> </span>catch<span class=" -WhiteSpace"> </span>Error<span class="p">(</span><span class="kt">string</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span><span class="cm">/*reason*/</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// This is executed in case</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// revert was called inside getData</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// and a reason string was provided.</span>
+<span class=" -WhiteSpace">            </span>errorCount<span class="o">++</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">false</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"> </span>catch<span class=" -WhiteSpace"> </span>Panic<span class="p">(</span><span class="kt">uint</span><span class=" -WhiteSpace"> </span><span class="cm">/*errorCode*/</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// This is executed in case of a panic,</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// i.e. a serious error like division by zero</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// or overflow. The error code can be used</span>
+<span class=" -WhiteSpace">            </span><span class="c1">// to determine the kind of error.</span>
+<span class=" -WhiteSpace">            </span>errorCount<span class="o">++</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">false</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"> </span>catch<span class=" -WhiteSpace"> </span><span class="p">(</span><span class="kt">bytes</span><span class=" -WhiteSpace"> </span><span class="nv">memory</span><span class=" -WhiteSpace"> </span><span class="cm">/*lowLevelData*/</span><span class="p">)</span><span class=" -WhiteSpace"> </span><span class="p">{</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="c1">// This is executed in case revert() was used.</span>
+<span class=" -WhiteSpace">            </span>errorCount<span class="o">++</span><span class="p">;</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">            </span><span class="kt">return</span><span class=" -WhiteSpace"> </span><span class="p">(</span><span class="m m-Decimal">0</span><span class="p">,</span><span class=" -WhiteSpace"> </span><span class="kt">false</span><span class="p">);</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">        </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class=" -WhiteSpace">    </span><span class="p">}</span><span class=" -WhiteSpace"></span>
+<span class="p">}</span><span class=" -WhiteSpace"></span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">try</span></code> keyword has to be followed by an expression representing an external function call
+or a contract creation (<code class="docutils literal notranslate"><span class="pre">new</span> <span class="pre">ContractName()</span></code>).
+Errors inside the expression are not caught (for example if it is a complex expression
+that also involves internal function calls), only a revert happening inside the external
+call itself. The <code class="docutils literal notranslate"><span class="pre">returns</span></code> part (which is optional) that follows declares return variables
+matching the types returned by the external call. In case there was no error,
+these variables are assigned and the contract’s execution continues inside the
+first success block. If the end of the success block is reached, execution continues after the <code class="docutils literal notranslate"><span class="pre">catch</span></code> blocks.</p>
+<p>Solidity supports different kinds of catch blocks depending on the
+type of error:</p>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">Error(string</span> <span class="pre">memory</span> <span class="pre">reason)</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code>: This catch clause is executed if the error was caused by <code class="docutils literal notranslate"><span class="pre">revert(&quot;reasonString&quot;)</span></code> or
+<code class="docutils literal notranslate"><span class="pre">require(false,</span> <span class="pre">&quot;reasonString&quot;)</span></code> (or an internal error that causes such an
+exception).</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">Panic(uint</span> <span class="pre">errorCode)</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code>: If the error was caused by a panic, i.e. by a failing <code class="docutils literal notranslate"><span class="pre">assert</span></code>, division by zero,
+invalid array access, arithmetic overflow and others, this catch clause will be run.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">(bytes</span> <span class="pre">memory</span> <span class="pre">lowLevelData)</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code>: This clause is executed if the error signature
+does not match any other clause, if there was an error while decoding the error
+message, or
+if no error data was provided with the exception.
+The declared variable provides access to the low-level error data in that case.</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code>: If you are not interested in the error data, you can just use
+<code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code> (even as the only catch clause) instead of the previous clause.</p></li>
+</ul>
+<p>It is planned to support other types of error data in the future.
+The strings <code class="docutils literal notranslate"><span class="pre">Error</span></code> and <code class="docutils literal notranslate"><span class="pre">Panic</span></code> are currently parsed as is and are not treated as an identifiers.</p>
+<p>In order to catch all error cases, you have to have at least the clause
+<code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">{</span> <span class="pre">...}</span></code> or the clause <code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">(bytes</span> <span class="pre">memory</span> <span class="pre">lowLevelData)</span> <span class="pre">{</span> <span class="pre">...</span> <span class="pre">}</span></code>.</p>
+<p>The variables declared in the <code class="docutils literal notranslate"><span class="pre">returns</span></code> and the <code class="docutils literal notranslate"><span class="pre">catch</span></code> clause are only
+in scope in the block that follows.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If an error happens during the decoding of the return data
+inside a try/catch-statement, this causes an exception in the currently
+executing contract and because of that, it is not caught in the catch clause.
+If there is an error during decoding of <code class="docutils literal notranslate"><span class="pre">catch</span> <span class="pre">Error(string</span> <span class="pre">memory</span> <span class="pre">reason)</span></code>
+and there is a low-level catch clause, this error is caught there.</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>If execution reaches a catch-block, then the state-changing effects of
+the external call have been reverted. If execution reaches
+the success block, the effects were not reverted.
+If the effects have been reverted, then execution either continues
+in a catch block or the execution of the try/catch statement itself
+reverts (for example due to decoding failures as noted above or
+due to not providing a low-level catch clause).</p>
+</div>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The reason behind a failed call can be manifold. Do not assume that
+the error message is coming directly from the called contract:
+The error might have happened deeper down in the call chain and the
+called contract just forwarded it. Also, it could be due to an
+out-of-gas situation and not a deliberate error condition:
+The caller always retains 63/64th of the gas in a call and thus
+even if the called contract goes out of gas, the caller still
+has some gas left.</p>
+</div>
+</div>
+</div>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+        <a href="contracts.html" class="btn btn-neutral float-right" title="Contracts" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
+      
+      
+        <a href="units-and-global-variables.html" class="btn btn-neutral float-left" title="Units and Globally Available Variables" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        
+        &copy; Copyright 2016-2021, Ethereum
+
+    </p>
+  </div>
+    
+    
+    
+    Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a
+    
+    <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a>
+    
+    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+<div class="rst-versions" data-toggle="rst-versions" role="note" aria-label="versions">
+    <span class="rst-current-version" data-toggle="rst-current-version">
+    <span class="fa fa-book fa-element"> RTD </span>
+
+    <span class="fa fa-element">
+    <input class="container_toggle" type="checkbox" id="switch" name="mode">
+    <label for="switch"></label>
+    </span>
+
+    <span class="fa fa-v fa-element"> v:  <span class="fa fa-caret-down"></span></span>
+
+    </span>
+    <div class="rst-other-versions">
+        <dl>
+            <dt>Versions</dt> 
+        </dl>
+        <dl>
+            <dt>Downloads</dt> 
+        </dl>
+        <dl>
+            
+            <dt>On Read the Docs</dt>
+            <dd>
+                <a href="///projects//?fromdocs=">Project Home</a>
+            </dd>
+            <dd>
+                <a href="///builds//?fromdocs=">Builds</a>
+            </dd>
+        </dl>
+    </div>
+</div>
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
