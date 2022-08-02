@@ -9,11 +9,22 @@ Installing the Solidity Compiler
 Versioning
 ==========
 
-Solidity versions follow `semantic versioning <https://semver.org>`_ and in addition to
-releases, **nightly development builds** are also made available.  The nightly builds
-are not guaranteed to be working and despite best efforts they might contain undocumented
-and/or broken changes. We recommend using the latest release. Package installers below
-will use the latest release.
+Solidity versions follow `Semantic Versioning <https://semver.org>`_. In
+addition, patch level releases with major release 0 (i.e. 0.x.y) will not
+contain breaking changes. That means code that compiles with version 0.x.y
+can be expected to compile with 0.x.z where z > y.
+
+In addition to releases, we provide **nightly development builds** with the
+intention of making it easy for developers to try out upcoming features and
+provide early feedback. Note, however, that while the nightly builds are usually
+very stable, they contain bleeding-edge code from the development branch and are
+not guaranteed to be always working. Despite our best efforts, they might
+contain undocumented and/or broken changes that will not become a part of an
+actual release. They are not meant for production use.
+
+When deploying contracts, you should use the latest released version of Solidity. This
+is because breaking changes, as well as new features and bug fixes are introduced regularly.
+We currently use a 0.x version number `to indicate this fast pace of change <https://semver.org/#spec-item-4>`_.
 
 Remix
 =====
@@ -86,7 +97,9 @@ local folder for input and output, and specify the contract to compile. For exam
     docker run -v /local/path:/sources ethereum/solc:stable -o /sources/output --abi --bin /sources/Contract.sol
 
 You can also use the standard JSON interface (which is recommended when using the compiler with tooling).
-When using this interface it is not necessary to mount any directories.
+When using this interface it is not necessary to mount any directories as long as the JSON input is
+self-contained (i.e. it does not refer to any external files that would have to be
+:ref:`loaded by the import callback <initial-vfs-content-standard-json-with-import-callback>`).
 
 .. code-block:: bash
 
@@ -116,8 +129,17 @@ The nightly version can be installed using these commands:
     sudo apt-get update
     sudo apt-get install solc
 
-We are also releasing a `snap package <https://snapcraft.io/>`_, which is
-installable in all the `supported Linux distros <https://snapcraft.io/docs/core/install>`_. To
+Furthermore, some Linux distributions provide their own packages. These packages are not directly
+maintained by us, but usually kept up-to-date by the respective package maintainers.
+
+For example, Arch Linux has packages for the latest development version:
+
+.. code-block:: bash
+
+    pacman -S solidity
+
+There is also a `snap package <https://snapcraft.io/solc>`_, however, it is **currently unmaintained**.
+It is installable in all the `supported Linux distros <https://snapcraft.io/docs/core/install>`_. To
 install the latest stable version of solc:
 
 .. code-block:: bash
@@ -137,18 +159,6 @@ with the most recent changes, please use the following:
     but it comes with limitations, like accessing only the files in your ``/home`` and ``/media`` directories.
     For more information, go to `Demystifying Snap Confinement <https://snapcraft.io/blog/demystifying-snap-confinement>`_.
 
-Arch Linux also has packages, albeit limited to the latest development version:
-
-.. code-block:: bash
-
-    pacman -S solidity
-
-Gentoo Linux has an `Ethereum overlay <https://overlays.gentoo.org/#ethereum>`_ that contains a Solidity package.
-After the overlay is setup, ``solc`` can be installed in x86_64 architectures by:
-
-.. code-block:: bash
-
-    emerge dev-lang/solidity
 
 macOS Packages
 ==============
@@ -311,7 +321,8 @@ The following are dependencies for all builds of Solidity:
 +===================================+=======================================================+
 | `CMake`_ (version 3.13+)          | Cross-platform build file generator.                  |
 +-----------------------------------+-------------------------------------------------------+
-| `Boost`_  (version 1.65+)         | C++ libraries.                                        |
+| `Boost`_ (version 1.77+ on        | C++ libraries.                                        |
+| Windows, 1.65+ otherwise)         |                                                       |
 +-----------------------------------+-------------------------------------------------------+
 | `Git`_                            | Command-line tool for retrieving source code.         |
 +-----------------------------------+-------------------------------------------------------+
@@ -332,6 +343,16 @@ The following are dependencies for all builds of Solidity:
     prior to running the cmake command to configure solidity.
 
     Starting from 0.5.10 linking against Boost 1.70+ should work without manual intervention.
+
+.. note::
+    The default build configuration requires a specific Z3 version (the latest one at the time the
+    code was last updated). Changes introduced between Z3 releases often result in slightly different
+    (but still valid) results being returned. Our SMT tests do not account for these differences and
+    will likely fail with a different version than the one they were written for. This does not mean
+    that a build using a different version is faulty. If you pass ``-DSTRICT_Z3_VERSION=OFF`` option
+    to CMake, you can build with any version that satisfies the requirement given in the table above.
+    If you do this, however, please remember to pass the ``--no-smt`` option to ``scripts/tests.sh``
+    to skip the SMT tests.
 
 Minimum Compiler Versions
 ^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -376,6 +397,8 @@ You need to install the following dependencies for Windows builds of Solidity:
 +-----------------------------------+-------------------------------------------------------+
 | `Visual Studio 2019`_  (Optional) | C++ compiler and dev environment.                     |
 +-----------------------------------+-------------------------------------------------------+
+| `Boost`_ (version 1.77+)          | C++ libraries.                                        |
++-----------------------------------+-------------------------------------------------------+
 
 If you already have one IDE and only need the compiler and libraries,
 you could install Visual Studio 2019 Build Tools.
@@ -396,24 +419,13 @@ in Visual Studio 2019 Build Tools or Visual Studio 2019:
 .. _Visual Studio 2019: https://www.visualstudio.com/vs/
 .. _Visual Studio 2019 Build Tools: https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019
 
-Dependencies Helper Script
---------------------------
-
-We have a helper script which you can use to install all required external dependencies
-on macOS, Windows and on numerous Linux distros.
-
-.. code-block:: bash
-
-    ./scripts/install_deps.sh
-
-Or, on Windows:
+We have a helper script which you can use to install all required external dependencies:
 
 .. code-block:: bat
 
     scripts\install_deps.ps1
 
-Note that the latter command will install ``boost`` and ``cmake`` to the ``deps`` subdirectory, while the former command
-will attempt to install the dependencies globally.
+This will install ``boost`` and ``cmake`` to the ``deps`` subdirectory.
 
 Clone the Repository
 --------------------
@@ -533,8 +545,8 @@ The Solidity version string contains four parts:
 
 If there are local modifications, the commit will be postfixed with ``.mod``.
 
-These parts are combined as required by Semver, where the Solidity pre-release tag equals to the Semver pre-release
-and the Solidity commit and platform combined make up the Semver build metadata.
+These parts are combined as required by SemVer, where the Solidity pre-release tag equals to the SemVer pre-release
+and the Solidity commit and platform combined make up the SemVer build metadata.
 
 A release example: ``0.4.8+commit.60cc1668.Emscripten.clang``.
 
@@ -545,15 +557,15 @@ Important Information About Versioning
 
 After a release is made, the patch version level is bumped, because we assume that only
 patch level changes follow. When changes are merged, the version should be bumped according
-to semver and the severity of the change. Finally, a release is always made with the version
+to SemVer and the severity of the change. Finally, a release is always made with the version
 of the current nightly build, but without the ``prerelease`` specifier.
 
 Example:
 
-0. The 0.4.0 release is made.
-1. The nightly build has a version of 0.4.1 from now on.
-2. Non-breaking changes are introduced --> no change in version.
-3. A breaking change is introduced --> version is bumped to 0.5.0.
-4. The 0.5.0 release is made.
+1. The 0.4.0 release is made.
+2. The nightly build has a version of 0.4.1 from now on.
+3. Non-breaking changes are introduced --> no change in version.
+4. A breaking change is introduced --> version is bumped to 0.5.0.
+5. The 0.5.0 release is made.
 
 This behaviour works well with the  :ref:`version pragma <version_pragma>`.
