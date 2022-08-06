@@ -56,7 +56,8 @@ as individual values.
      of Solidity due to the fact that storage pointers can be passed to libraries. This means that
      any change to the rules outlined in this section is considered a breaking change
      of the language and due to its critical nature should be considered very carefully before
-     being executed.
+     being executed. In the event of such a breaking change, we would want to release a
+     compatibility mode in which the compiler would generate bytecode supporting the old layout.
 
 
 Mappings and Dynamic Arrays
@@ -90,7 +91,7 @@ The value corresponding to a mapping key ``k`` is located at ``keccak256(h(k) . 
 where ``.`` is concatenation and ``h`` is a function that is applied to the key depending on its type:
 
 - for value types, ``h`` pads the value to 32 bytes in the same way as when storing the value in memory.
-- for strings and byte arrays, ``h`` computes the ``keccak256`` hash of the unpadded data.
+- for strings and byte arrays, ``h(k)`` is just the unpadded data.
 
 If the mapping value is a
 non-value type, the computed slot marks the start of the data. If the value is of struct type,
@@ -98,7 +99,7 @@ for example, you have to add an offset corresponding to the struct member to rea
 
 As an example, consider the following contract:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.0 <0.9.0;
@@ -127,7 +128,7 @@ The type of the value is ``uint256``, so it uses a single slot.
 ------------------------
 
 ``bytes`` and ``string`` are encoded identically.
-In general, the encoding is similar to ``byte1[]``, in the sense that there is a slot for the array itself and
+In general, the encoding is similar to ``bytes1[]``, in the sense that there is a slot for the array itself and
 a data area that is computed using a ``keccak256`` hash of that slot's position.
 However, for short values (shorter than 32 bytes) the array elements are stored together with the length in the same slot.
 
@@ -139,8 +140,7 @@ by checking if the lowest bit is set: short (not set) and long (set).
 
 .. note::
   Handling invalidly encoded slots is currently not supported but may be added in the future.
-  If you are compiling via the experimental IR-based compiler pipeline, reading an invalidly encoded
-  slot results in a ``Panic(0x22)`` error.
+  If you are compiling via IR, reading an invalidly encoded slot results in a ``Panic(0x22)`` error.
 
 JSON Output
 ===========
@@ -216,7 +216,7 @@ The following example shows a contract and its storage layout, containing
 value and reference types, types that are encoded packed, and nested types.
 
 
-.. code::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.0 <0.9.0;
@@ -238,12 +238,12 @@ value and reference types, types that are encoded packed, and nested types.
         bytes b1;
     }
 
-.. code::
+.. code:: json
 
-    "storageLayout": {
+    {
       "storage": [
         {
-          "astId": 14,
+          "astId": 15,
           "contract": "fileA:A",
           "label": "x",
           "offset": 0,
@@ -251,7 +251,7 @@ value and reference types, types that are encoded packed, and nested types.
           "type": "t_uint256"
         },
         {
-          "astId": 16,
+          "astId": 17,
           "contract": "fileA:A",
           "label": "y",
           "offset": 0,
@@ -259,15 +259,15 @@ value and reference types, types that are encoded packed, and nested types.
           "type": "t_uint256"
         },
         {
-          "astId": 18,
+          "astId": 20,
           "contract": "fileA:A",
           "label": "s",
           "offset": 0,
           "slot": "2",
-          "type": "t_struct(S)12_storage"
+          "type": "t_struct(S)13_storage"
         },
         {
-          "astId": 20,
+          "astId": 22,
           "contract": "fileA:A",
           "label": "addr",
           "offset": 0,
@@ -275,7 +275,7 @@ value and reference types, types that are encoded packed, and nested types.
           "type": "t_address"
         },
         {
-          "astId": 26,
+          "astId": 28,
           "contract": "fileA:A",
           "label": "map",
           "offset": 0,
@@ -283,7 +283,7 @@ value and reference types, types that are encoded packed, and nested types.
           "type": "t_mapping(t_uint256,t_mapping(t_address,t_bool))"
         },
         {
-          "astId": 29,
+          "astId": 31,
           "contract": "fileA:A",
           "label": "array",
           "offset": 0,
@@ -291,7 +291,7 @@ value and reference types, types that are encoded packed, and nested types.
           "type": "t_array(t_uint256)dyn_storage"
         },
         {
-          "astId": 31,
+          "astId": 33,
           "contract": "fileA:A",
           "label": "s1",
           "offset": 0,
@@ -299,7 +299,7 @@ value and reference types, types that are encoded packed, and nested types.
           "type": "t_string_storage"
         },
         {
-          "astId": 33,
+          "astId": 35,
           "contract": "fileA:A",
           "label": "b1",
           "offset": 0,
@@ -354,12 +354,12 @@ value and reference types, types that are encoded packed, and nested types.
           "label": "string",
           "numberOfBytes": "32"
         },
-        "t_struct(S)12_storage": {
+        "t_struct(S)13_storage": {
           "encoding": "inplace",
           "label": "struct A.S",
           "members": [
             {
-              "astId": 2,
+              "astId": 3,
               "contract": "fileA:A",
               "label": "a",
               "offset": 0,
@@ -367,7 +367,7 @@ value and reference types, types that are encoded packed, and nested types.
               "type": "t_uint128"
             },
             {
-              "astId": 4,
+              "astId": 5,
               "contract": "fileA:A",
               "label": "b",
               "offset": 16,
@@ -375,7 +375,7 @@ value and reference types, types that are encoded packed, and nested types.
               "type": "t_uint128"
             },
             {
-              "astId": 8,
+              "astId": 9,
               "contract": "fileA:A",
               "label": "staticArray",
               "offset": 0,
@@ -383,7 +383,7 @@ value and reference types, types that are encoded packed, and nested types.
               "type": "t_array(t_uint256)2_storage"
             },
             {
-              "astId": 11,
+              "astId": 12,
               "contract": "fileA:A",
               "label": "dynArray",
               "offset": 0,
