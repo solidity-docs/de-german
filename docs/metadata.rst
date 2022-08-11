@@ -21,9 +21,12 @@ the :ref:`Standard JSON Interface<compiler-api>`.
 
 You have to publish the metadata file to IPFS, Swarm, or another service so
 that others can access it. You create the file by using the ``solc --metadata``
-command that generates a file called ``ContractName_meta.json``. It contains
-IPFS and Swarm references to the source code, so you have to upload all source
-files and the metadata file.
+command together with the ``--output-dir`` parameter. Without the parameter,
+the metadata will be written to standard output.
+The metadata contains IPFS and Swarm references to the source code, so you have to
+upload all source files in addition to the metadata file. For IPFS, the hash contained
+in the CID returned by ``ipfs add`` (not the direct sha2-256 hash of the file)
+shall match with the one contained in the bytecode.
 
 The metadata file has the following format. The example below is presented in a
 human-readable way. Properly formatted metadata should use quotes correctly,
@@ -31,24 +34,24 @@ reduce whitespace to a minimum and sort the keys of all objects to arrive at a
 unique formatting. Comments are not permitted and used here only for
 explanatory purposes.
 
-.. code-block:: none
+.. code-block:: javascript
 
     {
       // Required: The version of the metadata format
-      version: "1",
+      "version": "1",
       // Required: Source code language, basically selects a "sub-version"
       // of the specification
-      language: "Solidity",
+      "language": "Solidity",
       // Required: Details about the compiler, contents are specific
       // to the language.
-      compiler: {
+      "compiler": {
         // Required for Solidity: Version of the compiler
-        version: "0.4.6+commit.2dabbdf0.Emscripten.clang",
+        "version": "0.4.6+commit.2dabbdf0.Emscripten.clang",
         // Optional: Hash of the compiler binary which produced this output
-        keccak256: "0x123..."
+        "keccak256": "0x123..."
       },
       // Required: Compilation source files/source units, keys are file names
-      sources:
+      "sources":
       {
         "myFile.sol": {
           // Required: keccak256 hash of the source file
@@ -68,59 +71,59 @@ explanatory purposes.
         }
       },
       // Required: Compiler settings
-      settings:
+      "settings":
       {
         // Required for Solidity: Sorted list of remappings
-        remappings: [ ":g=/dir" ],
+        "remappings": [ ":g=/dir" ],
         // Optional: Optimizer settings. The fields "enabled" and "runs" are deprecated
         // and are only given for backwards-compatibility.
-        optimizer: {
-          enabled: true,
-          runs: 500,
-          details: {
+        "optimizer": {
+          "enabled": true,
+          "runs": 500,
+          "details": {
             // peephole defaults to "true"
-            peephole: true,
+            "peephole": true,
             // inliner defaults to "true"
-            inliner: true,
+            "inliner": true,
             // jumpdestRemover defaults to "true"
-            jumpdestRemover: true,
-            orderLiterals: false,
-            deduplicate: false,
-            cse: false,
-            constantOptimizer: false,
-            yul: true,
+            "jumpdestRemover": true,
+            "orderLiterals": false,
+            "deduplicate": false,
+            "cse": false,
+            "constantOptimizer": false,
+            "yul": true,
             // Optional: Only present if "yul" is "true"
-            yulDetails: {
-              stackAllocation: false,
-              optimizerSteps: "dhfoDgvulfnTUtnIf..."
+            "yulDetails": {
+              "stackAllocation": false,
+              "optimizerSteps": "dhfoDgvulfnTUtnIf..."
             }
           }
         },
-        metadata: {
+        "metadata": {
           // Reflects the setting used in the input json, defaults to false
-          useLiteralContent: true,
+          "useLiteralContent": true,
           // Reflects the setting used in the input json, defaults to "ipfs"
-          bytecodeHash: "ipfs"
-        }
+          "bytecodeHash": "ipfs"
+        },
         // Required for Solidity: File and name of the contract or library this
         // metadata is created for.
-        compilationTarget: {
+        "compilationTarget": {
           "myFile.sol": "MyContract"
         },
         // Required for Solidity: Addresses for libraries used
-        libraries: {
+        "libraries": {
           "MyLib": "0x123123..."
         }
       },
       // Required: Generated information about the contract.
-      output:
+      "output":
       {
         // Required: ABI definition of the contract
-        abi: [ ... ],
+        "abi": [/* ... */],
         // Required: NatSpec user documentation of the contract
-        userdoc: [ ... ],
+        "userdoc": [/* ... */],
         // Required: NatSpec developer documentation of the contract
-        devdoc: [ ... ],
+        "devdoc": [/* ... */]
       }
     }
 
@@ -147,7 +150,9 @@ the mapping ``{"ipfs": <IPFS hash>, "solc": <compiler version>}`` is stored
 contain more keys (see below) and the beginning of that
 encoding is not easy to find, its length is added in a two-byte big-endian
 encoding. The current version of the Solidity compiler usually adds the following
-to the end of the deployed bytecode::
+to the end of the deployed bytecode
+
+.. code-block:: text
 
     0xa2
     0x64 'i' 'p' 'f' 's' 0x58 0x22 <34 bytes IPFS hash>
