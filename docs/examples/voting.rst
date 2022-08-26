@@ -30,7 +30,7 @@ At the end of the voting time, ``winningProposal()``
 will return the proposal with the largest number
 of votes.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -82,7 +82,7 @@ of votes.
 
         // Give `voter` the right to vote on this ballot.
         // May only be called by `chairperson`.
-        function giveRightToVote(address voter) public {
+        function giveRightToVote(address voter) external {
             // If the first argument of `require` evaluates
             // to `false`, execution terminates and all
             // changes to the state and to Ether balances
@@ -106,9 +106,10 @@ of votes.
         }
 
         /// Delegate your vote to the voter `to`.
-        function delegate(address to) public {
+        function delegate(address to) external {
             // assigns reference
             Voter storage sender = voters[msg.sender];
+            require(sender.weight != 0, "You have no right to vote");
             require(!sender.voted, "You already voted.");
 
             require(to != msg.sender, "Self-delegation is disallowed.");
@@ -128,11 +129,16 @@ of votes.
                 require(to != msg.sender, "Found loop in delegation.");
             }
 
+            Voter storage delegate_ = voters[to];
+
+            // Voters cannot delegate to accounts that cannot vote.
+            require(delegate_.weight >= 1);
+
             // Since `sender` is a reference, this
-            // modifies `voters[msg.sender].voted`
+            // modifies `voters[msg.sender]`.
             sender.voted = true;
             sender.delegate = to;
-            Voter storage delegate_ = voters[to];
+
             if (delegate_.voted) {
                 // If the delegate already voted,
                 // directly add to the number of votes
@@ -146,7 +152,7 @@ of votes.
 
         /// Give your vote (including votes delegated to you)
         /// to proposal `proposals[proposal].name`.
-        function vote(uint proposal) public {
+        function vote(uint proposal) external {
             Voter storage sender = voters[msg.sender];
             require(sender.weight != 0, "Has no right to vote");
             require(!sender.voted, "Already voted.");
@@ -176,7 +182,7 @@ of votes.
         // Calls winningProposal() function to get the index
         // of the winner contained in the proposals array and then
         // returns the name of the winner
-        function winnerName() public view
+        function winnerName() external view
                 returns (bytes32 winnerName_)
         {
             winnerName_ = proposals[winningProposal()].name;
