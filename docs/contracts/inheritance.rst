@@ -36,7 +36,7 @@ some :ref:`differences <multi-inheritance>`.
 
 Details are given in the following example.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -76,9 +76,9 @@ Details are given in the following example.
     }
 
 
-    // Multiple inheritance is possible. Note that `owned` is
+    // Multiple inheritance is possible. Note that `Owned` is
     // also a base class of `Destructible`, yet there is only a single
-    // instance of `owned` (as for virtual inheritance in C++).
+    // instance of `Owned` (as for virtual inheritance in C++).
     contract Named is Owned, Destructible {
         constructor(bytes32 name) {
             Config config = Config(0xD5f9D8D94886E70b06E474c3fB14Fd43E2f23970);
@@ -124,7 +124,9 @@ Details are given in the following example.
 
 Note that above, we call ``Destructible.destroy()`` to "forward" the
 destruction request. The way this is done is problematic, as
-seen in the following example::
+seen in the following example:
+
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -154,7 +156,9 @@ seen in the following example::
 
 A call to ``Final.destroy()`` will call ``Base2.destroy`` because we specify it
 explicitly in the final override, but this function will bypass
-``Base1.destroy``. The way around this is to use ``super``::
+``Base1.destroy``. The way around this is to use ``super``:
+
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -211,7 +215,7 @@ The mutability may be changed to a more strict one following the order:
 
 The following example demonstrates changing mutability and visibility:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -235,7 +239,7 @@ and have not yet been overridden by another base contract (on some path through 
 Additionally, if a contract inherits the same function from multiple (unrelated)
 bases, it has to explicitly override it:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.0 <0.9.0;
@@ -262,7 +266,7 @@ the function is defined in a common base contract
 or if there is a unique function in a common base contract
 that already overrides all other functions.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.0 <0.9.0;
@@ -299,11 +303,18 @@ contracts can no longer change the behaviour of that function.
   outside of interfaces. In interfaces, all functions are
   automatically considered ``virtual``.
 
+.. note::
+
+  Starting from Solidity 0.8.8, the ``override`` keyword is not
+  required when overriding an interface function, except for the
+  case where the function is defined in multiple bases.
+
+
 Public state variables can override external functions if the
 parameter and return types of the function matches the getter function
 of the variable:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.0 <0.9.0;
@@ -335,7 +346,7 @@ Function modifiers can override each other. This works in the same way as
 ``virtual`` keyword must be used on the overridden modifier
 and the ``override`` keyword must be used in the overriding modifier:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.0 <0.9.0;
@@ -354,7 +365,7 @@ and the ``override`` keyword must be used in the overriding modifier:
 In case of multiple inheritance, all direct base contracts must be specified
 explicitly:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.0 <0.9.0;
@@ -388,7 +399,7 @@ which is executed upon contract creation, and where you can run contract
 initialisation code.
 
 Before the constructor code is executed, state variables are initialised to
-their specified value if you initialise them inline, or zero if you do not.
+their specified value if you initialise them inline, or their :ref:`default value<default-value>` if you do not.
 
 After the constructor has run, the final code of the contract is deployed
 to the blockchain. The deployment of
@@ -402,7 +413,7 @@ If there is no
 constructor, the contract will assume the default constructor, which is
 equivalent to ``constructor() {}``. For example:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -410,8 +421,8 @@ equivalent to ``constructor() {}``. For example:
     abstract contract A {
         uint public a;
 
-        constructor(uint _a) {
-            a = _a;
+        constructor(uint a_) {
+            a = a_;
         }
     }
 
@@ -432,21 +443,23 @@ cannot be assigned valid values from outside but only through the constructors o
     ``internal`` or ``public``.
 
 
-.. index:: ! base;constructor
+.. index:: ! base;constructor, inheritance list, contract;abstract, abstract contract
 
 Arguments for Base Constructors
 ===============================
 
 The constructors of all the base contracts will be called following the
 linearization rules explained below. If the base constructors have arguments,
-derived contracts need to specify all of them. This can be done in two ways::
+derived contracts need to specify all of them. This can be done in two ways:
+
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
 
     contract Base {
         uint x;
-        constructor(uint _x) { x = _x; }
+        constructor(uint x_) { x = x_; }
     }
 
     // Either directly specify in the inheritance list...
@@ -454,14 +467,23 @@ derived contracts need to specify all of them. This can be done in two ways::
         constructor() {}
     }
 
-    // or through a "modifier" of the derived constructor.
+    // or through a "modifier" of the derived constructor...
     contract Derived2 is Base {
-        constructor(uint _y) Base(_y * _y) {}
+        constructor(uint y) Base(y * y) {}
+    }
+
+    // or declare abstract...
+    abstract contract Derived3 is Base {
+    }
+
+    // and have the next concrete derived contract initialize it.
+    contract DerivedFromDerived is Derived3 {
+        constructor() Base(10 + 10) {}
     }
 
 One way is directly in the inheritance list (``is Base(7)``).  The other is in
 the way a modifier is invoked as part of
-the derived constructor (``Base(_y * _y)``). The first way to
+the derived constructor (``Base(y * y)``). The first way to
 do it is more convenient if the constructor argument is a
 constant and defines the behaviour of the contract or
 describes it. The second way has to be used if the
@@ -471,7 +493,12 @@ inheritance list or in modifier-style in the derived constructor.
 Specifying arguments in both places is an error.
 
 If a derived contract does not specify the arguments to all of its base
-contracts' constructors, it will be abstract.
+contracts' constructors, it must be declared abstract. In that case, when
+another contract derives from it, that other contract's inheritance list
+or constructor must provide the necessary parameters
+for all base classes that haven't had their parameters specified (otherwise,
+that other contract must be declared abstract as well). For example, in the above
+code snippet, see ``Derived3`` and ``DerivedFromDerived``.
 
 .. index:: ! inheritance;multiple, ! linearization, ! C3 linearization
 
@@ -499,7 +526,7 @@ stopping at the first match. If a base contract has already been searched, it is
 In the following code, Solidity will give the
 error "Linearization of inheritance graph impossible".
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.0 <0.9.0;
@@ -520,7 +547,7 @@ C3 linearization is not too important in practice.
 
 One area where inheritance linearization is especially important and perhaps not as clear is when there are multiple constructors in the inheritance hierarchy. The constructors will always be executed in the linearized order, regardless of the order in which their arguments are provided in the inheriting contract's constructor.  For example:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
