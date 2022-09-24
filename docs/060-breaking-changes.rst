@@ -53,6 +53,8 @@ For most of the topics the compiler will provide suggestions.
   If the name contains a dot, its prefix up to the dot may not conflict with any declaration outside the inline
   assembly block.
 
+* In inline assembly, opcodes that do not take arguments are now represented as "built-in functions" instead of standalone identifiers. So ``gas`` is now ``gas()``.
+
 * State variable shadowing is now disallowed.  A derived contract can only
   declare a state variable ``x``, if there is no visible state variable with
   the same name in any of its bases.
@@ -89,14 +91,14 @@ New Features
 This section lists things that were not possible prior to Solidity 0.6.0
 or were more difficult to achieve.
 
- * The :ref:`try/catch statement <try-catch>` allows you to react on failed external calls.
- * ``struct`` and ``enum`` types can be declared at file level.
- * Array slices can be used for calldata arrays, for example ``abi.decode(msg.data[4:], (uint, uint))``
-   is a low-level way to decode the function call payload.
- * Natspec supports multiple return parameters in developer documentation, enforcing the same naming check as ``@param``.
- * Yul and Inline Assembly have a new statement called ``leave`` that exits the current function.
- * Conversions from ``address`` to ``address payable`` are now possible via ``payable(x)``, where
-   ``x`` must be of type ``address``.
+* The :ref:`try/catch statement <try-catch>` allows you to react on failed external calls.
+* ``struct`` and ``enum`` types can be declared at file level.
+* Array slices can be used for calldata arrays, for example ``abi.decode(msg.data[4:], (uint, uint))``
+  is a low-level way to decode the function call payload.
+* Natspec supports multiple return parameters in developer documentation, enforcing the same naming check as ``@param``.
+* Yul and Inline Assembly have a new statement called ``leave`` that exits the current function.
+* Conversions from ``address`` to ``address payable`` are now possible via ``payable(x)``, where
+  ``x`` must be of type ``address``.
 
 
 Interface Changes
@@ -174,3 +176,6 @@ This section gives detailed instructions on how to update prior code for every b
   ``override`` to every overriding function. For multiple inheritance, add ``override(A, B, ..)``,
   where you list all contracts that define the overridden function in the parentheses. When
   multiple bases define the same function, the inheriting contract must override all conflicting functions.
+
+* In inline assembly, add ``()`` to all opcodes that do not otherwise accept an argument.
+  For example, change ``pc`` to ``pc()``, and ``gas`` to ``gas()``.
