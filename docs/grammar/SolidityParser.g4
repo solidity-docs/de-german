@@ -1,7 +1,7 @@
 /**
  * Solidity is a statically typed, contract-oriented, high-level language for implementing smart contracts on the Ethereum platform.
  */
-grammar Solidity;
+parser grammar SolidityParser;
 
 options { tokenVocab=SolidityLexer; }
 
@@ -12,6 +12,7 @@ options { tokenVocab=SolidityLexer; }
 sourceUnit: (
 	pragmaDirective
 	| importDirective
+	| usingDirective
 	| contractDefinition
 	| interfaceDefinition
 	| libraryDefinition
@@ -19,6 +20,8 @@ sourceUnit: (
 	| constantVariableDeclaration
 	| structDefinition
 	| enumDefinition
+	| userDefinedValueTypeDefinition
+	| errorDefinition
 )* EOF;
 
 //@doc: inline
@@ -88,8 +91,10 @@ contractBodyElement:
 	| receiveFunctionDefinition
 	| structDefinition
 	| enumDefinition
+	| userDefinedValueTypeDefinition
 	| stateVariableDeclaration
 	| eventDefinition
+	| errorDefinition
 	| usingDirective;
 //@doc:inline
 namedArgument: name=identifier Colon value=expression;
@@ -245,6 +250,11 @@ structMember: type=typeName name=identifier Semicolon;
  * Definition of an enum. Can occur at top-level within a source unit or within a contract, library or interface.
  */
 enumDefinition:	Enum name=identifier LBrace enumValues+=identifier (Comma enumValues+=identifier)* RBrace;
+/**
+ * Definition of a user defined value type. Can occur at top-level within a source unit or within a contract, library or interface.
+ */
+userDefinedValueTypeDefinition:
+	Type name=identifier Is elementaryTypeName[true] Semicolon;
 
 /**
  * The declaration of a state variable.
@@ -290,10 +300,22 @@ eventDefinition:
 	Semicolon;
 
 /**
- * Using directive to bind library functions to types.
- * Can occur within contracts and libraries.
+ * Parameter of an error.
  */
-usingDirective: Using identifierPath For (Mul | typeName) Semicolon;
+errorParameter: type=typeName name=identifier?;
+/**
+ * Definition of an error.
+ */
+errorDefinition:
+	Error name=identifier
+	LParen (parameters+=errorParameter (Comma parameters+=errorParameter)*)? RParen
+	Semicolon;
+
+/**
+ * Using directive to bind library functions and free functions to types.
+ * Can occur within contracts and libraries and at the file level.
+ */
+usingDirective: Using (identifierPath | (LBrace identifierPath (Comma identifierPath)* RBrace)) For (Mul | typeName) Global? Semicolon;
 /**
  * A type name can be an elementary type, a function type, a mapping type, a user-defined type
  * (e.g. a contract or struct) or an array type.
@@ -365,16 +387,16 @@ tupleExpression: LParen (expression? ( Comma expression?)* ) RParen;
 inlineArrayExpression: LBrack (expression ( Comma expression)* ) RBrack;
 
 /**
- * Besides regular non-keyword Identifiers, the 'from' keyword can also occur as identifier outside of import statements.
+ * Besides regular non-keyword Identifiers, some keywords like 'from' and 'error' can also be used as identifiers.
  */
-identifier: Identifier | From;
+identifier: Identifier | From | Error | Revert | Global;
 
 literal: stringLiteral | numberLiteral | booleanLiteral | hexStringLiteral | unicodeStringLiteral;
 booleanLiteral: True | False;
 /**
  * A full string literal consists of either one or several consecutive quoted strings.
  */
-stringLiteral: StringLiteral+;
+stringLiteral: (NonEmptyStringLiteral | EmptyStringLiteral)+;
 /**
  * A full hex string literal that consists of either one or several consecutive hex strings.
  */
@@ -408,6 +430,7 @@ statement:
 	| tryStatement
 	| returnStatement
 	| emitStatement
+	| revertStatement
 	| assemblyStatement
 ;
 
@@ -446,11 +469,21 @@ returnStatement: Return expression? Semicolon;
  */
 emitStatement: Emit expression callArgumentList Semicolon;
 /**
+ * A revert statement. The contained expression needs to refer to an error.
+ */
+revertStatement: Revert expression callArgumentList Semicolon;
+/**
  * An inline assembly block.
  * The contents of an inline assembly block use a separate scanner/lexer, i.e. the set of keywords and
  * allowed identifiers is different inside an inline assembly block.
  */
-assemblyStatement: Assembly AssemblyDialect? AssemblyLBrace yulStatement* YulRBrace;
+assemblyStatement: Assembly AssemblyDialect? assemblyFlags? AssemblyLBrace yulStatement* YulRBrace;
+
+/**
+ * Assembly flags.
+ * Comma-separated list of double-quoted strings as flags.
+ */
+assemblyFlags: AssemblyBlockLParen AssemblyFlagString (AssemblyBlockComma AssemblyFlagString)* AssemblyBlockRParen;
 
 //@doc:inline
 variableDeclarationList: variableDeclarations+=variableDeclaration (Comma variableDeclarations+=variableDeclaration)*;
@@ -538,12 +571,12 @@ yulFunctionDefinition:
  * While only identifiers without dots can be declared within inline assembly,
  * paths containing dots can refer to declarations outside the inline assembly block.
  */
-yulPath: YulIdentifier (YulPeriod YulIdentifier)*;
+yulPath: YulIdentifier (YulPeriod (YulIdentifier | YulEVMBuiltin))*;
 /**
  * A call to a function with return values can only occur as right-hand side of an assignment or
  * a variable declaration.
  */
 yulFunctionCall: (YulIdentifier | YulEVMBuiltin) YulLParen (yulExpression (YulComma yulExpression)*)? YulRParen;
 yulBoolean: YulTrue | YulFalse;
-yulLiteral: YulDecimalNumber | YulStringLiteral | YulHexNumber | yulBoolean;
+yulLiteral: YulDecimalNumber | YulStringLiteral | YulHexNumber | yulBoolean | YulHexStringLiteral;
 yulExpression: yulPath | yulFunctionCall | yulLiteral;
