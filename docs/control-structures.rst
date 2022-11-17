@@ -17,7 +17,7 @@ the usual semantics known from C or JavaScript.
 
 Solidity also supports exception handling in the form of ``try``/``catch``-statements,
 but only for :ref:`external function calls <external-function-calls>` and
-contract creation calls.
+contract creation calls. Errors can be created using the :ref:`revert statement <revert-statement>`.
 
 Parentheses can *not* be omitted for conditionals, but curly braces can be omitted
 around single-statement bodies.
@@ -39,11 +39,14 @@ Internal Function Calls
 -----------------------
 
 Functions of the current contract can be called directly ("internally"), also recursively, as seen in
-this nonsensical example::
+this nonsensical example:
+
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.22 <0.9.0;
 
+    // This will report a warning
     contract C {
         function g(uint a) public pure returns (uint ret) { return a + f(); }
         function f() internal pure returns (uint ret) { return g(7) + f(); }
@@ -62,9 +65,10 @@ uses up at least one stack slot and there are only 1024 slots available.
 External Function Calls
 -----------------------
 
-The expressions ``this.g(8);`` and ``c.g(2);`` (where ``c`` is a contract
-instance) are also valid function calls, but this time, the function
-will be called "externally", via a message call and not directly via jumps.
+Functions can also be called using the ``this.g(8);`` and ``c.g(2);`` notation, where
+``c`` is a contract instance and ``g`` is a function belonging to ``c``.
+Calling the function ``g`` via either way results in it being called "externally", using a
+message call and not directly via jumps.
 Please note that function calls on ``this`` cannot be used in the constructor,
 as the actual contract has not been created yet.
 
@@ -81,7 +85,7 @@ Note that it is discouraged to specify gas values explicitly, since the gas cost
 of opcodes can change in the future. Any Wei you send to the contract is added
 to the total balance of that contract:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.2 <0.9.0;
@@ -102,13 +106,26 @@ otherwise, the ``value`` option would not be available.
 .. warning::
   Be careful that ``feed.info{value: 10, gas: 800}`` only locally sets the
   ``value`` and amount of ``gas`` sent with the function call, and the
-  parentheses at the end perform the actual call. So in this case, the
-  function is not called and the ``value`` and ``gas`` settings are lost.
+  parentheses at the end perform the actual call. So
+  ``feed.info{value: 10, gas: 800}`` does not call the function and
+  the ``value`` and ``gas`` settings are lost, only
+  ``feed.info{value: 10, gas: 800}()`` performs the function call.
 
 Due to the fact that the EVM considers a call to a non-existing contract to
 always succeed, Solidity uses the ``extcodesize`` opcode to check that
 the contract that is about to be called actually exists (it contains code)
-and causes an exception if it does not.
+and causes an exception if it does not. This check is skipped if the return
+data will be decoded after the call and thus the ABI decoder will catch the
+case of a non-existing contract.
+
+Note that this check is not performed in case of :ref:`low-level calls <address_related>` which
+operate on addresses rather than contract instances.
+
+.. note::
+    Be careful when using high-level calls to
+    :ref:`precompiled contracts <precompiledContracts>`,
+    since the compiler considers them non-existing according to the
+    above logic even though they execute code and can return data.
 
 Function calls also cause exceptions if the called contract itself
 throws an exception or goes out of gas.
@@ -133,15 +150,15 @@ throws an exception or goes out of gas.
     use ``f.value(x).gas(g)()``. This was deprecated in Solidity 0.6.2 and is no
     longer possible since Solidity 0.7.0.
 
-Named Calls and Anonymous Function Parameters
----------------------------------------------
+Function Calls with Named Parameters
+------------------------------------
 
 Function call arguments can be given by name, in any order,
 if they are enclosed in ``{ }`` as can be seen in the following
 example. The argument list has to coincide by name with the list of
 parameters from the function declaration, but can be in arbitrary order.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.0 <0.9.0;
@@ -159,13 +176,15 @@ parameters from the function declaration, but can be in arbitrary order.
 
     }
 
-Omitted Function Parameter Names
---------------------------------
+Omitted Names in Function Definitions
+-------------------------------------
 
-The names of unused parameters (especially return parameters) can be omitted.
-Those parameters will still be present on the stack, but they are inaccessible.
+The names of parameters and return values in the function declaration can be omitted.
+Those items with omitted names will still be present on the stack, but they are
+inaccessible by name. An omitted return value name
+can still return a value to the caller by use of the ``return`` statement.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.22 <0.9.0;
@@ -189,7 +208,7 @@ A contract can create other contracts using the ``new`` keyword. The full
 code of the contract being created has to be known when the creating contract
 is compiled so recursive creation-dependencies are not possible.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -244,7 +263,7 @@ contracts creates other contracts in the meantime.
 The main use-case here is contracts that act as judges for off-chain interactions,
 which only need to be created if there is a dispute.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.7.0 <0.9.0;
@@ -266,7 +285,7 @@ which only need to be created if there is a dispute.
                 salt,
                 keccak256(abi.encodePacked(
                     type(D).creationCode,
-                    arg
+                    abi.encode(arg)
                 ))
             )))));
 
@@ -280,7 +299,7 @@ which only need to be created if there is a dispute.
     re-created at the same address after having been destroyed. Yet, it is possible
     for that newly created contract to have a different deployed bytecode even
     though the creation bytecode has been the same (which is a requirement because
-    otherwise the address would change). This is due to the fact that the compiler
+    otherwise the address would change). This is due to the fact that the constructor
     can query external state that might have changed between the two creations
     and incorporate that into the deployed bytecode before it is stored.
 
@@ -313,7 +332,7 @@ or to pre-existing variables (or LValues in general).
 Tuples are not proper types in Solidity, they can only be used to form syntactic
 groupings of expressions.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
@@ -359,7 +378,7 @@ In the example below the call to ``g(x)`` has no effect on ``x`` because it crea
 an independent copy of the storage value in memory. However, ``h(x)`` successfully modifies ``x``
 because only a reference and not a copy is passed.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.4.22 <0.9.0;
@@ -418,7 +437,7 @@ use state variables before they are declared and call functions recursively.
 As a consequence, the following examples will compile without warnings, since
 the two variables have the same name but disjoint scopes.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
@@ -440,7 +459,7 @@ As a special example of the C99 scoping rules, note that in the following,
 the first assignment to ``x`` will actually assign the outer and not the inner variable.
 In any case, you will get a warning about the outer variable being shadowed.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
@@ -462,7 +481,7 @@ In any case, you will get a warning about the outer variable being shadowed.
     for the entire function, regardless where it was declared. The following example shows a code snippet that used
     to compile but leads to an error starting from version 0.5.0.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
@@ -476,6 +495,7 @@ In any case, you will get a warning about the outer variable being shadowed.
     }
 
 
+.. index:: ! safe math, safemath, checked, unchecked
 .. _unchecked:
 
 Checked or Unchecked Arithmetic
@@ -493,17 +513,17 @@ thus making the use of these libraries unnecessary.
 
 To obtain the previous behaviour, an ``unchecked`` block can be used:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity ^0.8.0;
     contract C {
         function f(uint a, uint b) pure public returns (uint) {
-            // This addition will wrap on underflow.
+            // This subtraction will wrap on underflow.
             unchecked { return a - b; }
         }
         function g(uint a, uint b) pure public returns (uint) {
-            // This addition will revert on underflow.
+            // This subtraction will revert on underflow.
             return a - b;
         }
     }
@@ -532,6 +552,12 @@ and will wrap without an error if used inside an unchecked block:
     or modulo by zero using the ``unchecked`` block.
 
 .. note::
+   Bitwise operators do not perform overflow or underflow checks.
+   This is particularly visible when using bitwise shifts (``<<``, ``>>``, ``<<=``, ``>>=``) in
+   place of integer division and multiplication by a power of 2.
+   For example ``type(uint256).max << 3`` does not revert even though ``type(uint256).max * 8`` would.
+
+.. note::
     The second statement in ``int x = type(int).min; -x;`` will result in an overflow
     because the negative range can hold one more value than the positive range.
 
@@ -551,7 +577,8 @@ state in the current call (and all its sub-calls) and
 flags an error to the caller.
 
 When exceptions happen in a sub-call, they "bubble up" (i.e.,
-exceptions are rethrown) automatically. Exceptions to this rule are ``send``
+exceptions are rethrown) automatically unless they are caught in
+a ``try/catch`` statement. Exceptions to this rule are ``send``
 and the low-level functions ``call``, ``delegatecall`` and
 ``staticcall``: they return ``false`` as their first return value in case
 of an exception instead of "bubbling up".
@@ -562,17 +589,11 @@ of an exception instead of "bubbling up".
     if the account called is non-existent, as part of the design
     of the EVM. Account existence must be checked prior to calling if needed.
 
-Exceptions in external calls can be caught with the ``try``/``catch`` statement.
-
-Exceptions can contain data that is passed back to the caller.
-This data consists of a 4-byte selector and subsequent :ref:`ABI-encoded<abi>` data.
-The selector is computed in the same way as a function selector, i.e.,
-the first four bytes of the keccak256-hash of a function
-signature - in this case an error signature.
-
-Currently, Solidity supports two error signatures: ``Error(string)``
-and ``Panic(uint256)``. The first ("error") is used for "regular" error conditions
-while the second ("panic") is used for errors that should not be present in bug-free code.
+Exceptions can contain error data that is passed back to the caller
+in the form of :ref:`error instances <errors>`.
+The built-in errors ``Error(string)`` and ``Panic(uint256)`` are
+used by special functions, as explained below. ``Error`` is used for "regular" error conditions
+while ``Panic`` is used for errors that should not be present in bug-free code.
 
 Panic via ``assert`` and Error via ``require``
 ----------------------------------------------
@@ -594,6 +615,7 @@ function calls which will cause a Panic.
 A Panic exception is generated in the following situations.
 The error code supplied with the error data indicates the kind of panic.
 
+#. 0x00: Used for generic compiler inserted panics.
 #. 0x01: If you call ``assert`` with an argument that evaluates to false.
 #. 0x11: If an arithmetic operation results in underflow or overflow outside of an ``unchecked { ... }`` block.
 #. 0x12; If you divide or modulo by zero (e.g. ``5 / 0`` or ``23 % 0``).
@@ -604,24 +626,31 @@ The error code supplied with the error data indicates the kind of panic.
 #. 0x41: If you allocate too much memory or create an array that is too large.
 #. 0x51: If you call a zero-initialized variable of internal function type.
 
-The ``require`` function either creates an error of type ``Error(string)``
-or an error without any error data and it
+The ``require`` function either creates an error without any data or
+an error of type ``Error(string)``. It
 should be used to ensure valid conditions
 that cannot be detected until execution time.
 This includes conditions on inputs
 or return values from calls to external contracts.
 
-A ``Error(string)`` exception (or an exception without data) is generated
+.. note::
+
+    It is currently not possible to use custom errors in combination
+    with ``require``. Please use ``if (!condition) revert CustomError();`` instead.
+
+An ``Error(string)`` exception (or an exception without data) is generated
+by the compiler
 in the following situations:
 
-#. Calling ``require`` with an argument that evaluates to ``false``.
+#. Calling ``require(x)`` where ``x`` evaluates to ``false``.
+#. If you use ``revert()`` or ``revert("description")``.
 #. If you perform an external function call targeting a contract that contains no code.
 #. If your contract receives Ether via a public function without
    ``payable`` modifier (including the constructor and the fallback function).
 #. If your contract receives Ether via a public getter function.
 
 For the following cases, the error data from the external call
-(if provided) is forwarded. This mean that it can either cause
+(if provided) is forwarded. This means that it can either cause
 an `Error` or a `Panic` (or whatever else was given):
 
 #. If a ``.transfer()`` fails.
@@ -644,7 +673,8 @@ You can optionally provide a message string for ``require``, but not for ``asser
 The following example shows how you can use ``require`` to check conditions on inputs
 and ``assert`` for internal error checking.
 
-::
+.. code-block:: solidity
+    :force:
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.0 <0.9.0;
@@ -671,7 +701,7 @@ safest action is to revert all changes and make the whole transaction
 (or at least call) without effect.
 
 In both cases, the caller can react on such failures using ``try``/``catch``, but
-the changes in the caller will always be reverted.
+the changes in the callee will always be reverted.
 
 .. note::
 
@@ -679,22 +709,43 @@ the changes in the caller will always be reverted.
     which consumed all gas available to the call.
     Exceptions that use ``require`` used to consume all gas until before the Metropolis release.
 
+.. _revert-statement:
+
 ``revert``
 ----------
 
-The ``revert`` function is another way to trigger exceptions from within other code blocks to flag an error and
-revert the current call. The function takes an optional string
-message containing details about the error that is passed back to the caller
-and it will create an ``Error(string)`` exception.
+A direct revert can be triggered using the ``revert`` statement and the ``revert`` function.
 
-The following example shows how to use an error string together with ``revert`` and the equivalent ``require``:
+The ``revert`` statement takes a custom error as direct argument without parentheses:
 
-::
+    revert CustomError(arg1, arg2);
+
+For backwards-compatibility reasons, there is also the ``revert()`` function, which uses parentheses
+and accepts a string:
+
+    revert();
+    revert("description");
+
+The error data will be passed back to the caller and can be caught there.
+Using ``revert()`` causes a revert without any error data while ``revert("description")``
+will create an ``Error(string)`` error.
+
+Using a custom error instance will usually be much cheaper than a string description,
+because you can use the name of the error to describe it, which is encoded in only
+four bytes. A longer description can be supplied via NatSpec which does not incur
+any costs.
+
+The following example shows how to use an error string and a custom error instance
+together with ``revert`` and the equivalent ``require``:
+
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.5.0 <0.9.0;
+    pragma solidity ^0.8.4;
 
     contract VendingMachine {
+        address owner;
+        error Unauthorized();
         function buy(uint amount) public payable {
             if (amount > msg.value / 2 ether)
                 revert("Not enough Ether provided.");
@@ -705,9 +756,17 @@ The following example shows how to use an error string together with ``revert`` 
             );
             // Perform the purchase.
         }
+        function withdraw() public {
+            if (msg.sender != owner)
+                revert Unauthorized();
+
+            payable(msg.sender).transfer(address(this).balance);
+        }
     }
 
-If you provide the reason string directly, then the two syntax options are equivalent, it is the developer's preference which one to use.
+The two ways ``if (!condition) revert(...);`` and ``require(condition, ...);`` are
+equivalent as long as the arguments to ``revert`` and ``require`` do not have side-effects,
+for example if they are just strings.
 
 .. note::
     The ``require`` function is evaluated just as any other function.
@@ -739,10 +798,10 @@ The provided message can be retrieved by the caller using ``try``/``catch`` as s
 
 A failure in an external call can be caught using a try/catch statement, as follows:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >0.8.0;
+    pragma solidity >=0.8.1;
 
     interface DataFeed { function getData(address token) external returns (uint value); }
 
@@ -806,7 +865,7 @@ type of error:
 
 
 It is planned to support other types of error data in the future.
-The strings ``Error`` and ``Panic`` are currently parsed as is and are not treated as an identifiers.
+The strings ``Error`` and ``Panic`` are currently parsed as is and are not treated as identifiers.
 
 In order to catch all error cases, you have to have at least the clause
 ``catch { ...}`` or the clause ``catch (bytes memory lowLevelData) { ... }``.
@@ -838,6 +897,6 @@ in scope in the block that follows.
     The error might have happened deeper down in the call chain and the
     called contract just forwarded it. Also, it could be due to an
     out-of-gas situation and not a deliberate error condition:
-    The caller always retains 63/64th of the gas in a call and thus
+    The caller always retains at least 1/64th of the gas in a call and thus
     even if the called contract goes out of gas, the caller still
     has some gas left.
