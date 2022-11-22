@@ -34,9 +34,16 @@ contracts (using qualified access like ``L.f()``).
 Of course, calls to internal functions
 use the internal calling convention, which means that all internal types
 can be passed and types :ref:`stored in memory <data-location>` will be passed by reference and not copied.
-To realize this in the EVM, code of internal library functions
+To realize this in the EVM, the code of internal library functions
+that are called from a contract
 and all functions called from therein will at compile time be included in the calling
 contract, and a regular ``JUMP`` call will be used instead of a ``DELEGATECALL``.
+
+.. note::
+    The inheritance analogy breaks down when it comes to public functions.
+    Calling a public library function with ``L.f()`` results in an external call (``DELEGATECALL``
+    to be precise).
+    In contrast, ``A.f()`` is an internal call when ``A`` is a base contract of the current contract.
 
 .. index:: using for, set
 
@@ -44,7 +51,7 @@ The following example illustrates how to use libraries (but using a manual metho
 be sure to check out :ref:`using for <using-for>` for a
 more advanced example to implement a set).
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.6.0 <0.9.0;
@@ -123,10 +130,11 @@ The following example shows how to use :ref:`types stored in memory <data-locati
 internal functions in libraries in order to implement
 custom types without the overhead of external function calls:
 
-::
+.. code-block:: solidity
+    :force:
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.6.8 <0.9.0;
+    pragma solidity ^0.8.0;
 
     struct bigint {
         uint[] limbs;
@@ -138,17 +146,20 @@ custom types without the overhead of external function calls:
             r.limbs[0] = x;
         }
 
-        function add(bigint memory _a, bigint memory _b) internal pure returns (bigint memory r) {
-            r.limbs = new uint[](max(_a.limbs.length, _b.limbs.length));
+        function add(bigint memory a, bigint memory b) internal pure returns (bigint memory r) {
+            r.limbs = new uint[](max(a.limbs.length, b.limbs.length));
             uint carry = 0;
             for (uint i = 0; i < r.limbs.length; ++i) {
-                uint a = limb(_a, i);
-                uint b = limb(_b, i);
-                r.limbs[i] = a + b + carry;
-                if (a + b < a || (a + b == type(uint).max && carry > 0))
-                    carry = 1;
-                else
-                    carry = 0;
+                uint limbA = limb(a, i);
+                uint limbB = limb(b, i);
+                unchecked {
+                    r.limbs[i] = limbA + limbB + carry;
+
+                    if (limbA + limbB < limbA || (limbA + limbB == type(uint).max && carry > 0))
+                        carry = 1;
+                    else
+                        carry = 0;
+                }
             }
             if (carry > 0) {
                 // too bad, we have to add a limb
@@ -161,8 +172,8 @@ custom types without the overhead of external function calls:
             }
         }
 
-        function limb(bigint memory _a, uint _limb) internal pure returns (uint) {
-            return _limb < _a.limbs.length ? _a.limbs[_limb] : 0;
+        function limb(bigint memory a, uint index) internal pure returns (uint) {
+            return index < a.limbs.length ? a.limbs[index] : 0;
         }
 
         function max(uint a, uint b) private pure returns (uint) {
@@ -204,6 +215,7 @@ In comparison to contracts, libraries are restricted in the following ways:
 (These might be lifted at a later point.)
 
 .. _library-selectors:
+.. index:: ! selector; of a library function
 
 Function Signatures and Selectors in Libraries
 ==============================================
@@ -216,14 +228,14 @@ following an internal naming schema and arguments of types not supported in the 
 
 The following identifiers are used for the types in the signatures:
 
- - Value types, non-storage ``string`` and non-storage ``bytes`` use the same identifiers as in the contract ABI.
- - Non-storage array types follow the same convention as in the contract ABI, i.e. ``<type>[]`` for dynamic arrays and
-   ``<type>[M]`` for fixed-size arrays of ``M`` elements.
- - Non-storage structs are referred to by their fully qualified name, i.e. ``C.S`` for ``contract C { struct S { ... } }``.
- - Storage pointer mappings use ``mapping(<keyType> => <valueType>) storage`` where ``<keyType>`` and ``<valueType>`` are
-   the identifiers for the key and value types of the mapping, respectively.
- - Other storage pointer types use the type identifier of their corresponding non-storage type, but append a single space
-   followed by ``storage`` to it.
+- Value types, non-storage ``string`` and non-storage ``bytes`` use the same identifiers as in the contract ABI.
+- Non-storage array types follow the same convention as in the contract ABI, i.e. ``<type>[]`` for dynamic arrays and
+  ``<type>[M]`` for fixed-size arrays of ``M`` elements.
+- Non-storage structs are referred to by their fully qualified name, i.e. ``C.S`` for ``contract C { struct S { ... } }``.
+- Storage pointer mappings use ``mapping(<keyType> => <valueType>) storage`` where ``<keyType>`` and ``<valueType>`` are
+  the identifiers for the key and value types of the mapping, respectively.
+- Other storage pointer types use the type identifier of their corresponding non-storage type, but append a single space
+  followed by ``storage`` to it.
 
 The argument encoding is the same as for the regular contract ABI, except for storage pointers, which are encoded as a
 ``uint256`` value referring to the storage slot to which they point.
@@ -231,7 +243,7 @@ The argument encoding is the same as for the regular contract ABI, except for st
 Similarly to the contract ABI, the selector consists of the first four bytes of the Keccak256-hash of the signature.
 Its value can be obtained from Solidity using the ``.selector`` member as follows:
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.5.14 <0.9.0;
