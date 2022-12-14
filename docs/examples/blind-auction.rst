@@ -22,10 +22,10 @@ raised, the previous highest bidder gets their money back.  After the end of
 the bidding period, the contract has to be called manually for the beneficiary
 to receive their money - contracts cannot activate themselves.
 
-::
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.7.0 <0.9.0;
+    pragma solidity ^0.8.4;
     contract SimpleAuction {
         // Parameters of the auction. Times are either
         // absolute unix timestamps (seconds since 1970-01-01)
@@ -48,27 +48,38 @@ to receive their money - contracts cannot activate themselves.
         event HighestBidIncreased(address bidder, uint amount);
         event AuctionEnded(address winner, uint amount);
 
-        // The following is a so-called natspec comment,
-        // recognizable by the three slashes.
-        // It will be shown when the user is asked to
-        // confirm a transaction.
+        // Errors that describe failures.
 
-        /// Create a simple auction with `_biddingTime`
+        // The triple-slash comments are so-called natspec
+        // comments. They will be shown when the user
+        // is asked to confirm a transaction or
+        // when an error is displayed.
+
+        /// The auction has already ended.
+        error AuctionAlreadyEnded();
+        /// There is already a higher or equal bid.
+        error BidNotHighEnough(uint highestBid);
+        /// The auction has not ended yet.
+        error AuctionNotYetEnded();
+        /// The function auctionEnd has already been called.
+        error AuctionEndAlreadyCalled();
+
+        /// Create a simple auction with `biddingTime`
         /// seconds bidding time on behalf of the
-        /// beneficiary address `_beneficiary`.
+        /// beneficiary address `beneficiaryAddress`.
         constructor(
-            uint _biddingTime,
-            address payable _beneficiary
+            uint biddingTime,
+            address payable beneficiaryAddress
         ) {
-            beneficiary = _beneficiary;
-            auctionEndTime = block.timestamp + _biddingTime;
+            beneficiary = beneficiaryAddress;
+            auctionEndTime = block.timestamp + biddingTime;
         }
 
         /// Bid on the auction with the value sent
         /// together with this transaction.
         /// The value will only be refunded if the
         /// auction is not won.
-        function bid() public payable {
+        function bid() external payable {
             // No arguments are necessary, all
             // information is already part of
             // the transaction. The keyword payable
@@ -77,20 +88,16 @@ to receive their money - contracts cannot activate themselves.
 
             // Revert the call if the bidding
             // period is over.
-            require(
-                block.timestamp <= auctionEndTime,
-                "Auction already ended."
-            );
+            if (block.timestamp > auctionEndTime)
+                revert AuctionAlreadyEnded();
 
             // If the bid is not higher, send the
-            // money back (the failing require
+            // money back (the revert statement
             // will revert all changes in this
             // function execution including
             // it having received the money).
-            require(
-                msg.value > highestBid,
-                "There already is a higher bid."
-            );
+            if (msg.value <= highestBid)
+                revert BidNotHighEnough(highestBid);
 
             if (highestBid != 0) {
                 // Sending back the money by simply using
@@ -106,7 +113,7 @@ to receive their money - contracts cannot activate themselves.
         }
 
         /// Withdraw a bid that was overbid.
-        function withdraw() public returns (bool) {
+        function withdraw() external returns (bool) {
             uint amount = pendingReturns[msg.sender];
             if (amount > 0) {
                 // It is important to set this to zero because the recipient
@@ -114,6 +121,9 @@ to receive their money - contracts cannot activate themselves.
                 // before `send` returns.
                 pendingReturns[msg.sender] = 0;
 
+                // msg.sender is not of type `address payable` and must be
+                // explicitly converted using `payable(msg.sender)` in order
+                // use the member function `send()`.
                 if (!payable(msg.sender).send(amount)) {
                     // No need to call throw here, just reset the amount owing
                     pendingReturns[msg.sender] = amount;
@@ -125,7 +135,7 @@ to receive their money - contracts cannot activate themselves.
 
         /// End the auction and send the highest bid
         /// to the beneficiary.
-        function auctionEnd() public {
+        function auctionEnd() external {
             // It is a good guideline to structure functions that interact
             // with other contracts (i.e. they call functions or send Ether)
             // into three phases:
@@ -140,8 +150,10 @@ to receive their money - contracts cannot activate themselves.
             // external contracts.
 
             // 1. Conditions
-            require(block.timestamp >= auctionEndTime, "Auction not yet ended.");
-            require(!ended, "auctionEnd has already been called.");
+            if (block.timestamp < auctionEndTime)
+                revert AuctionNotYetEnded();
+            if (ended)
+                revert AuctionEndAlreadyCalled();
 
             // 2. Effects
             ended = true;
@@ -165,7 +177,7 @@ During the **bidding period**, a bidder does not actually send their bid, but
 only a hashed version of it.  Since it is currently considered practically
 impossible to find two (sufficiently long) values whose hash values are equal,
 the bidder commits to the bid by that.  After the end of the bidding period,
-the bidders have to reveal their bids: They send their values unencrypted and
+the bidders have to reveal their bids: They send their values unencrypted, and
 the contract checks that the hash value is the same as the one provided during
 the bidding period.
 
@@ -177,15 +189,16 @@ transfers cannot be blinded in Ethereum, anyone can see the value.
 The following contract solves this problem by accepting any value that is
 larger than the highest bid. Since this can of course only be checked during
 the reveal phase, some bids might be **invalid**, and this is on purpose (it
-even provides an explicit flag to place invalid bids with high value
+even provides an explicit flag to place invalid bids with high-value
 transfers): Bidders can confuse competition by placing several high or low
 invalid bids.
 
 
-::
+.. code-block:: solidity
+    :force:
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.7.0 <0.9.0;
+    pragma solidity ^0.8.4;
     contract BlindAuction {
         struct Bid {
             bytes32 blindedBid;
@@ -207,24 +220,41 @@ invalid bids.
 
         event AuctionEnded(address winner, uint highestBid);
 
-        /// Modifiers are a convenient way to validate inputs to
-        /// functions. `onlyBefore` is applied to `bid` below:
-        /// The new function body is the modifier's body where
-        /// `_` is replaced by the old function body.
-        modifier onlyBefore(uint _time) { require(block.timestamp < _time); _; }
-        modifier onlyAfter(uint _time) { require(block.timestamp > _time); _; }
+        // Errors that describe failures.
 
-        constructor(
-            uint _biddingTime,
-            uint _revealTime,
-            address payable _beneficiary
-        ) {
-            beneficiary = _beneficiary;
-            biddingEnd = block.timestamp + _biddingTime;
-            revealEnd = biddingEnd + _revealTime;
+        /// The function has been called too early.
+        /// Try again at `time`.
+        error TooEarly(uint time);
+        /// The function has been called too late.
+        /// It cannot be called after `time`.
+        error TooLate(uint time);
+        /// The function auctionEnd has already been called.
+        error AuctionEndAlreadyCalled();
+
+        // Modifiers are a convenient way to validate inputs to
+        // functions. `onlyBefore` is applied to `bid` below:
+        // The new function body is the modifier's body where
+        // `_` is replaced by the old function body.
+        modifier onlyBefore(uint time) {
+            if (block.timestamp >= time) revert TooLate(time);
+            _;
+        }
+        modifier onlyAfter(uint time) {
+            if (block.timestamp <= time) revert TooEarly(time);
+            _;
         }
 
-        /// Place a blinded bid with `_blindedBid` =
+        constructor(
+            uint biddingTime,
+            uint revealTime,
+            address payable beneficiaryAddress
+        ) {
+            beneficiary = beneficiaryAddress;
+            biddingEnd = block.timestamp + biddingTime;
+            revealEnd = biddingEnd + revealTime;
+        }
+
+        /// Place a blinded bid with `blindedBid` =
         /// keccak256(abi.encodePacked(value, fake, secret)).
         /// The sent ether is only refunded if the bid is correctly
         /// revealed in the revealing phase. The bid is valid if the
@@ -233,13 +263,13 @@ invalid bids.
         /// not the exact amount are ways to hide the real bid but
         /// still make the required deposit. The same address can
         /// place multiple bids.
-        function bid(bytes32 _blindedBid)
-            public
+        function bid(bytes32 blindedBid)
+            external
             payable
             onlyBefore(biddingEnd)
         {
             bids[msg.sender].push(Bid({
-                blindedBid: _blindedBid,
+                blindedBid: blindedBid,
                 deposit: msg.value
             }));
         }
@@ -248,24 +278,24 @@ invalid bids.
         /// correctly blinded invalid bids and for all bids except for
         /// the totally highest.
         function reveal(
-            uint[] memory _values,
-            bool[] memory _fake,
-            bytes32[] memory _secret
+            uint[] calldata values,
+            bool[] calldata fakes,
+            bytes32[] calldata secrets
         )
-            public
+            external
             onlyAfter(biddingEnd)
             onlyBefore(revealEnd)
         {
             uint length = bids[msg.sender].length;
-            require(_values.length == length);
-            require(_fake.length == length);
-            require(_secret.length == length);
+            require(values.length == length);
+            require(fakes.length == length);
+            require(secrets.length == length);
 
             uint refund;
             for (uint i = 0; i < length; i++) {
                 Bid storage bidToCheck = bids[msg.sender][i];
                 (uint value, bool fake, bytes32 secret) =
-                        (_values[i], _fake[i], _secret[i]);
+                        (values[i], fakes[i], secrets[i]);
                 if (bidToCheck.blindedBid != keccak256(abi.encodePacked(value, fake, secret))) {
                     // Bid was not actually revealed.
                     // Do not refund deposit.
@@ -284,7 +314,7 @@ invalid bids.
         }
 
         /// Withdraw a bid that was overbid.
-        function withdraw() public {
+        function withdraw() external {
             uint amount = pendingReturns[msg.sender];
             if (amount > 0) {
                 // It is important to set this to zero because the recipient
@@ -300,10 +330,10 @@ invalid bids.
         /// End the auction and send the highest bid
         /// to the beneficiary.
         function auctionEnd()
-            public
+            external
             onlyAfter(revealEnd)
         {
-            require(!ended);
+            if (ended) revert AuctionEndAlreadyCalled();
             emit AuctionEnded(highestBidder, highestBid);
             ended = true;
             beneficiary.transfer(highestBid);
