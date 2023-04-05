@@ -85,7 +85,6 @@ It can be compiled using ``solc --strict-assembly``. The builtin functions
 
 It is also possible to implement the same function using a for-loop
 instead of with recursion. Here, ``lt(a, b)`` computes whether ``a`` is less than ``b``.
-less-than comparison.
 
 .. code-block:: yul
 
@@ -153,7 +152,7 @@ where an object is expected.
 Inside a code block, the following elements can be used
 (see the later sections for more details):
 
-- literals, i.e. ``0x123``, ``42`` or ``"abc"`` (strings up to 32 characters)
+- literals, e.g. ``0x123``, ``42`` or ``"abc"`` (strings up to 32 characters)
 - calls to builtin functions, e.g. ``add(1, mload(0))``
 - variable declarations, e.g. ``let x := 7``, ``let x := add(y, 3)`` or ``let x`` (initial value of 0 is assigned)
 - identifiers (variables), e.g. ``add(3, x)``
@@ -239,7 +238,7 @@ they have to be assigned to local variables.
 For built-in functions of the EVM, functional expressions
 can be directly translated to a stream of opcodes:
 You just read the expression from right to left to obtain the
-opcodes. In the case of the first line in the example, this
+opcodes. In the case of the second line in the example, this
 is ``PUSH1 3 PUSH1 0x80 MLOAD ADD PUSH1 0x80 MSTORE``.
 
 For calls to user-defined functions, the arguments are also
@@ -751,8 +750,8 @@ This document does not want to be a full description of the Ethereum virtual mac
 Please refer to a different document if you are interested in the precise semantics.
 
 Opcodes marked with ``-`` do not return a result and all others return exactly one value.
-Opcodes marked with ``F``, ``H``, ``B``, ``C``, ``I`` and ``L`` are present since Frontier, Homestead,
-Byzantium, Constantinople, Istanbul or London respectively.
+Opcodes marked with ``F``, ``H``, ``B``, ``C``, ``I``, ``L`` and ``P`` are present since Frontier,
+Homestead, Byzantium, Constantinople, Istanbul, London or Paris respectively.
 
 In the following, ``mem[a...b)`` signifies the bytes of memory starting at position ``a`` up to
 but not including position ``b`` and ``storage[p]`` signifies the storage contents at slot ``p``.
@@ -899,18 +898,19 @@ the ``dup`` and ``swap`` instructions as well as ``jump`` instructions, labels a
 | revert(p, s)            | `-` | B | end execution, revert state changes, return data mem[p...(p+s)) |
 +-------------------------+-----+---+-----------------------------------------------------------------+
 | selfdestruct(a)         | `-` | F | end execution, destroy current contract and send funds to a     |
+|                         |     |   | (deprecated)                                                    |
 +-------------------------+-----+---+-----------------------------------------------------------------+
 | invalid()               | `-` | F | end execution with invalid instruction                          |
 +-------------------------+-----+---+-----------------------------------------------------------------+
-| log0(p, s)              | `-` | F | log without topics and data mem[p...(p+s))                      |
+| log0(p, s)              | `-` | F | log data mem[p...(p+s))                                         |
 +-------------------------+-----+---+-----------------------------------------------------------------+
-| log1(p, s, t1)          | `-` | F | log with topic t1 and data mem[p...(p+s))                       |
+| log1(p, s, t1)          | `-` | F | log data mem[p...(p+s)) with topic t1                           |
 +-------------------------+-----+---+-----------------------------------------------------------------+
-| log2(p, s, t1, t2)      | `-` | F | log with topics t1, t2 and data mem[p...(p+s))                  |
+| log2(p, s, t1, t2)      | `-` | F | log data mem[p...(p+s)) with topics t1, t2                      |
 +-------------------------+-----+---+-----------------------------------------------------------------+
-| log3(p, s, t1, t2, t3)  | `-` | F | log with topics t1, t2, t3 and data mem[p...(p+s))              |
+| log3(p, s, t1, t2, t3)  | `-` | F | log data mem[p...(p+s)) with topics t1, t2, t3                  |
 +-------------------------+-----+---+-----------------------------------------------------------------+
-| log4(p, s, t1, t2, t3,  | `-` | F | log with topics t1, t2, t3, t4 and data mem[p...(p+s))          |
+| log4(p, s, t1, t2, t3,  | `-` | F | log data mem[p...(p+s)) with topics t1, t2, t3, t4              |
 | t4)                     |     |   |                                                                 |
 +-------------------------+-----+---+-----------------------------------------------------------------+
 | chainid()               |     | I | ID of the executing chain (EIP-1344)                            |
@@ -931,6 +931,8 @@ the ``dup`` and ``swap`` instructions as well as ``jump`` instructions, labels a
 +-------------------------+-----+---+-----------------------------------------------------------------+
 | difficulty()            |     | F | difficulty of the current block (see note below)                |
 +-------------------------+-----+---+-----------------------------------------------------------------+
+| prevrandao()            |     | P | randomness provided by the beacon chain (see note below)        |
++-------------------------+-----+---+-----------------------------------------------------------------+
 | gaslimit()              |     | F | block gas limit of the current block                            |
 +-------------------------+-----+---+-----------------------------------------------------------------+
 
@@ -945,12 +947,19 @@ the ``dup`` and ``swap`` instructions as well as ``jump`` instructions, labels a
   The remaining bytes will retain their values as of before the call.
 
 .. note::
-  With the Paris network upgrade the semantics of ``difficulty`` have been changed.
-  It returns the value of ``prevrandao``, which is a 256-bit value, whereas the highest recorded
+  The `difficulty()` instruction is disallowed in EVM version >= Paris.
+  With the Paris network upgrade the semantics of the instruction that was previously called
+  ``difficulty`` have been changed and the instruction was renamed to ``prevrandao``.
+  It can now return arbitrary values in the full 256-bit range, whereas the highest recorded
   difficulty value within Ethash was ~54 bits.
   This change is described in `EIP-4399 <https://eips.ethereum.org/EIPS/eip-4399>`_.
   Please note that irrelevant to which EVM version is selected in the compiler, the semantics of
   instructions depend on the final chain of deployment.
+
+.. warning::
+    From version 0.8.18 and up, the use of ``selfdestruct`` in both Solidity and Yul will trigger a
+    deprecation warning, since the ``SELFDESTRUCT`` opcode will eventually undergo breaking changes in behaviour
+    as stated in `EIP-6049 <https://eips.ethereum.org/EIPS/eip-6049>`_.
 
 In some internal dialects, there are additional functions:
 
