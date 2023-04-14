@@ -28,11 +28,11 @@ Team Calls
 ==========
 
 If you have issues or pull requests to discuss, or are interested in hearing what
-the team and contributors are working on, you can join our public team calls:
+the team and contributors are working on, you can join our public team call:
 
-- Mondays and Wednesdays at 3PM CET/CEST.
+- Wednesdays at 3PM CET/CEST.
 
-Both calls take place on `Jitsi <https://meet.soliditylang.org/>`_.
+The call takes place on `Jitsi <https://meet.soliditylang.org/>`_.
 
 How to Report Issues
 ====================
@@ -102,9 +102,9 @@ This can be easiest accomplished using Homebrew: ``brew install coreutils``.
 On Windows systems, make sure that you have a privilege to create symlinks,
 otherwise several tests may fail.
 Administrators should have that privilege, but you may also
-`grant it to other users <https://docs.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/create-symbolic-links#policy-management>`_
+`grant it to other users <https://learn.microsoft.com/en-us/windows/security/threat-protection/security-policy-settings/create-symbolic-links#policy-management>`_
 or
-`enable Developer Mode <https://docs.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development>`_.
+`enable Developer Mode <https://learn.microsoft.com/en-us/windows/apps/get-started/enable-your-device-for-development>`_.
 
 Running the Tests
 -----------------
@@ -175,6 +175,7 @@ See especially:
 
 If you want to debug using GDB, make sure you build differently than the "usual".
 For example, you could run the following command in your ``build`` folder:
+
 .. code-block:: bash
 
    cmake -DCMAKE_BUILD_TYPE=Debug ..
@@ -408,7 +409,7 @@ local slang and references, making your language as clear to all readers as poss
 
 * `Simplified technical English <https://en.wikipedia.org/wiki/Simplified_Technical_English>`_
 * `International English <https://en.wikipedia.org/wiki/International_English>`_
-* `British English spelling <https://en.oxforddictionaries.com/spelling/british-and-spelling>`_
+* `British English spelling <https://web.archive.org/web/20220324094038/https://www.lexico.com/grammar/british-and-spelling>`_
 
 
 .. note::
