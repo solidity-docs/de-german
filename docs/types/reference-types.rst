@@ -235,7 +235,7 @@ with the :ref:`default value<default-value>`.
         }
     }
 
-.. index:: ! array;literals, ! inline;arrays
+.. index:: ! literal;array, ! inline;arrays
 
 Array Literals
 ^^^^^^^^^^^^^^
@@ -686,11 +686,11 @@ shown in the following example:
             uint fundingGoal;
             uint numFunders;
             uint amount;
-            mapping (uint => Funder) funders;
+            mapping(uint => Funder) funders;
         }
 
         uint numCampaigns;
-        mapping (uint => Campaign) campaigns;
+        mapping(uint => Campaign) campaigns;
 
         function newCampaign(address payable beneficiary, uint goal) public returns (uint campaignID) {
             campaignID = numCampaigns++; // campaignID is return variable
