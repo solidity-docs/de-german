@@ -319,14 +319,15 @@ The following are dependencies for all builds of Solidity:
 +-----------------------------------+-------------------------------------------------------+
 | Software                          | Notes                                                 |
 +===================================+=======================================================+
-| `CMake`_ (version 3.13+)          | Cross-platform build file generator.                  |
+| `CMake`_ (version 3.21.3+ on      | Cross-platform build file generator.                  |
+| Windows, 3.13+ otherwise)         |                                                       |
 +-----------------------------------+-------------------------------------------------------+
-| `Boost`_ (version 1.77+ on        | C++ libraries.                                        |
+| `Boost`_ (version 1.77 on         | C++ libraries.                                        |
 | Windows, 1.65+ otherwise)         |                                                       |
 +-----------------------------------+-------------------------------------------------------+
 | `Git`_                            | Command-line tool for retrieving source code.         |
 +-----------------------------------+-------------------------------------------------------+
-| `z3`_ (version 4.8+, Optional)    | For use with SMT checker.                             |
+| `z3`_ (version 4.8.16+, Optional) | For use with SMT checker.                             |
 +-----------------------------------+-------------------------------------------------------+
 | `cvc4`_ (Optional)                | For use with SMT checker.                             |
 +-----------------------------------+-------------------------------------------------------+
@@ -408,7 +409,7 @@ You need to install the following dependencies for Windows builds of Solidity:
 +-----------------------------------+-------------------------------------------------------+
 | `Visual Studio 2019`_  (Optional) | C++ compiler and dev environment.                     |
 +-----------------------------------+-------------------------------------------------------+
-| `Boost`_ (version 1.77+)          | C++ libraries.                                        |
+| `Boost`_ (version 1.77)           | C++ libraries.                                        |
 +-----------------------------------+-------------------------------------------------------+
 
 If you already have one IDE and only need the compiler and libraries,
@@ -428,7 +429,7 @@ in Visual Studio 2019 Build Tools or Visual Studio 2019:
 * C++/CLI support
 
 .. _Visual Studio 2019: https://www.visualstudio.com/vs/
-.. _Visual Studio 2019 Build Tools: https://www.visualstudio.com/downloads/#build-tools-for-visual-studio-2019
+.. _Visual Studio 2019 Build Tools: https://visualstudio.microsoft.com/vs/older-downloads/#visual-studio-2019-and-other-products
 
 We have a helper script which you can use to install all required external dependencies:
 
@@ -526,7 +527,7 @@ If you are interested what CMake options are available run ``cmake .. -LH``.
 SMT Solvers
 -----------
 Solidity can be built against SMT solvers and will do so by default if
-they are found in the system. Each solver can be disabled by a `cmake` option.
+they are found in the system. Each solver can be disabled by a ``cmake`` option.
 
 *Note: In some cases, this can also be a potential workaround for build failures.*
 
