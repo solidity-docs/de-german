@@ -27,7 +27,7 @@ optimized Yul IR for a Solidity source. Similarly, one can use ``solc --strict-a
 for a stand-alone Yul mode.
 
 .. note::
-    The `peephole optimizer <https://en.wikipedia.org/wiki/Peephole_optimization>`_ and the inliner are always
+    The `peephole optimizer <https://en.wikipedia.org/wiki/Peephole_optimization>`_ is always
     enabled by default and can only be turned off via the :ref:`Standard JSON <compiler-api>`.
 
 You can find more details on both optimizer modules and their optimization steps below.
@@ -826,10 +826,10 @@ if the common subexpression eliminator was run right before it.
 
 .. _expression-simplifier:
 
-Expression Simplifier
-^^^^^^^^^^^^^^^^^^^^^
+ExpressionSimplifier
+^^^^^^^^^^^^^^^^^^^^
 
-The Expression Simplifier uses the Dataflow Analyzer and makes use
+The ExpressionSimplifier uses the Dataflow Analyzer and makes use
 of a list of equivalence transforms on expressions like ``X + 0 -> X``
 to simplify the code.
 
@@ -1162,7 +1162,7 @@ will be transformed into the code below after the Unused Store Eliminator step i
 For memory store operations, things are generally simpler, at least in the outermost yul block as all such
 statements will be removed if they are never read from in any code path.
 At function analysis level, however, the approach is similar to ``sstore``, as we do not know whether the memory location will
-be read once we leave the function's scope, so the statement will be removed only if all code code paths lead to a memory overwrite.
+be read once we leave the function's scope, so the statement will be removed only if all code paths lead to a memory overwrite.
 
 Best run in SSA form.
 
@@ -1279,8 +1279,8 @@ This is a tiny step that helps in reversing the effects of the SSA transform
 if it is combined with the Common Subexpression Eliminator and the
 Unused Pruner.
 
-The SSA form we generate is detrimental to code generation on the EVM and
-WebAssembly alike because it generates many local variables. It would
+The SSA form we generate is detrimental to code generation
+because it produces many local variables. It would
 be better to just re-use existing variables with assignments instead of
 fresh variable declarations.
 
@@ -1398,15 +1398,3 @@ into
     }
 
 The LiteralRematerialiser should be run before this step.
-
-
-WebAssembly specific
---------------------
-
-MainFunction
-^^^^^^^^^^^^
-
-Changes the topmost block to be a function with a specific name ("main") which has no
-inputs nor outputs.
-
-Depends on the Function Grouper.
