@@ -46,7 +46,7 @@ for the purposes of NatSpec.
 
 -  For Vyper, use ``"""`` indented to the inner contents with bare
    comments. See the `Vyper
-   documentation <https://vyper.readthedocs.io/en/latest/natspec.html>`__.
+   documentation <https://docs.vyperlang.org/en/latest/natspec.html>`__.
 
 The following example shows a contract and a function using all available tags.
 
@@ -58,7 +58,7 @@ The following example shows a contract and a function using all available tags.
 
   This may change in the future.
 
-.. code-block:: Solidity
+.. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity >=0.8.2 < 0.9.0;
@@ -115,10 +115,10 @@ in the same way as if it were tagged with ``@notice``.
 =============== ====================================================================================== =============================
 Tag                                                                                                    Context
 =============== ====================================================================================== =============================
-``@title``      A title that should describe the contract/interface                                    contract, library, interface
-``@author``     The name of the author                                                                 contract, library, interface
-``@notice``     Explain to an end user what this does                                                  contract, library, interface, function, public state variable, event
-``@dev``        Explain to a developer any extra details                                               contract, library, interface, function, state variable, event
+``@title``      A title that should describe the contract/interface                                    contract, library, interface, struct, enum
+``@author``     The name of the author                                                                 contract, library, interface, struct, enum
+``@notice``     Explain to an end user what this does                                                  contract, library, interface, function, public state variable, event, struct, enum
+``@dev``        Explain to a developer any extra details                                               contract, library, interface, function, state variable, event, struct, enum
 ``@param``      Documents a parameter just like in Doxygen (must be followed by parameter name)        function, event
 ``@return``     Documents the return variables of a contract's function                                function, public state variable
 ``@inheritdoc`` Copies all missing tags from the base function (must be followed by the contract name) function, public state variable
