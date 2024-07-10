@@ -44,7 +44,7 @@ Explicit Conversions
 
 If the compiler does not allow implicit conversion but you are confident a conversion will work,
 an explicit type conversion is sometimes possible. This may
-result in unexpected behaviour and allows you to bypass some security
+result in unexpected behavior and allows you to bypass some security
 features of the compiler, so be sure to test that the
 result is what you want and expect!
 
@@ -130,6 +130,7 @@ If the array is shorter than the target type, it will be padded with zeros at th
         }
     }
 
+.. index:: ! literal;conversion, literal;rational, literal;hexadecimal number
 .. _types-conversion-literals:
 
 Conversions between Literals and Elementary Types
@@ -152,6 +153,8 @@ that is large enough to represent it without truncation:
     converted to an integer type. From 0.8.0, such explicit conversions are as strict as implicit
     conversions, i.e., they are only allowed if the literal fits in the resulting range.
 
+.. index:: literal;string, literal;hexadecimal
+
 Fixed-Size Byte Arrays
 ----------------------
 
@@ -171,16 +174,17 @@ converted to any fixed-size bytes type:
     bytes4 g = 0x0; // fine
 
 String literals and hex string literals can be implicitly converted to fixed-size byte arrays,
-if their number of characters matches the size of the bytes type:
+if their number of characters is less than or equal to the size of the bytes type:
 
 .. code-block:: solidity
 
     bytes2 a = hex"1234"; // fine
     bytes2 b = "xy"; // fine
-    bytes2 c = hex"12"; // not allowed
-    bytes2 d = hex"123"; // not allowed
-    bytes2 e = "x"; // not allowed
+    bytes2 c = hex"12"; // fine
+    bytes2 e = "x"; // fine
     bytes2 f = "xyz"; // not allowed
+
+.. index:: literal;address
 
 Addresses
 ---------
@@ -194,4 +198,4 @@ An ``address a`` can be converted explicitly to ``address payable`` via ``payabl
 
 .. note::
     Prior to version 0.8.0, it was possible to explicitly convert from any integer type (of any size, signed or unsigned) to  ``address`` or ``address payable``.
-    Starting with in 0.8.0 only conversion from ``uint160`` is allowed.
+    Starting with 0.8.0 only conversion from ``uint160`` is allowed.
