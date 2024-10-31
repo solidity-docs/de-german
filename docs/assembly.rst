@@ -9,7 +9,8 @@ Inline Assembly
 
 You can interleave Solidity statements with inline assembly in a language close
 to the one of the Ethereum Virtual Machine. This gives you more fine-grained control,
-which is especially useful when you are enhancing the language by writing libraries.
+which is especially useful when you are enhancing the language by writing libraries or
+optimizing gas usage.
 
 The language used for inline assembly in Solidity is called :ref:`Yul <yul>`
 and it is documented in its own section. This section will only cover
@@ -162,7 +163,7 @@ their calldata offset (in bytes) and length (number of elements) using ``x.offse
 Both expressions can also be assigned to, but as for the static case, no validation will be performed
 to ensure that the resulting data area is within the bounds of ``calldatasize()``.
 
-For local storage variables or state variables, a single Yul identifier
+For local storage variables or state variables (including transient storage) a single Yul identifier
 is not sufficient, since they do not necessarily occupy a single full storage slot.
 Therefore, their "address" is composed of a slot and a byte-offset
 inside that slot. To retrieve the slot pointed to by the variable ``x``, you
@@ -180,15 +181,18 @@ Local Solidity variables are available for assignments, for example:
     :force:
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.7.0 <0.9.0;
+    pragma solidity >=0.8.28 <0.9.0;
 
+    // This will report a warning
     contract C {
+        bool transient a;
         uint b;
-        function f(uint x) public view returns (uint r) {
+        function f(uint x) public returns (uint r) {
             assembly {
                 // We ignore the storage slot offset, we know it is zero
                 // in this special case.
                 r := mul(x, sload(b.slot))
+                tstore(a.slot, true)
             }
         }
     }
@@ -362,7 +366,7 @@ in memory is automatically considered memory-safe and does not need to be annota
 .. warning::
     It is your responsibility to make sure that the assembly actually satisfies the memory model. If you annotate
     an assembly block as memory-safe, but violate one of the memory assumptions, this **will** lead to incorrect and
-    undefined behaviour that cannot easily be discovered by testing.
+    undefined behavior that cannot easily be discovered by testing.
 
 In case you are developing a library that is meant to be compatible across multiple versions
 of Solidity, you can use a special comment to annotate an assembly block as memory-safe:
@@ -375,4 +379,25 @@ of Solidity, you can use a special comment to annotate an assembly block as memo
     }
 
 Note that we will disallow the annotation via comment in a future breaking release; so, if you are not concerned with
-backwards-compatibility with older compiler versions, prefer using the dialect string.
+backward-compatibility with older compiler versions, prefer using the dialect string.
+
+Advanced Safe Use of Memory
+---------------------------
+
+Beyond the strict definition of memory-safety given above, there are cases in which you may want to use more than 64 bytes
+of scratch space starting at memory offset ``0``. If you are careful, it can be admissible to use memory up to (and not
+including) offset ``0x80`` and still safely declare the assembly block as ``memory-safe``.
+This is admissible under either of the following conditions:
+
+- By the end of the assembly block, the free memory pointer at offset ``0x40`` is restored to a sane value (i.e. it is either
+  restored to its original value or an increment of it due to a manual memory allocation), and the memory word at offset ``0x60``
+  is restored to a value of zero.
+
+- The assembly block terminates, i.e. execution can never return to high-level Solidity code. This is the case, for example,
+  if your assembly block unconditionally ends in calling the ``revert`` opcode.
+
+Furthermore, you need to be aware that the default-value of dynamic arrays in Solidity point to memory offset ``0x60``, so
+for the duration of temporarily changing the value at memory offset ``0x60``, you can no longer rely on getting accurate
+length values when reading dynamic arrays, until you restore the zero value at ``0x60``. To be more precise, we only guarantee
+safety when overwriting the zero pointer, if the remainder of the assembly snippet does not interact with the memory of
+high-level Solidity objects (including by reading from offsets previously stored in variables).
