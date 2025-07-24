@@ -4,9 +4,14 @@
 Value Types
 ===========
 
-The following types are also called value types because variables of these
-types will always be passed by value, i.e. they are always copied when they
+The following are called value types because their variables will always be passed by value, i.e. they are always copied when they
 are used as function arguments or in assignments.
+
+Unlike :ref:`reference types <reference-types>`, value type declarations do not
+specify a data location since they are small enough to be stored on the stack.
+The only exception is :ref:`state variables <structure-state-variables>`.
+Those are by default located in storage, but can also be marked as
+:ref:`transient <transient-storage>`, :ref:`constant or immutable <constants>`.
 
 .. index:: ! bool, ! true, ! false
 
@@ -47,7 +52,7 @@ access the minimum and maximum value representable by the type.
 
   Integers in Solidity are restricted to a certain range. For example, with ``uint32``, this is ``0`` up to ``2**32 - 1``.
   There are two modes in which arithmetic is performed on these types: The "wrapping" or "unchecked" mode and the "checked" mode.
-  By default, arithmetic is always "checked", which mean that if the result of an operation falls outside the value range
+  By default, arithmetic is always "checked", meaning that if an operation's result falls outside the value range
   of the type, the call is reverted through a :ref:`failing assertion<assert-and-require>`. You can switch to "unchecked" mode
   using ``unchecked { ... }``. More details can be found in the section about :ref:`unchecked <unchecked>`.
 
@@ -141,7 +146,7 @@ Exponentiation
 
 Exponentiation is only available for unsigned types in the exponent. The resulting type
 of an exponentiation is always equal to the type of the base. Please take care that it is
-large enough to hold the result and prepare for potential assertion failures or wrapping behaviour.
+large enough to hold the result and prepare for potential assertion failures or wrapping behavior.
 
 .. note::
   In checked mode, exponentiation only uses the comparatively cheap ``exp`` opcode for small bases.
@@ -182,7 +187,7 @@ Operators:
 Address
 -------
 
-The address type comes in two flavours, which are largely identical:
+The address type comes in two largely identical flavors:
 
 - ``address``: Holds a 20 byte value (size of an Ethereum address).
 - ``address payable``: Same as ``address``, but with the additional members ``transfer`` and ``send``.
@@ -199,7 +204,7 @@ must be explicit via ``payable(<address>)``.
 Explicit conversions to and from ``address`` are allowed for ``uint160``, integer literals,
 ``bytes20`` and contract types.
 
-Only expressions of type ``address`` and contract-type can be converted to the type ``address
+Only expressions of type ``address`` and contract type can be converted to the type ``address
 payable`` via the explicit conversion ``payable(...)``. For contract-type, this conversion is only
 allowed if the contract can receive Ether, i.e., the contract either has a :ref:`receive
 <receive-ether-function>` or a payable fallback function. Note that ``payable(0)`` is valid and is
@@ -210,7 +215,7 @@ an exception to this rule.
     declare its type as ``address payable`` to make this requirement visible. Also,
     try to make this distinction or conversion as early as possible.
 
-    The distinction between ``address`` and ``address payable`` was introduced with version 0.5.0.
+    The distinction between ``address`` and ``address payable`` was introduced in version 0.5.0.
     Also starting from that version, contracts are not implicitly convertible to the ``address`` type, but can still be explicitly converted to
     ``address`` or to ``address payable``, if they have a receive or payable fallback function.
 
@@ -258,13 +263,13 @@ reverts on failure.
 
 * ``send``
 
-Send is the low-level counterpart of ``transfer``. If the execution fails, the current contract will not stop with an exception, but ``send`` will return ``false``.
+``send`` is the low-level counterpart of ``transfer``. If the execution fails, the current contract will not stop with an exception, but ``send`` will return ``false``.
 
 .. warning::
     There are some dangers in using ``send``: The transfer fails if the call stack depth is at 1024
     (this can always be forced by the caller) and it also fails if the recipient runs out of gas. So in order
     to make safe Ether transfers, always check the return value of ``send``, use ``transfer`` or even better:
-    use a pattern where the recipient withdraws the money.
+    use a pattern where the recipient withdraws the Ether.
 
 * ``call``, ``delegatecall`` and ``staticcall``
 
@@ -338,6 +343,13 @@ on ``call``.
 You can query the deployed code for any smart contract. Use ``.code`` to get the EVM bytecode as a
 ``bytes memory``, which might be empty. Use ``.codehash`` to get the Keccak-256 hash of that code
 (as a ``bytes32``). Note that ``addr.codehash`` is cheaper than using ``keccak256(addr.code)``.
+
+.. warning::
+    The output of ``addr.codehash`` may be ``0`` if the account associated with ``addr`` is empty or non-existent
+    (i.e., it has no code, zero balance, and zero nonce as defined by `EIP-161 <https://eips.ethereum.org/EIPS/eip-161>`_).
+    If the account has no code but a non-zero balance or nonce, then ``addr.codehash`` will output the Keccak-256 hash of empty data
+    (i.e., ``keccak256("")`` which is equal to ``c5d2460186f7233c927e7db2dcc703c0e500b653ca82273b7bfad8045d85a470``), as defined by
+    `EIP-1052 <https://eips.ethereum.org/EIPS/eip-1052>`_.
 
 .. note::
     All contracts can be converted to ``address`` type, so it is possible to query the balance of the
@@ -416,15 +428,7 @@ Members:
 .. note::
     Prior to version 0.8.0, ``byte`` used to be an alias for ``bytes1``.
 
-Dynamically-sized byte array
-----------------------------
-
-``bytes``:
-    Dynamically-sized byte array, see :ref:`arrays`. Not a value-type!
-``string``:
-    Dynamically-sized UTF-8-encoded string, see :ref:`arrays`. Not a value-type!
-
-.. index:: address, literal;address
+.. index:: address, ! literal;address
 
 .. _address_literals:
 
@@ -440,7 +444,7 @@ an error. You can prepend (for integer types) or append (for bytesNN types) zero
 .. note::
     The mixed-case address checksum format is defined in `EIP-55 <https://github.com/ethereum/EIPs/blob/master/EIPS/eip-55.md>`_.
 
-.. index:: literal, literal;rational
+.. index:: integer, rational number, ! literal;rational
 
 .. _rational_literals:
 
@@ -518,7 +522,7 @@ regardless of the type of the right (exponent) operand.
     uint128 a = 1;
     uint128 b = 2.5 + a + 0.5;
 
-.. index:: literal, literal;string, string
+.. index:: ! literal;string, string
 .. _string_literals:
 
 String Literals and Types
@@ -565,6 +569,8 @@ character sequence ``abcdef``.
 Any Unicode line terminator which is not a newline (i.e. LF, VF, FF, CR, NEL, LS, PS) is considered to
 terminate the string literal. Newline only terminates the string literal if it is not preceded by a ``\``.
 
+.. index:: ! literal;unicode
+
 Unicode Literals
 ----------------
 
@@ -575,7 +581,7 @@ They also support the very same escape sequences as regular string literals.
 
     string memory a = unicode"Hello 😃";
 
-.. index:: literal, bytes
+.. index:: ! literal;hexadecimal, bytes
 
 Hexadecimal Literals
 --------------------
@@ -589,7 +595,8 @@ of the hexadecimal sequence.
 Multiple hexadecimal literals separated by whitespace are concatenated into a single literal:
 ``hex"00112233" hex"44556677"`` is equivalent to ``hex"0011223344556677"``
 
-Hexadecimal literals behave like :ref:`string literals <string_literals>` and have the same convertibility restrictions.
+Hexadecimal literals in some ways behave like :ref:`string literals <string_literals>` but are not
+implicitly convertible to the ``string`` type.
 
 .. index:: enum
 
@@ -653,13 +660,13 @@ smallest and respectively largest value of the given enum.
 
 .. _user-defined-value-types:
 
-User Defined Value Types
+User-defined Value Types
 ------------------------
 
-A user defined value type allows creating a zero cost abstraction over an elementary value type.
+A user-defined value type allows creating a zero cost abstraction over an elementary value type.
 This is similar to an alias, but with stricter type requirements.
 
-A user defined value type is defined using ``type C is V``, where ``C`` is the name of the newly
+A user-defined value type is defined using ``type C is V``, where ``C`` is the name of the newly
 introduced type and ``V`` has to be a built-in value type (the "underlying type"). The function
 ``C.wrap`` is used to convert from the underlying type to the custom type. Similarly, the
 function ``C.unwrap`` is used to convert from the custom type to the underlying type.
@@ -680,7 +687,7 @@ type with 18 decimals and a minimal library to do arithmetic operations on the t
     // SPDX-License-Identifier: GPL-3.0
     pragma solidity ^0.8.8;
 
-    // Represent a 18 decimal, 256 bit wide fixed point type using a user defined value type.
+    // Represent a 18 decimal, 256 bit wide fixed point type using a user-defined value type.
     type UFixed256x18 is uint256;
 
     /// A minimal library to do fixed point operations on UFixed256x18.
@@ -721,7 +728,7 @@ that has the same data representation as the input, whereas ``toUFixed256x18`` r
 Function Types
 --------------
 
-Function types are the types of functions. Variables of function type
+Function types are the types of functions. Variables of a function type
 can be assigned from functions and function parameters of function type
 can be used to pass functions to and return functions from function calls.
 Function types come in two flavours - *internal* and *external* functions:
@@ -735,6 +742,20 @@ contract internally.
 
 External functions consist of an address and a function signature and they can
 be passed via and returned from external function calls.
+
+Note that public functions of the current contract can be used both as an
+internal and as an external function. To use ``f`` as an internal function,
+just use ``f``, if you want to use its external form, use ``this.f``.
+
+If a function type variable is not initialised, calling it results
+in a :ref:`Panic error<assert-and-require>`. The same happens if you call a function after using ``delete``
+on it.
+
+.. note::
+    Lambda or inline functions are planned but not yet supported.
+
+Declaration syntax
+^^^^^^^^^^^^^^^^^^
 
 Function types are notated as follows:
 
@@ -752,7 +773,8 @@ omitted. Note that this only applies to function types. Visibility has
 to be specified explicitly for functions defined in contracts, they
 do not have a default.
 
-Conversions:
+Conversions
+^^^^^^^^^^^
 
 A function type ``A`` is implicitly convertible to a function type ``B`` if and only if
 their parameter types are identical, their return types are identical,
@@ -781,17 +803,9 @@ Which makes it possible to assign a ``payable`` function pointer to a ``non-paya
 function pointer ensuring both types behave the same way, i.e, both cannot be used
 to send ether.
 
-If a function type variable is not initialised, calling it results
-in a :ref:`Panic error<assert-and-require>`. The same happens if you call a function after using ``delete``
-on it.
-
 If external function types are used outside of the context of Solidity,
 they are treated as the ``function`` type, which encodes the address
 followed by the function identifier together in a single ``bytes24`` type.
-
-Note that public functions of the current contract can be used both as an
-internal and as an external function. To use ``f`` as an internal function,
-just use ``f``, if you want to use its external form, use ``this.f``.
 
 A function of an internal type can be assigned to a variable of an internal function type regardless
 of where it is defined.
@@ -811,11 +825,18 @@ functions.
     Marking the parameters as ``calldata`` only affects the implementation of the external function and is
     meaningless in a function pointer on the caller's side.
 
+.. warning::
+    Comparison of internal function pointers can have unexpected results in the legacy pipeline with the optimizer enabled,
+    as it can collapse identical functions into one, which will then lead to said function pointers comparing as equal instead of not.
+    Such comparisons are not advised, and will lead to the compiler issuing a warning, until the next breaking release (0.9.0),
+    when the warning will be upgraded to an error, thereby making such comparisons disallowed.
+
 Libraries are excluded because they require a ``delegatecall`` and use :ref:`a different ABI
 convention for their selectors <library-selectors>`.
 Functions declared in interfaces do not have definitions so pointing at them does not make sense either.
 
-Members:
+Members
+^^^^^^^
 
 External (or public) functions have the following members:
 
@@ -829,6 +850,59 @@ External (or public) functions have the following members:
   to specify the amount of gas or the amount of wei sent to a function,
   respectively. See :ref:`External Function Calls <external-function-calls>` for
   more information.
+
+.. _function-type-value-stability-across-contract-updates:
+
+Value stability across contract updates
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+An important aspect to consider when using values of function types is whether the value will
+remain valid if the underlying code changes.
+
+The state of the blockchain is not completely immutable and there are multiple ways to place
+different code under the same address:
+
+- Directly deploying different code using :ref:`salted contract creation<salted-contract-creations>`.
+- Delegating to a different contract via :ref:`DELEGATECALL<delegatecall>`
+  (upgradeable code behind a proxy contract is a common example of this).
+- Account abstraction as defined by `EIP-7702 <https://eips.ethereum.org/EIPS/eip-7702>`_.
+
+External function types can be considered as stable as contract's ABI, which makes them very portable.
+Their ABI representation always consists of a contract address and a function selector and it is
+perfectly safe to store them long-term or pass them between contracts.
+While it is possible for the referenced function to change or disappear, a direct external call
+would be affected the same way, so there is no additional risk in such use.
+
+In case of internal functions, however, the value is an identifier that is strongly tied to
+contract's bytecode.
+The actual representation of the identifier is an implementation detail and may change between
+compiler versions or even :ref:`between different backends<internal-function-pointers-in-ir>`.
+Values assigned under a given representation are deterministic (i.e. guaranteed to remain the same
+as long as the source code is the same) but are easily affected by changes such as adding, removing
+or reordering of functions.
+The compiler is also free to remove internal functions that are never used, which may affect other identifiers.
+Some representations, e.g. one where identifiers are simply jump targets, may be affected by
+virtually any change, even one completely unrelated to internal functions.
+
+To counter this, the language limits the use of internal function types outside of the context in
+which they are valid.
+This is why internal function types cannot be used as parameters of external functions (or in any
+other way that is exposed in contract's ABI).
+However, there are still situations where it is up to the user to decide whether their use is safe or not.
+For example long-term storage of such values in state variables is discouraged, but may be safe if
+the contract code is never going to be updated.
+It is also always possible to side-step any safeguards by using inline assembly.
+Such use always needs careful consideration.
+
+.. note::
+    The removal of unused internal functions only takes into account explicit references to
+    such functions by name.
+    Implicit references, such as assigning a new value to a function type variable in inline assembly
+    may still lead to the removal of the function if it is not also referenced explicitly elsewhere
+    in the source.
+
+Examples
+^^^^^^^^
 
 Example that shows how to use the members:
 
@@ -953,6 +1027,3 @@ Another example that uses external function types:
             exchangeRate = response;
         }
     }
-
-.. note::
-    Lambda or inline functions are planned but not yet supported.
