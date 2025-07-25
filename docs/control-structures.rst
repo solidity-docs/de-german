@@ -111,21 +111,34 @@ otherwise, the ``value`` option would not be available.
   the ``value`` and ``gas`` settings are lost, only
   ``feed.info{value: 10, gas: 800}()`` performs the function call.
 
-Due to the fact that the EVM considers a call to a non-existing contract to
-always succeed, Solidity uses the ``extcodesize`` opcode to check that
-the contract that is about to be called actually exists (it contains code)
-and causes an exception if it does not. This check is skipped if the return
-data will be decoded after the call and thus the ABI decoder will catch the
-case of a non-existing contract.
+.. warning::
+    Due to the fact that the EVM considers a call to a non-existing contract to
+    always succeed, Solidity uses the ``extcodesize`` opcode to check that
+    the contract that is about to be called actually exists (it contains code)
+    and causes an exception if it does not. This check is skipped if the return
+    data will be decoded after the call and thus the ABI decoder will catch the
+    case of a non-existing contract.
 
-Note that this check is not performed in case of :ref:`low-level calls <address_related>` which
-operate on addresses rather than contract instances.
+    This check is not performed in case of :ref:`low-level calls <address_related>` which
+    operate on addresses rather than contract instances.
 
-.. note::
+.. warning::
     Be careful when using high-level calls to
     :ref:`precompiled contracts <precompiledContracts>`,
     since the compiler considers them non-existing according to the
     above logic even though they execute code and can return data.
+
+.. note::
+    Since the version 0.8.10, the compiler does not check ``extcodesize`` on
+    high-level external calls if return data is expected, because an empty code
+    will be unable to return data, and the ABI decoder will revert.
+    As a consequence, this allows high-level external calls to precompiled
+    contracts, since they can return data despite having no code
+    associated with their addresses.
+
+    Read about :ref:`precompiled contracts <precompiledContracts>` and
+    :ref:`low-level calls <address_related>`
+    for more information.
 
 Function calls also cause exceptions if the called contract itself
 throws an exception or goes out of gas.
@@ -173,7 +186,6 @@ parameters from the function declaration, but can be in arbitrary order.
         function set(uint key, uint value) public {
             data[key] = value;
         }
-
     }
 
 Omitted Names in Function Definitions
@@ -239,6 +251,8 @@ an instance of ``D`` using the ``value`` option, but it is not possible
 to limit the amount of gas.
 If the creation fails (due to out-of-stack, not enough balance or other problems),
 an exception is thrown.
+
+.. _salted-contract-creations:
 
 Salted contract creations / create2
 -----------------------------------
@@ -366,13 +380,13 @@ i.e. the following is not valid: ``(x, uint y) = (1, 2);``
 .. warning::
     Be careful when assigning to multiple variables at the same time when
     reference types are involved, because it could lead to unexpected
-    copying behaviour.
+    copying behavior.
 
 Complications for Arrays and Structs
 ------------------------------------
 
 The semantics of assignments are more complicated for non-value types like arrays and structs,
-including ``bytes`` and ``string``, see :ref:`Data location and assignment behaviour <data-location-assignment>` for details.
+including ``bytes`` and ``string``, see :ref:`Data location and assignment behavior <data-location-assignment>` for details.
 
 In the example below the call to ``g(x)`` has no effect on ``x`` because it creates
 an independent copy of the storage value in memory. However, ``h(x)`` successfully modifies ``x``
@@ -511,7 +525,7 @@ additional checks.
 Since Solidity 0.8.0, all arithmetic operations revert on over- and underflow by default,
 thus making the use of these libraries unnecessary.
 
-To obtain the previous behaviour, an ``unchecked`` block can be used:
+To obtain the previous behavior, an ``unchecked`` block can be used:
 
 .. code-block:: solidity
 
@@ -595,6 +609,8 @@ The built-in errors ``Error(string)`` and ``Panic(uint256)`` are
 used by special functions, as explained below. ``Error`` is used for "regular" error conditions
 while ``Panic`` is used for errors that should not be present in bug-free code.
 
+.. _assert-and-require-statements:
+
 Panic via ``assert`` and Error via ``require``
 ----------------------------------------------
 
@@ -626,21 +642,20 @@ The error code supplied with the error data indicates the kind of panic.
 #. 0x41: If you allocate too much memory or create an array that is too large.
 #. 0x51: If you call a zero-initialized variable of internal function type.
 
-The ``require`` function either creates an error without any data or
-an error of type ``Error(string)``. It
-should be used to ensure valid conditions
-that cannot be detected until execution time.
-This includes conditions on inputs
-or return values from calls to external contracts.
+The ``require`` function provides three overloads:
+
+1. ``require(bool)`` which will revert without any data (not even an error selector).
+2. ``require(bool, string)`` which will revert with an ``Error(string)``.
+3. ``require(bool, error)`` which will revert with the custom, user supplied error provided as the second argument.
 
 .. note::
-
-    It is currently not possible to use custom errors in combination
-    with ``require``. Please use ``if (!condition) revert CustomError();`` instead.
+    ``require`` arguments are evaluated unconditionally, so take special care to make sure that
+    they are not expressions with unexpected side-effects.
+    For example, in ``require(condition, CustomError(f()));`` and ``require(condition, f());``,
+    function ``f()`` will be called regardless of whether the supplied condition is ``true`` or ``false``.
 
 An ``Error(string)`` exception (or an exception without data) is generated
-by the compiler
-in the following situations:
+by the compiler in the following situations:
 
 #. Calling ``require(x)`` where ``x`` evaluates to ``false``.
 #. If you use ``revert()`` or ``revert("description")``.
@@ -651,7 +666,7 @@ in the following situations:
 
 For the following cases, the error data from the external call
 (if provided) is forwarded. This means that it can either cause
-an `Error` or a `Panic` (or whatever else was given):
+an ``Error`` or a ``Panic`` (or whatever else was given):
 
 #. If a ``.transfer()`` fails.
 #. If you call a function via a message call but it does not finish
@@ -663,10 +678,10 @@ an `Error` or a `Panic` (or whatever else was given):
 #. If you create a contract using the ``new`` keyword but the contract
    creation :ref:`does not finish properly<creating-contracts>`.
 
-You can optionally provide a message string for ``require``, but not for ``assert``.
+You can optionally provide a message string or a custom error to ``require``, but not to ``assert``.
 
 .. note::
-    If you do not provide a string argument to ``require``, it will revert
+    If you do not provide a string or custom error argument to ``require``, it will revert
     with empty error data, not even including the error selector.
 
 
@@ -686,7 +701,7 @@ and ``assert`` for internal error checking.
             addr.transfer(msg.value / 2);
             // Since transfer throws an exception on failure and
             // cannot call back here, there should be no way for us to
-            // still have half of the money.
+            // still have half of the Ether.
             assert(address(this).balance == balanceBeforeTransfer - msg.value / 2);
             return address(this).balance;
         }
@@ -720,7 +735,7 @@ The ``revert`` statement takes a custom error as direct argument without parenth
 
     revert CustomError(arg1, arg2);
 
-For backwards-compatibility reasons, there is also the ``revert()`` function, which uses parentheses
+For backward-compatibility reasons, there is also the ``revert()`` function, which uses parentheses
 and accepts a string:
 
     revert();
