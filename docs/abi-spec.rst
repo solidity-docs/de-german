@@ -16,7 +16,7 @@ as described in this specification. The encoding is not self describing and thus
 We assume that the interface functions of a contract are strongly typed, known at compilation time and static.
 We assume that all contracts will have the interface definitions of any contracts they call available at compile-time.
 
-This specification does not address contracts whose interface is dynamic or otherwise known only at run-time.
+This specification does not address contracts whose interface is dynamic or otherwise known only at run-time. Also, the ABI specification for libraries is :ref:`slightly different <library-selectors>`.
 
 .. _abi_function_selector:
 .. index:: ! selector; of a function
@@ -46,6 +46,8 @@ without the four bytes specifying the function.
 
 Types
 =====
+
+Note that the library ABIs can take types different than below e.g. for non-storage structs. See :ref:`library selectors <library-selectors>` for details.
 
 The following elementary types exist:
 
@@ -252,7 +254,21 @@ Given the contract:
     }
 
 
-Thus, for our ``Foo`` example if we wanted to call ``baz`` with the parameters ``69`` and
+Thus, for our ``Foo`` example, if we wanted to call ``bar`` with the argument ``["abc", "def"]``, we would pass 68 bytes total, broken down into:
+
+- ``0xfce353f6``: the Method ID. This is derived from the signature ``bar(bytes3[2])``.
+- ``0x6162630000000000000000000000000000000000000000000000000000000000``: the first part of the first
+  parameter, a ``bytes3`` value ``"abc"`` (left-aligned).
+- ``0x6465660000000000000000000000000000000000000000000000000000000000``: the second part of the first
+  parameter, a ``bytes3`` value ``"def"`` (left-aligned).
+
+In total:
+
+.. code-block:: none
+
+    0xfce353f661626300000000000000000000000000000000000000000000000000000000006465660000000000000000000000000000000000000000000000000000000000
+
+If we wanted to call ``baz`` with the parameters ``69`` and
 ``true``, we would pass 68 bytes total, which can be broken down into:
 
 - ``0xcdcd77c0``: the Method ID. This is derived as the first 4 bytes of the Keccak hash of
@@ -270,20 +286,6 @@ In total:
 
 It returns a single ``bool``. If, for example, it were to return ``false``, its output would be
 the single byte array ``0x0000000000000000000000000000000000000000000000000000000000000000``, a single bool.
-
-If we wanted to call ``bar`` with the argument ``["abc", "def"]``, we would pass 68 bytes total, broken down into:
-
-- ``0xfce353f6``: the Method ID. This is derived from the signature ``bar(bytes3[2])``.
-- ``0x6162630000000000000000000000000000000000000000000000000000000000``: the first part of the first
-  parameter, a ``bytes3`` value ``"abc"`` (left-aligned).
-- ``0x6465660000000000000000000000000000000000000000000000000000000000``: the second part of the first
-  parameter, a ``bytes3`` value ``"def"`` (left-aligned).
-
-In total:
-
-.. code-block:: none
-
-    0xfce353f661626300000000000000000000000000000000000000000000000000000000006465660000000000000000000000000000000000000000000000000000000000
 
 If we wanted to call ``sam`` with the arguments ``"dave"``, ``true`` and ``[1,2,3]``, we would
 pass 292 bytes total, broken down into:
@@ -311,7 +313,7 @@ Use of Dynamic Types
 A call to a function with the signature ``f(uint256,uint32[],bytes10,bytes)`` with values
 ``(0x123, [0x456, 0x789], "1234567890", "Hello, world!")`` is encoded in the following way:
 
-We take the first four bytes of ``sha3("f(uint256,uint32[],bytes10,bytes)")``, i.e. ``0x8be65246``.
+We take the first four bytes of ``keccak("f(uint256,uint32[],bytes10,bytes)")``, i.e. ``0x8be65246``.
 Then we encode the head parts of all four arguments. For the static types ``uint256`` and ``bytes10``,
 these are directly the values we want to pass, whereas for the dynamic types ``uint32[]`` and ``bytes``,
 we use the offset in bytes to the start of their data area, measured from the start of the value
@@ -563,7 +565,7 @@ A function description is a JSON object with the fields:
   blockchain state <pure-functions>`), ``view`` (:ref:`specified to not modify the blockchain
   state <view-functions>`), ``nonpayable`` (function does not accept Ether - the default) and ``payable`` (function accepts Ether).
 
-Constructor and fallback function never have ``name`` or ``outputs``. Fallback function doesn't have ``inputs`` either.
+Constructor, receive, and fallback never have ``name`` or ``outputs``. Receive and fallback do not have ``inputs`` either.
 
 .. note::
     Sending non-zero Ether to non-payable function will revert the transaction.
@@ -581,7 +583,7 @@ An event description is a JSON object with fairly similar fields:
   * ``name``: the name of the parameter.
   * ``type``: the canonical type of the parameter (more below).
   * ``components``: used for tuple types (more below).
-  * ``indexed``: ``true`` if the field is part of the log's topics, ``false`` if it one of the log's data segment.
+  * ``indexed``: ``true`` if the field is part of the log's topics, ``false`` if it is one of the log's data segments.
 
 - ``anonymous``: ``true`` if the event was declared as ``anonymous``.
 
