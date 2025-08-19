@@ -21,8 +21,10 @@ which serves to provide a quick overview.
 State Variables
 ===============
 
-State variables are variables whose values are permanently stored in contract
-storage.
+State variables are variables whose values are either permanently stored in contract
+storage or, alternatively, temporarily stored in transient storage which is cleaned at
+the end of each transaction.
+See :ref:`data locations <locations>` for more details.
 
 .. code-block:: solidity
 
@@ -112,11 +114,11 @@ Events are convenience interfaces with the EVM logging facilities.
 .. code-block:: solidity
 
     // SPDX-License-Identifier: GPL-3.0
-    pragma solidity >=0.4.21 <0.9.0;
+    pragma solidity ^0.8.22;
+
+    event HighestBidIncreased(address bidder, uint amount); // Event
 
     contract SimpleAuction {
-        event HighestBidIncreased(address bidder, uint amount); // Event
-
         function bid() public payable {
             // ...
             emit HighestBidIncreased(msg.sender, msg.value); // Triggering event
