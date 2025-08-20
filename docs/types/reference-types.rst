@@ -29,10 +29,21 @@ annotation, the "data location", about where it is stored. There are three data 
 non-persistent area where function arguments are stored, and behaves mostly like memory.
 
 .. note::
+    ``transient`` is not yet supported as a data location for reference types.
+
+.. note::
     If you can, try to use ``calldata`` as data location because it will avoid copies and
     also makes sure that the data cannot be modified. Arrays and structs with ``calldata``
     data location can also be returned from functions, but it is not possible to
     allocate such types.
+
+.. note::
+    Arrays and structs with ``calldata`` location declared in a function body
+    or as its return parameters must be assigned before being used or returned.
+    There are certain cases in which non-trivial control flow is used and the compiler
+    can't properly detect the initialization.
+    A common workaround in such cases is to assign the affected variable to itself before
+    the correct initialization takes place.
 
 .. note::
     Prior to version 0.6.9 data location for reference-type arguments was limited to
@@ -41,14 +52,17 @@ non-persistent area where function arguments are stored, and behaves mostly like
     Now ``memory`` and ``calldata`` are allowed in all functions regardless of their visibility.
 
 .. note::
+    Constructor parameters cannot use ``calldata`` as their data location.
+
+.. note::
     Prior to version 0.5.0 the data location could be omitted, and would default to different locations
     depending on the kind of variable, function type, etc., but all complex types must now give an explicit
     data location.
 
 .. _data-location-assignment:
 
-Data location and assignment behaviour
-^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+Data location and assignment behavior
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Data locations are not only relevant for persistency of data, but also for the semantics of assignments:
 
@@ -235,7 +249,7 @@ with the :ref:`default value<default-value>`.
         }
     }
 
-.. index:: ! array;literals, ! inline;arrays
+.. index:: ! literal;array, ! inline;arrays
 
 Array Literals
 ^^^^^^^^^^^^^^
@@ -372,7 +386,7 @@ Array Members
 
 .. note::
     In EVM versions before Byzantium, it was not possible to access
-    dynamic arrays return from function calls. If you call functions
+    dynamic arrays returned from function calls. If you call functions
     that return dynamic arrays, make sure to use an EVM that is set to
     Byzantium mode.
 
@@ -392,8 +406,7 @@ Array Members
         // Data location for all state variables is storage.
         bool[2][] pairsOfFlags;
 
-        // newPairs is stored in memory - the only possibility
-        // for public contract function arguments
+        // newPairs is stored in memory
         function setAllFlagPairs(bool[2][] memory newPairs) public {
             // assignment to a storage array performs a copy of ``newPairs`` and
             // replaces the complete array ``pairsOfFlags``.
@@ -582,10 +595,10 @@ and the assignment will effectively garble the length of ``x``.
 To be safe, only enlarge bytes arrays by at most one element during a single
 assignment and do not simultaneously index-access the array in the same statement.
 
-While the above describes the behaviour of dangling storage references in the
+While the above describes the behavior of dangling storage references in the
 current version of the compiler, any code with dangling references should be
-considered to have *undefined behaviour*. In particular, this means that
-any future version of the compiler may change the behaviour of code that
+considered to have *undefined behavior*. In particular, this means that
+any future version of the compiler may change the behavior of code that
 involves dangling references.
 
 Be sure to avoid dangling references in your code!
@@ -641,7 +654,7 @@ Array slices are useful to ABI-decode secondary data passed in function paramete
         /// after doing basic validation on the address argument.
         function forward(bytes calldata payload) external {
             bytes4 sig = bytes4(payload[:4]);
-            // Due to truncating behaviour, bytes4(payload) performs identically.
+            // Due to truncating behavior, bytes4(payload) performs identically.
             // bytes4 sig = bytes4(payload);
             if (sig == bytes4(keccak256("setOwner(address)"))) {
                 address owner = abi.decode(payload[4:], (address));
@@ -686,11 +699,11 @@ shown in the following example:
             uint fundingGoal;
             uint numFunders;
             uint amount;
-            mapping (uint => Funder) funders;
+            mapping(uint => Funder) funders;
         }
 
         uint numCampaigns;
-        mapping (uint => Campaign) campaigns;
+        mapping(uint => Campaign) campaigns;
 
         function newCampaign(address payable beneficiary, uint goal) public returns (uint campaignID) {
             campaignID = numCampaigns++; // campaignID is return variable
