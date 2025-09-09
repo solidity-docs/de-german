@@ -40,7 +40,7 @@ The comment is recognized by the compiler anywhere in the file at the
 file level, but it is recommended to put it at the top of the file.
 
 More information about how to use SPDX license identifiers
-can be found at the `SPDX website <https://spdx.org/ids-how>`_.
+can be found at the `SPDX website <https://spdx.dev/learn/handling-license-info/#how>`_.
 
 
 .. index:: ! pragma
@@ -159,7 +159,7 @@ The :ref:`build instructions<smt_solvers_build>` explain how to activate this op
 It is activated for the Ubuntu PPA releases in most versions,
 but not for the Docker images, Windows binaries or the
 statically-built Linux binaries. It can be activated for solc-js via the
-`smtCallback <https://github.com/ethereum/solc-js#example-usage-with-smtsolver-callback>`_ if you have an SMT solver
+`smtCallback <https://github.com/argotorg/solc-js#example-usage-with-smtsolver-callback>`_ if you have an SMT solver
 installed locally and run solc-js via node (not via the browser).
 
 If you use ``pragma experimental SMTChecker;``, then you get additional
@@ -182,7 +182,7 @@ Syntax and Semantics
 Solidity supports import statements to help modularise your code that
 are similar to those available in JavaScript
 (from ES6 on). However, Solidity does not support the concept of
-a `default export <https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export#Description>`_.
+a `default export <https://developer.mozilla.org/en-US/docs/web/javascript/reference/statements/export#description>`_.
 
 At a global level, you can use import statements of the following form:
 
