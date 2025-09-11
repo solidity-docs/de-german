@@ -7,13 +7,13 @@ List of Known Bugs
 ##################
 
 Below, you can find a JSON-formatted list of some of the known security-relevant bugs in the
-Solidity compiler. The file itself is hosted in the `Github repository
-<https://github.com/ethereum/solidity/blob/develop/docs/bugs.json>`_.
+Solidity compiler. The file itself is hosted in the `GitHub repository
+<https://github.com/argotorg/solidity/blob/develop/docs/bugs.json>`_.
 The list stretches back as far as version 0.3.0, bugs known to be present only
 in versions preceding that are not listed.
 
 There is another file called `bugs_by_version.json
-<https://github.com/ethereum/solidity/blob/develop/docs/bugs_by_version.json>`_,
+<https://github.com/argotorg/solidity/blob/develop/docs/bugs_by_version.json>`_,
 which can be used to check which bugs affect a specific version of the compiler.
 
 Contract source verification tools and also other tools interacting with
@@ -68,7 +68,7 @@ conditions
     If no conditions are given, assume that the bug is present.
 check
     This field contains different checks that report whether the smart contract
-    contains the bug or not. The first type of check are Javascript regular
+    contains the bug or not. The first type of check are JavaScript regular
     expressions that are to be matched against the source code ("source-regex")
     if the bug is present.  If there is no match, then the bug is very likely
     not present. If there is a match, the bug might be present.  For improved
